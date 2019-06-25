@@ -1,5 +1,5 @@
 from csr2transmart.csr_transformations import csr_transformation
-from csr2transmart.transmart_transformation import transmart_transformation, transform
+from csr2transmart.transmart_transformation import transform
 from os import path, listdir
 
 

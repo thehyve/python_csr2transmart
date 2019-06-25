@@ -3,22 +3,9 @@
 
 """Tests for the csr2transmart module.
 """
-from os import path
-
-import pytest
 from click.testing import CliRunner
-
 from csr2transmart import csr2transmart
-
-
-def test_something():
-    assert True
-
-
-def test_with_error():
-    with pytest.raises(ValueError):
-        # Do something that raises a ValueError
-        raise ValueError
+from os import path
 
 
 def test_transformation(tmp_path):
