@@ -1,0 +1,58 @@
+{
+  "central_subject_registry": {
+    "individual": [
+      "INDIVIDUAL_ID",
+      "GENDER",
+      "BIRTH_DATE",
+      "TAXONOMY",
+      "DEATH_DATE",
+      "IC_TYPE",
+      "IC_WITHDRAWN_DATE",
+      "IC_MATERIAL",
+      "IC_DATA",
+      "IC_LINKING_EXT",
+      "REPORT_HER_SUSC"
+    ],
+    "diagnosis": [
+      "DIAGNOSIS_ID",
+      "INDIVIDUAL_ID",
+      "TUMOR_TYPE",
+      "TOPOGRAPHY",
+      "TREATMENT_PROTOCOL",
+      "TUMOR_STAGE",
+      "DIAGNOSIS_DATE",
+      "CENTER_TREATMENT"
+    ],
+    "biosource": [
+      "BIOSOURCE_ID",
+      "BIOSOURCE_DEDICATED",
+      "INDIVIDUAL_ID",
+      "DIAGNOSIS_ID",
+      "SRC_BIOSOURCE_ID",
+      "TISSUE",
+      "BIOSOURCE_DATE",
+      "DISEASE_STATUS",
+      "TUMOR_PERCENTAGE"
+    ],
+    "biomaterial": [
+      "BIOMATERIAL_ID",
+      "SRC_BIOSOURCE_ID",
+      "SRC_BIOMATERIAL_ID",
+      "BIOMATERIAL_DATE",
+      "TYPE"
+    ]
+  },
+  "study_registry": {
+    "study": [
+      "STUDY_ID",
+      "ACRONYM",
+      "TITLE",
+      "DATADICTIONARY"
+    ],
+    "individual_study": [
+      "STUDY_ID",
+      "INDIVIDUAL_STUDY_ID",
+      "INDIVIDUAL_ID"
+    ]
+  }
+}

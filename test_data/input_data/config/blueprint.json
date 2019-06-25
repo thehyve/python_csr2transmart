@@ -1,0 +1,366 @@
+{
+  "INDIVIDUAL_ID": {
+    "path": "patients",
+    "label": "SUBJ_ID",
+    "metadata_tags": {},
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "DIAGNOSIS_COUNT": {
+    "path": "01. Patient_information",
+    "label": "04. Count of diagnoses",
+    "metadata_tags": {
+      "subject_dimension": "patient"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "AGE_FIRST_DIAGNOSIS": {
+    "path": "01. Patient_information",
+    "label": "03. Age at first diagnosis",
+    "metadata_tags": {
+      "subject_dimension": "patient"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "LIBRARY_STRATEGY": {
+    "path": "04. Biomaterial information",
+    "label": "05. Library strategy",
+    "metadata_tags": {
+      "subject_dimension": "Biomaterial ID"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "ANALYSIS_TYPE": {
+    "path": "04. Biomaterial information",
+    "label": "04. Analysis type",
+    "metadata_tags": {
+      "subject_dimension": "Biomaterial ID"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "GENDER": {
+    "path": "01. Patient_information",
+    "label": "02. Gender",
+    "metadata_tags": {
+      "subject_dimension": "patient"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "BIRTH_DATE": {
+    "path": "01. Patient_information",
+    "label": "01. Date of birth",
+    "metadata_tags": {
+      "subject_dimension": "patient"
+    },
+    "data_type": "DATE",
+    "word_map": {}
+  },
+  "TAXONOMY": {
+    "path": "01. Patient_information",
+    "label": "Taxonomy",
+    "metadata_tags": {
+      "subject_dimension": "patient"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "DEATH_DATE": {
+    "path": "01. Patient_information",
+    "label": "05. Date of death",
+    "metadata_tags": {
+      "subject_dimension": "patient"
+    },
+    "word_map": {},
+    "data_type": "DATE"
+  },
+  "IC_TYPE": {
+    "path": "01. Patient_information+Informed_consent",
+    "label": "01. Informed consent type",
+    "metadata_tags": {
+      "subject_dimension": "patient"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "IC_VERSION": {
+    "path": "01. Patient_information+Informed_consent",
+    "label": "Informed consent version",
+    "metadata_tags": {
+      "subject_dimension": "patient"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "IC_GIVE_DATE": {
+    "path": "01. Patient_information+Informed_consent",
+    "label": "02. Date informed Consent given",
+    "metadata_tags": {
+      "subject_dimension": "patient"
+    },
+    "word_map": {},
+    "data_type": "DATE"
+  },
+  "IC_WITHDRAWN_DATE": {
+    "path": "01. Patient_information+Informed_consent",
+    "label": "03. Date informed consent withdrawn",
+    "metadata_tags": {
+      "subject_dimension": "patient"
+    },
+    "data_type": "DATE",
+    "word_map": {}
+  },
+  "IC_MATERIAL": {
+    "path": "01. Patient_information+Informed_consent",
+    "label": "04. Informed consent material",
+    "metadata_tags": {
+      "subject_dimension": "patient"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "IC_DATA": {
+    "path": "01. Patient_information+Informed_consent",
+    "label": "05. Informed consent data",
+    "metadata_tags": {
+      "subject_dimension": "patient"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "IC_LINKING_EXT": {
+    "path": "01. Patient_information+Informed_consent",
+    "label": "06. Informed consent linking external database",
+    "metadata_tags": {
+      "subject_dimension": "patient"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "REPORT_HER_SUSC": {
+    "path": "01. Patient_information+Informed_consent",
+    "label": "07. Report hereditary susceptibility",
+    "metadata_tags": {
+      "subject_dimension": "patient"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "STUDY_ID": {
+    "path": "05. Study information",
+    "label": "01. Study ID",
+    "metadata_tags": {
+      "subject_dimension": "patient"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "ACRONYM": {
+    "path": "05. Study information",
+    "label": "02. Study acronym",
+    "metadata_tags": {
+      "subject_dimension": "patient"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "TITLE": {
+    "path": "05. Study information",
+    "label": "03. Study title",
+    "metadata_tags": {
+      "subject_dimension": "patient"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "DATADICTIONARY": {
+    "path": "05. Study information",
+    "label": "Study datadictionary",
+    "metadata_tags": {
+      "subject_dimension": "patient"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "INDIVIDUAL_STUDY_ID": {
+    "path": "05. Study information",
+    "label": "04. Individual Study ID",
+    "metadata_tags": {
+      "subject_dimension": "patient"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "DIAGNOSIS_ID": {
+    "path": "02. Diagnosis information",
+    "label": "OMIT",
+    "metadata_tags": {},
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "TUMOR_TYPE": {
+    "path": "02. Diagnosis information",
+    "label": "02. Tumor type",
+    "metadata_tags": {
+      "subject_dimension": "Diagnosis ID"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "TOPOGRAPHY": {
+    "path": "02. Diagnosis information",
+    "label": "03. Topography",
+    "metadata_tags": {
+      "subject_dimension": "Diagnosis ID"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "TREATMENT_PROTOCOL": {
+    "path": "02. Diagnosis information",
+    "label": "Treatment",
+    "metadata_tags": {
+      "subject_dimension": "Diagnosis ID"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "TUMOR_STAGE": {
+    "path": "02. Diagnosis information",
+    "label": "04. Tumor stage",
+    "metadata_tags": {
+      "subject_dimension": "Diagnosis ID"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "DIAGNOSIS_DATE": {
+    "path": "02. Diagnosis information",
+    "label": "01. Date of diagnosis",
+    "metadata_tags": {
+      "subject_dimension": "Diagnosis ID"
+    },
+    "word_map": {},
+    "data_type": "DATE"
+  },
+  "CENTER_TREATMENT": {
+    "path": "02. Diagnosis information",
+    "label": "05. Center of treatment",
+    "metadata_tags": {
+      "subject_dimension": "Diagnosis ID"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "BIOSOURCE_ID": {
+    "path": "03. Biosource information",
+    "label": "OMIT",
+    "metadata_tags": {},
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "BIOSOURCE_DEDICATED": {
+    "path": "03. Biosource information",
+    "label": "06. Biosource dedicated for specific study",
+    "metadata_tags": {
+      "subject_dimension": "Biosource ID"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "SRC_BIOSOURCE_ID": {
+    "path": "03. Biosource information",
+    "label": "01. Biosource parent",
+    "metadata_tags": {
+      "subject_dimension": "Biosource ID"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "TISSUE": {
+    "path": "03. Biosource information",
+    "label": "03. Tissue",
+    "metadata_tags": {
+      "subject_dimension": "Biosource ID"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "BIOSOURCE_DATE": {
+    "path": "03. Biosource information",
+    "label": "02. Date of biosource",
+    "metadata_tags": {
+      "subject_dimension": "Biosource ID"
+    },
+    "word_map": {},
+    "data_type": "DATE"
+  },
+  "DISEASE_STATUS": {
+    "path": "03. Biosource information",
+    "label": "04. Disease status",
+    "metadata_tags": {
+      "subject_dimension": "Biosource ID"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "TUMOR_PERCENTAGE": {
+    "path": "03. Biosource information",
+    "label": "05. Tumor percentage",
+    "metadata_tags": {
+      "subject_dimension": "Biosource ID"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "BIOMATERIAL_ID": {
+    "path": "04. Biomaterial information",
+    "label": "OMIT",
+    "metadata_tags": {},
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "SRC_BIOMATERIAL_ID": {
+    "path": "04. Biomaterial information",
+    "label": "01. Biomaterial parent",
+    "metadata_tags": {
+      "subject_dimension": "Biomaterial ID"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "BIOMATERIAL_DATE": {
+    "path": "04. Biomaterial information",
+    "label": "02. Date of biomaterial",
+    "metadata_tags": {
+      "subject_dimension": "Biomaterial ID"
+    },
+    "word_map": {},
+    "data_type": "DATE"
+  },
+  "TYPE": {
+    "path": "04. Biomaterial information",
+    "label": "03. Biomaterial type",
+    "metadata_tags": {
+      "subject_dimension": "Biomaterial ID"
+    },
+    "force_categorical": "N",
+    "word_map": {}
+  },
+  "CSR_DIAGNOSIS_MOD": {
+    "label": "MODIFIER",
+    "data_type": "CSR_DIAGNOSIS_MOD"
+  },
+  "CSR_BIOSOURCE_MOD": {
+    "label": "MODIFIER",
+    "data_type": "CSR_BIOSOURCE_MOD"
+  },
+  "CSR_BIOMATERIAL_MOD": {
+    "label": "MODIFIER",
+    "data_type": "CSR_BIOMATERIAL_MOD"
+  }
+}

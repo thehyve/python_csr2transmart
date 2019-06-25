@@ -1,0 +1,13 @@
+diagnosis_id	individual_id	topography	treatment_protocol	tumor_type	tumor_stage	diagnosis_date	center_treatment
+D1	P1	liver	chemo	neuroblastoma	IV	01-05-2016	Center 1
+D2	P2	kidney	surgery	nephroblastoma	III	02-07-2016	Center 2
+D3	P3	bone marrow	Protocol 1	hepatoblastoma	IV	03-11-2016	Center 3
+D5	P5	kidney	chemo	nephroblastoma	I	05-09-2016	Center 2
+D6	P6	bone marrow	chemo	hepatoblastoma	II	06-12-2016	Center 1
+D7	P7	liver	surgery	neuroblastoma	III	01-02-2017	Center 2
+D8	P8	liver	chemo	nephroblastoma	IV	02-04-2017	Center 3
+D9	P9	kidney	surgery	hepatoblastoma	II	09-05-2016	Center 1
+D10	P1	liver	chemo	neuroblastoma	III	10-08-2016	Center 2
+D11	P3	liver	Protocol 1	nephroblastoma	II	11-03-2016	Center 3
+D12	P5	bone marrow	surgery	hepatoblastoma	I	01-05-2016	Center 1
+D13	P7	kidney	surgery	neuroblastoma	II	22-07-2016	Center 2

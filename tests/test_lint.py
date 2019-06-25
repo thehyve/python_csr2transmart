@@ -23,6 +23,7 @@ def test_pep8_conformance():
 
     style = pycodestyle.StyleGuide()
     style.options.exclude.extend(exclude_paths)
+    style.options.max_line_length = 120
 
     success = style.check_files(check_paths).total_errors == 0
 
