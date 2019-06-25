@@ -1,0 +1,4 @@
+individual_id	taxonomy	birth_date	gender	death_date	IC_type	IC_given_date	IC_withdrawn_date	IC_material	IC_data	IC_linking_ext	report_her_susc	report_inc_finding
+P1	Human	01-02-1993	f		yes	01-03-2017		yes	yes	NA	yes	yes
+P2	Human	02-03-1992	m		yes	10-04-2017		yes	yes	NA	yes	yes
+P3	Human	03-04-1994	f		yes	11-05-2017		yes	NA	not applicable	yes	yes

@@ -1,0 +1,2 @@
+STUDY_ID	INDIVIDUAL_ID	COL3
+adsfasf	adsfasfasd	asdfas
