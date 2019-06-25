@@ -1,0 +1,31 @@
+# Config file for automatic testing at travis-ci.org
+language: python
+
+matrix:
+  include:
+    - python: "3.6"
+    - python: "3.7"
+      dist: xenial
+      sudo: true
+
+# command to install dependencies
+install:
+  - pip install -r requirements.txt
+  - pip install codecov
+
+# command to run tests
+script: python setup.py test
+
+#deploy:
+#  provider: pypi
+#  distributions: "sdist bdist_wheel"
+#  skip_existing: true
+#  user: gijskant
+#  password:
+#    secure:
+#  on:
+#    tags: true
+#    branch: master
+
+after_success:
+  - codecov
