@@ -96,4 +96,4 @@ License
 
 Copyright (c) 2019 The Hyve B.V.
 
-The TranSMART loader is licensed under the MIT License. See the file `<LICENSE>`_.
+The CSR to TranSMART loader is licensed under the MIT License. See the file `<LICENSE>`_.
