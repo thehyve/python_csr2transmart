@@ -17,6 +17,9 @@ version = {}
 with open(os.path.join(here, 'csr2transmart', '__version__.py')) as f:
     exec(f.read(), version)
 
+with open('README.rst') as readme_file:
+    readme = readme_file.read()
+
 with open('requirements.txt', 'r') as f:
     required_packages = f.read().splitlines()
 
@@ -24,9 +27,10 @@ setup(
     name='csr2transmart',
     version=version['__version__'],
     description="Script to load CSR data to TranSMART",
+    long_description=readme + '\n\n',
     author="Gijs Kant",
     author_email='gijs@thehyve.nl',
-    url='https://github.com/thehyve/csr2transmart',
+    url='https://github.com/thehyve/python_csr2transmart',
     packages=[
         'csr2transmart',
     ],
