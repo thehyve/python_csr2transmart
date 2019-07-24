@@ -80,9 +80,9 @@ def test_init(tmp_path):
     tmp_dir = tmp_path.as_posix()
     modifiers_table_file = os.path.join(tmp_dir, 'modifiers.tsv')
     create_tsv_file(modifiers_table_file, [
-            ['modifier_path', 'modifier_cd', 'name_char', 'Data Type'],
-            ['\\mod1', 'MOD1', 'MoDiFiEr #1', 'CATEGORICAL'],
-            ['\\mod2', 'MOD2', 'modifier #2', 'NUMERICAL'],
+        ['modifier_path', 'modifier_cd', 'name_char', 'Data Type', 'dimension_type', 'sort_index'],
+        ['\\mod1', 'MOD1', 'MoDiFiEr #1', 'CATEGORICAL', 'ATTRIBUTE', '6'],
+        ['\\mod2', 'MOD2', 'modifier #2', 'NUMERICAL', 'ATTRIBUTE', '7']
     ])
     validator = get_blueprint_validator_initialised_with_modifiers(modifiers_table_file)
     assert validator
