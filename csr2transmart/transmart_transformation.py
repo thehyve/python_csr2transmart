@@ -13,9 +13,9 @@ logger = logging.getLogger(__name__)
 
 
 def transform(csr_data_file, study_registry_data_file, output_dir,
-              config_dir, blueprint, modifiers, study_id, top_node, security_required, save_batch_study):
-    modifier_file = os.path.join(config_dir, modifiers)
-    blueprint_file = os.path.join(config_dir, blueprint)
+              config_dir, study_id, top_node):
+    modifier_file = os.path.join(config_dir, 'modifiers.txt')
+    blueprint_file = os.path.join(config_dir, 'blueprint.json')
     with open(blueprint_file, 'r') as bpf:
         bp = json.load(bpf)
     check_if_blueprint_valid(modifier_file, bp)
@@ -28,10 +28,7 @@ def transform(csr_data_file, study_registry_data_file, output_dir,
     study = tmtk.Study()
     study.study_id = study_id
     study.top_node = top_node
-    if security_required == 'N':
-        study.security_required = False
-    else:
-        study.security_required = True
+    study.security_required = False
 
     study.Clinical.add_datafile(filename='csr_study.txt', dataframe=df)
     try:
@@ -66,10 +63,6 @@ def transform(csr_data_file, study_registry_data_file, output_dir,
     # Add studies metadata tags to study object
     study_tags.columns = study.Tags.header
     study.Tags.df = study.Tags.df.append(study_tags, ignore_index=True)
-
-    if save_batch_study:
-        study_dir = os.path.dirname(csr_data_file)
-        study.write_to(os.path.join(study_dir, study_id), overwrite=True)
 
     # omit_fas=True will create study node with FA instead of FAS for c_visualattributes
     tm_study = tmtk.toolbox.SkinnyExport(study, output_dir, omit_fas=True)

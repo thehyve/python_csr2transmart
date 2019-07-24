@@ -10,6 +10,7 @@ from csr2transmart.csr_transformations import csr_transformation
 @click.argument('input_path')
 @click.argument('output_dir')
 @click.argument('config_dir')
+@click.version_option()
 def csr2transmart(input_path, output_dir, config_dir):
     csr_transformation(
         input_path,
@@ -27,12 +28,8 @@ def csr2transmart(input_path, output_dir, config_dir):
         path.join(output_dir, 'study_registry.tsv'),
         output_dir,
         config_dir,
-        'blueprint.json',
-        'modifiers.txt',
         'CSR',
-        '\\Public Studies\\CSR\\',
-        False,
-        None
+        '\\Central Subject Registry\\',
     )
 
 

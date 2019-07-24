@@ -21,12 +21,8 @@ def test_that_transformation_finishes_successfully(tmp_path):
         path.join(test_dir, 'study_registry.tsv'),
         test_dir,
         './test_data/input_data/config',
-        'blueprint.json',
-        'modifiers.txt',
         'CSR',
-        '\\Public Studies\\CSR\\',
-        False,
-        None
+        '\\Central Subject Registry\\'
     )
     assert set(listdir(test_dir)) == {
         'study_registry.tsv',
