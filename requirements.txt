@@ -1,4 +1,4 @@
 chardet == 3.0.4
 click == 7.0
 pandas == 0.24.2
-tmtk == 0.5.5
+tmtk == 0.5.6

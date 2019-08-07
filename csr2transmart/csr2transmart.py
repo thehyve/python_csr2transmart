@@ -1,4 +1,4 @@
-from os import path, listdir
+from os import path
 
 import click
 from csr2transmart.transmart_transformation import transform
