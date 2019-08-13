@@ -26,7 +26,10 @@ def test_that_transformation_finishes_successfully(tmp_path):
     )
     assert set(listdir(test_dir)) == {
         'study_registry.tsv',
-        'i2b2demodata',
-        'i2b2metadata',
+        'data',
         'csr_transformation_data.tsv'
+    }
+    assert set(listdir(test_dir + '/data')) == {
+        'i2b2demodata',
+        'i2b2metadata'
     }
