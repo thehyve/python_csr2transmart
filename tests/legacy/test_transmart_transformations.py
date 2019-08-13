@@ -18,8 +18,7 @@ def test_that_transformation_finishes_successfully(tmp_path):
         'study_registry.tsv',
     )
     transform(
-        path.join(test_dir, 'csr_transformation_data.tsv'),
-        path.join(test_dir, 'study_registry.tsv'),
+        './test_data/input_data/CLINICAL',
         out_dir,
         './test_data/input_data/config',
         'CSR',

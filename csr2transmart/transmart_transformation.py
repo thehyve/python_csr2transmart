@@ -9,6 +9,8 @@ import pandas as pd
 from transmart_loader.copy_writer import TransmartCopyWriter
 from transmart_loader.transmart import DataCollection
 
+from csr.csr import CentralSubjectRegistry, StudyRegistry
+from csr.utils import read_subject_registry_from_tsv, read_study_registry_from_tsv
 from csr2transmart.blueprint import Blueprint, BlueprintElement
 from csr2transmart.csr_mapper import CsrMapper
 from csr2transmart.validations import get_blueprint_validator_initialised_with_modifiers
@@ -30,8 +32,7 @@ def check_if_blueprint_valid(modifier_file, blueprint):
             '{} tree node violations have found:\n{}'.format(len(violations), all_err_messages))
 
 
-def transform(csr_data_file_path: str,
-              study_registry_data_file_path: str,
+def transform(input_dir: str,
               output_dir: str,
               config_dir: str,
               study_id: str,
@@ -45,15 +46,15 @@ def transform(csr_data_file_path: str,
             bp: Dict = json.load(bpf)
         check_if_blueprint_valid(modifier_file, bp)
         blueprint: Blueprint = {k: BlueprintElement(**v) for k, v in bp.items()}
-        modifiers = pd.read_csv(modifier_file, sep='\t')
+        modifiers = pd.read_csv(modifier_file, sep='\t')  # TODO remove modifiers config
 
-        logger.info('Reading Central Subject Registry data...')
-        csr_df = pd.read_csv(csr_data_file_path, sep='\t')
-        sr_df = pd.read_csv(study_registry_data_file_path, sep='\t')  # TODO use for ontology mapping
+        logger.info('Reading CSR data...')
+        subject_registry: CentralSubjectRegistry = read_subject_registry_from_tsv(input_dir)
+        study_registry: StudyRegistry = read_study_registry_from_tsv(input_dir)
 
-        logger.info('Mapping data...')
+        logger.info('Mapping CSR to Data Collection...')
         mapper = CsrMapper(study_id, top_tree_node)
-        collection: DataCollection = mapper.map(csr_df, modifiers, blueprint)
+        collection: DataCollection = mapper.map(subject_registry, study_registry, modifiers, blueprint)
 
         logger.info('Writing files to {}'.format(output_dir))
         copy_writer = TransmartCopyWriter(str(output_dir))
@@ -70,19 +71,17 @@ def transform(csr_data_file_path: str,
 
 
 @click.command()
-@click.option('--csr_data_file_path', type=click.Path(exists=True))
-@click.option('--study_registry_data_file_path', type=click.Path(exists=True))
+@click.option('--input_dir', type=click.Path(exists=True))
 @click.option('--output_dir', type=click.Path(exists=True))
 @click.option('--config_dir', type=click.Path(exists=True))
 @click.option('--study_id')
 @click.option('--top_node')
-def transmart_transformation(csr_data_file_path,
-                             study_registry_data_file_path,
+def transmart_transformation(input_dir,
                              output_dir,
                              config_dir,
                              study_id,
                              top_node):
-    transform(csr_data_file_path, study_registry_data_file_path, output_dir, config_dir, study_id, top_node)
+    transform(input_dir, output_dir, config_dir, study_id, top_node)
 
 
 def main():
