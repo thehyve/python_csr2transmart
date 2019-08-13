@@ -11,7 +11,7 @@ from transmart_loader.transmart import DataCollection
 
 from csr2transmart.blueprint import Blueprint, BlueprintElement
 from csr2transmart.csr_mapper import CsrMapper
-from sources2csr.validations import get_blueprint_validator_initialised_with_modifiers
+from csr2transmart.validations import get_blueprint_validator_initialised_with_modifiers
 
 logger = logging.getLogger(__name__)
 
