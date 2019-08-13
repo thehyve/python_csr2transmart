@@ -40,7 +40,8 @@ setup(
                  'sources2csr': 'sources2csr',
                  'csr': 'csr'},
     entry_points={
-        'console_scripts': ['csr2transmart=csr2transmart.csr2transmart:main'],
+        'console_scripts': ['csr2transmart=csr2transmart.csr2transmart:main',
+                            'sources2csr=sources2csr.sources2csr:main'],
     },
     include_package_data=True,
     license="MIT",

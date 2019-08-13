@@ -3,8 +3,6 @@ from os import path
 import click
 from csr2transmart.transmart_transformation import transform
 
-from sources2csr.csr_transformations import csr_transformation
-
 
 @click.command()
 @click.argument('input_path')
@@ -12,20 +10,9 @@ from sources2csr.csr_transformations import csr_transformation
 @click.argument('config_dir')
 @click.version_option()
 def csr2transmart(input_path, output_dir, config_dir):
-    csr_transformation(
-        input_path,
-        output_dir,
-        config_dir,
-        'data_model.json',
-        'column_priority.json',
-        'file_headers.json',
-        'columns_to_csr.json',
-        'csr_transformation_data.tsv',
-        'study_registry.tsv',
-    )
     transform(
-        path.join(output_dir, 'csr_transformation_data.tsv'),
-        path.join(output_dir, 'study_registry.tsv'),
+        path.join(input_path, 'csr_transformation_data.tsv'),
+        path.join(input_path, 'study_registry.tsv'),
         output_dir,
         config_dir,
         'CSR',

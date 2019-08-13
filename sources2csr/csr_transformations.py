@@ -3,10 +3,8 @@ import json
 import logging
 import os
 import sys
-from logging.config import fileConfig
 
 import pandas as pd
-from click._unicodefun import click
 
 from sources2csr.helper_variables import calculate_helper_variables
 from sources2csr.csr_build_dataframe import add_biosource_identifiers, merge_entity_data_frames, \
@@ -493,48 +491,3 @@ def csr_transformation(input_dir, output_dir, config_dir, data_model,
     study_registry.to_csv(study_output_file, sep='\t', index=False)
 
     return
-
-
-@click.command()
-@click.option('--input_dir', type=click.Path(exists=True))
-@click.option('--output_dir', type=click.Path(exists=True))
-@click.option('--config_dir', type=click.Path(exists=True))
-@click.option('--data_model', default=None)
-@click.option('--column_priority', default=None)
-@click.option('--file_headers', default=None)
-@click.option('--columns_to_csr', default=None)
-@click.option('--output_filename', default='csr_data_transformation.tsv')
-@click.option('--output_study_filename', default='study_registry.tsv')
-@click.option('--logging_config', default=None)
-def csr_transformations(input_dir, output_dir, config_dir, data_model,
-                        column_priority, file_headers, columns_to_csr, output_filename, output_study_filename,
-                        logging_config):
-
-    # Check if mandatory parameters are set
-    mandatory = {'--config_dir': config_dir, '--data_model': data_model, '--column_priority': column_priority,
-                 '--columns_to_csr': columns_to_csr, '--file_headers': file_headers, '--input_dir': input_dir,
-                 '--output_dir': output_dir, '--logging_config': logging_config,
-                 '--output_study_file': output_study_filename}
-    if not all(mandatory.values()):
-        for option_name, option_value in mandatory.items():
-            if not option_value:
-                print('Input argument missing: {}'.format(option_name))
-        sys.exit(1)
-
-    # set logging when calling function directly, temporary ugly hack
-    global logger
-    fileConfig(logging_config)
-    logger = logging.getLogger('csr_transformations')
-
-    csr_transformation(input_dir, output_dir, config_dir, data_model,
-                       column_priority, file_headers, columns_to_csr, output_filename, output_study_filename)
-
-    sys.exit(0)
-
-
-def main():
-    csr_transformations()
-
-
-if __name__ == '__main__':
-    main()

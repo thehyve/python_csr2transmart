@@ -1,0 +1,10 @@
+STUDY_ID|STUDY1	INDIVIDUAL_ID	INDIVIDUAL_STUDY_ID|STUDY1	ACRONYM|STUDY1	TITLE|STUDY1	DATADICTIONARY|STUDY1	STUDY_ID|STUDY2	INDIVIDUAL_STUDY_ID|STUDY2	ACRONYM|STUDY2	TITLE|STUDY2	DATADICTIONARY|STUDY2
+STUDY1	P1	1	STD1	Study 1	http://www.example.com					
+STUDY1	P2	2	STD1	Study 1	http://www.example.com					
+STUDY1	P3	3	STD1	Study 1	http://www.example.com					
+STUDY1	P4	4	STD1	Study 1	http://www.example.com					
+STUDY1	P5	5	STD1	Study 1	http://www.example.com	STUDY2	6	STD2	Study 2	http://www.example.com
+	P6					STUDY2	7	STD2	Study 2	http://www.example.com
+	P7					STUDY2	8	STD2	Study 2	http://www.example.com
+	P8					STUDY2	9	STD2	Study 2	http://www.example.com
+	P9					STUDY2	10	STD2	Study 2	http://www.example.com
