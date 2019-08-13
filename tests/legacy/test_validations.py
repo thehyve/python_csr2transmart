@@ -5,7 +5,7 @@
 """
 import os
 from tests.legacy.file_helpers import create_tsv_file
-from csr2transmart.validations import BlueprintValidations, get_blueprint_validator_initialised_with_modifiers
+from sources2csr.validations import BlueprintValidations, get_blueprint_validator_initialised_with_modifiers
 
 
 extra_dimensions = {'Diagnosis Id', 'Biosource Id', 'Biomaterial Id'}

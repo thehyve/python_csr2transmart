@@ -2,9 +2,9 @@ import logging
 import os
 import pandas as pd
 import pytest
-from csr2transmart.csr_read_data import validate_source_file
+from sources2csr.csr_read_data import validate_source_file
 
-from csr2transmart.csr_transformations import csr_transformation, read_dict_from_file, get_overlapping_columns, \
+from sources2csr.csr_transformations import csr_transformation, read_dict_from_file, get_overlapping_columns, \
     check_column_prio
 
 test_data_dir = 'test_data/input_data'

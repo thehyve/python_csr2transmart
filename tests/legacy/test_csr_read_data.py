@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from csr2transmart.csr_read_data import get_encoding, input_file_to_df, apply_header_map, determine_file_type
+from sources2csr.csr_read_data import get_encoding, input_file_to_df, apply_header_map, determine_file_type
 
 
 clinical_test_data = './test_data/input_data/CLINICAL'

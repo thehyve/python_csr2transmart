@@ -8,10 +8,10 @@ from logging.config import fileConfig
 import pandas as pd
 from click._unicodefun import click
 
-from csr2transmart.helper_variables import calculate_helper_variables
-from .csr_build_dataframe import add_biosource_identifiers, merge_entity_data_frames, \
+from sources2csr.helper_variables import calculate_helper_variables
+from sources2csr.csr_build_dataframe import add_biosource_identifiers, merge_entity_data_frames, \
     build_study_registry
-from .csr_read_data import get_encoding, input_file_to_df, \
+from sources2csr.csr_read_data import get_encoding, input_file_to_df, \
     bool_is_file, validate_source_file, check_for_codebook, set_date_fields, apply_header_map, \
     determine_file_type, check_file_list
 

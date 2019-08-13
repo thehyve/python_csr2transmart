@@ -14,7 +14,7 @@ class Individual(BaseModel):
     birth_date: Optional[datetime]
     death_date: Optional[datetime]
     ic_type: Optional[bool]
-    ic_version: Optional[Any]  # TODO type to be defined
+    ic_version: Optional[float]
     ic_withdrawn_date: Optional[datetime]
     ic_material: Optional[bool]
     ic_data: Optional[bool]

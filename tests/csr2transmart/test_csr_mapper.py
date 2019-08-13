@@ -1,12 +1,14 @@
 import json
 import os
 from os import path
+from typing import Dict
 
 import pandas as pd
 from transmart_loader.transmart import DataCollection, ValueType, DimensionType
 
+from csr2transmart.blueprint import Blueprint, BlueprintElement
 from csr2transmart.csr_mapper import CsrMapper
-from csr2transmart.csr_transformations import csr_transformation
+from sources2csr.csr_transformations import csr_transformation
 
 
 class TestCsrMapper:
@@ -33,12 +35,13 @@ class TestCsrMapper:
         modifier_file = os.path.join(config_dir, 'modifiers.txt')
         blueprint_file = os.path.join(config_dir, 'blueprint.json')
         with open(blueprint_file, 'r') as bpf:
-            bp = json.load(bpf)
+            bp: Dict = json.load(bpf)
+        blueprint: Blueprint = {k: BlueprintElement(**v) for k, v in bp.items()}
         modifiers = pd.read_csv(modifier_file, sep='\t')
         csr_df = pd.read_csv(csr_data_file_path, sep='\t')
 
         mapper = CsrMapper(study_id, top_tree_node)
-        self.collection: DataCollection = mapper.map(csr_df, modifiers, bp)
+        self.collection: DataCollection = mapper.map(csr_df, modifiers, blueprint)
 
     def test_studies_mapping(self):
         studies = self.collection.studies

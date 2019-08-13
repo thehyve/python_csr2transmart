@@ -2,15 +2,16 @@ import json
 import logging
 import os
 import sys
+from typing import Dict
 
 import click
 import pandas as pd
 from transmart_loader.copy_writer import TransmartCopyWriter
 from transmart_loader.transmart import DataCollection
 
-from csr2transmart.blueprint import Blueprint
+from csr2transmart.blueprint import Blueprint, BlueprintElement
 from csr2transmart.csr_mapper import CsrMapper
-from .validations import get_blueprint_validator_initialised_with_modifiers
+from sources2csr.validations import get_blueprint_validator_initialised_with_modifiers
 
 logger = logging.getLogger(__name__)
 
@@ -41,9 +42,9 @@ def transform(csr_data_file_path: str,
     try:
         logger.info('Reading configuration data...')
         with open(blueprint_file, 'r') as bpf:
-            bp = json.load(bpf)
+            bp: Dict = json.load(bpf)
         check_if_blueprint_valid(modifier_file, bp)
-        blueprint: Blueprint = bp
+        blueprint: Blueprint = {k: BlueprintElement(**v) for k, v in bp.items()}
         modifiers = pd.read_csv(modifier_file, sep='\t')
 
         logger.info('Reading Central Subject Registry data...')

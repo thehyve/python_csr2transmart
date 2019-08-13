@@ -171,13 +171,13 @@ class BlueprintMapper:
         self.ontology: List[TreeNode] = [TreeNode(top_tree_node)]
 
     def map_codes(self, concept_key: str, blueprint_element: BlueprintElement):
-        path_elements = blueprint_element.get('path').split('+')
+        path_elements = blueprint_element.path.split('+')
         path = '\\'.join(path_elements)
 
         concept_path = '\\' + self.top_tree_node + '\\'.join([path])
         concept_type = ValueType.Categorical if \
-            blueprint_element.get('force_categorical') == ForceCategoricalBoolean.ForceTrue else ValueType.Numeric
-        name = blueprint_element.get('label')
+            blueprint_element.force_categorical == ForceCategoricalBoolean.ForceTrue else ValueType.Numeric
+        name = blueprint_element.label
         concept = Concept(''.join((random.choice(string.ascii_lowercase) for i in range(10))),
                           name, concept_path, concept_type)
 
@@ -195,10 +195,10 @@ class BlueprintMapper:
 
     def map(self, blueprint: Blueprint, csr_df: DataFrame):
         non_concept_blueprint_labels = ['SUBJ_ID', 'OMIT', 'MODIFIER']
-        concept_columns = [key for (key, value) in blueprint.items() if value.get('label')
+        concept_columns = [key for (key, value) in blueprint.items() if value.label
                            not in non_concept_blueprint_labels]
         for col in csr_df.columns:
             if col in concept_columns:
                 blueprint_element = blueprint.get(col)
                 self.map_codes(col, blueprint_element)
-                self.concept_key_to_modifier_key[col] = blueprint_element.get('metadata_tags')['subject_dimension']
+                self.concept_key_to_modifier_key[col] = blueprint_element.metadata_tags['subject_dimension']

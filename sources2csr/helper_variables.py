@@ -4,7 +4,7 @@ import sys
 
 import pandas as pd
 
-from csr2transmart.parse_ngs_files import process_ngs_dir
+from sources2csr.parse_ngs_files import process_ngs_dir
 
 logger = logging.getLogger(__name__)
 
