@@ -12,7 +12,7 @@ from sources2csr import sources2csr
 def test_transformation(tmp_path):
     target_path = tmp_path.as_posix()
     runner = CliRunner()
-    result = runner.invoke(sources2csr.sources2csr, [
+    result = runner.invoke(sources2csr.run, [
         './test_data/input_data/CLINICAL',
         target_path,
         './test_data/input_data/config'

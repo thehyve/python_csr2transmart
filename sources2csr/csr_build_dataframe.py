@@ -120,7 +120,7 @@ def build_study_registry(study, ind_study, csr_data_model):
 
     df = enrich_study_entity(study_, ind_study_)
 
-    return df
+    return df, study_, ind_study_
 
 
 def merge_study_files(df_dict, id_columns, ref_columns, entity):
