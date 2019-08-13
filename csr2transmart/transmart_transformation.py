@@ -55,9 +55,8 @@ def transform(csr_data_file_path: str,
         mapper = CsrMapper(study_id, top_tree_node)
         collection: DataCollection = mapper.map(csr_df, modifiers, blueprint)
 
-        copy_output_dir = output_dir + '/data'
-        logger.info('Writing files to {}'.format(copy_output_dir))
-        copy_writer = TransmartCopyWriter(str(copy_output_dir))
+        logger.info('Writing files to {}'.format(output_dir))
+        copy_writer = TransmartCopyWriter(str(output_dir))
         copy_writer.write_collection(collection)
 
         logger.info('Done.')

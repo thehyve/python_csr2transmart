@@ -24,18 +24,19 @@ def test_transformation(tmp_path):
     assert path.exists(target_path + '/csr_transformation_data.tsv')
 
     runner = CliRunner()
+    output_path = target_path + '/data'
     result = runner.invoke(csr2transmart.csr2transmart, [
         target_path,
-        target_path,
+        output_path,
         './test_data/input_data/config'
     ])
     assert result.exit_code == 0
 
-    assert path.exists(target_path + '/data/i2b2metadata/i2b2_secure.tsv')
-    assert path.exists(target_path + '/data/i2b2demodata/concept_dimension.tsv')
-    assert path.exists(target_path + '/data/i2b2demodata/patient_mapping.tsv')
-    assert path.exists(target_path + '/data/i2b2demodata/patient_dimension.tsv')
-    assert path.exists(target_path + '/data/i2b2demodata/encounter_mapping.tsv')
-    assert path.exists(target_path + '/data/i2b2demodata/visit_dimension.tsv')
-    assert path.exists(target_path + '/data/i2b2demodata/study.tsv')
-    assert path.exists(target_path + '/data/i2b2metadata/dimension_description.tsv')
+    assert path.exists(output_path + '/i2b2metadata/i2b2_secure.tsv')
+    assert path.exists(output_path + '/i2b2demodata/concept_dimension.tsv')
+    assert path.exists(output_path + '/i2b2demodata/patient_mapping.tsv')
+    assert path.exists(output_path + '/i2b2demodata/patient_dimension.tsv')
+    assert path.exists(output_path + '/i2b2demodata/encounter_mapping.tsv')
+    assert path.exists(output_path + '/i2b2demodata/visit_dimension.tsv')
+    assert path.exists(output_path + '/i2b2demodata/study.tsv')
+    assert path.exists(output_path + '/i2b2metadata/dimension_description.tsv')
