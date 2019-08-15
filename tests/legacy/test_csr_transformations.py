@@ -6,7 +6,7 @@ from sources2csr.csr_read_data import validate_source_file
 from sources2csr.data_exception import DataException
 from sources2csr.priority_checker import PriorityChecker
 
-from sources2csr.sources2csr import sources2csr
+from sources2csr.sources2csr import sources2csr, legacy_sources2csr
 from sources2csr.utils import read_dict_from_file
 
 test_data_dir = 'test_data/input_data'
@@ -24,7 +24,7 @@ def test_csr_transformation(tmp_path):
     output_study_filename = 'study_registry.tsv'
 
     # when
-    sources2csr(
+    legacy_sources2csr(
         input_dir=default_data,
         output_dir=output_dir,
         config_dir=config)
@@ -43,7 +43,7 @@ def test_calculate_age_at_diagnosis(tmp_path):
     output_dir = tmp_path.as_posix()
 
     # when
-    sources2csr(
+    legacy_sources2csr(
         input_dir=missing_diag_data,
         output_dir=output_dir,
         config_dir=config)

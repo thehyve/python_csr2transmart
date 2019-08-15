@@ -19,5 +19,9 @@ def test_transformation(tmp_path):
     ])
     assert result.exit_code == 0
 
-    assert path.exists(target_path + '/study_registry.tsv')
-    assert path.exists(target_path + '/csr_transformation_data.tsv')
+    assert path.exists(target_path + '/individual.tsv')
+    assert path.exists(target_path + '/diagnosis.tsv')
+    assert path.exists(target_path + '/biosource.tsv')
+    assert path.exists(target_path + '/biomaterial.tsv')
+    assert path.exists(target_path + '/study.tsv')
+    assert path.exists(target_path + '/individual_study.tsv')

@@ -4,7 +4,6 @@ import os
 import sys
 from typing import Dict
 
-import click
 import pandas as pd
 from transmart_loader.copy_writer import TransmartCopyWriter
 from transmart_loader.transmart import DataCollection
@@ -68,25 +67,3 @@ def transform(input_dir: str,
     except Exception as e:
         print(e)
         sys.exit(1)
-
-
-@click.command()
-@click.option('--input_dir', type=click.Path(exists=True))
-@click.option('--output_dir', type=click.Path(exists=True))
-@click.option('--config_dir', type=click.Path(exists=True))
-@click.option('--study_id')
-@click.option('--top_node')
-def transmart_transformation(input_dir,
-                             output_dir,
-                             config_dir,
-                             study_id,
-                             top_node):
-    transform(input_dir, output_dir, config_dir, study_id, top_node)
-
-
-def main():
-    transmart_transformation()
-
-
-if __name__ == '__main__':
-    main()
