@@ -30,8 +30,6 @@ def type_to_dimension_type(dimension_type: str) -> DimensionType:
 
 
 def row_value_to_value(concept_col, value_type: ValueType) -> Optional[Value]:
-    # if concept_col is None:
-    #     return None
     if value_type is ValueType.Categorical:
         return CategoricalValue(concept_col)
     elif value_type is ValueType.Numeric:
