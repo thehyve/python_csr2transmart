@@ -1,5 +1,4 @@
 import datetime
-import logging
 import random
 import string
 from typing import List, Dict, Optional, Sequence, Any
@@ -12,7 +11,8 @@ from csr.csr import CentralSubjectRegistry, StudyRegistry, Individual, Diagnosis
 from csr2transmart.blueprint import Blueprint, ForceCategoricalBoolean, BlueprintElement
 
 
-logger = logging.getLogger(__name__)
+class CsrMappingException(Exception):
+    pass
 
 
 def type_to_value_type(value: str) -> ValueType:
@@ -89,39 +89,35 @@ class ObservationMapper:
             entity_id = getattr(entity, id_attribute)
             patient = self.individual_id_to_patient.get(entity.individual_id)
             if patient is None:
-                logger.warning('No patient with identifier: {}. Skipping creating observation for {} with id: {}.'
+                raise CsrMappingException('No patient with identifier: {}. Skipping creating observation for {} with id: {}.'
                                .format(entity.individual_id, type(entity).__name__, entity_id))
-                continue
             self.add_observations_for_entity(entity, entity_id, patient)
 
     def map_biomaterial_observations(self, biomaterials: Sequence[Biomaterial], biosources: Sequence[Biosource]):
         for biomaterial in biomaterials:
             linked_biosource = next((bs for bs in biosources if bs.biosource_id == biomaterial.src_biosource_id), None)
             if linked_biosource is None:
-                logger.warning('No biosource linked to biosource with id: {}. '
-                               'Skipping creating observation.'.format(biomaterial.biomaterial_id))
-                continue
+                raise CsrMappingException('No biosource linked to biosource with id: {}. '
+                                          'Skipping creating observation.'.format(biomaterial.biomaterial_id))
             patient = self.individual_id_to_patient.get(linked_biosource.individual_id)
             if patient is None:
-                logger.warning('No patient with identifier: {}. '
-                               'Skipping creating observation for biomaterial with id: {}.'
-                               .format(linked_biosource.individual_id, biomaterial.biomaterial_id))
-                continue
+                raise CsrMappingException('No patient with identifier: {}. '
+                                          'Skipping creating observation for biomaterial with id: {}.'
+                                          .format(linked_biosource.individual_id, biomaterial.biomaterial_id))
             self.add_observations_for_entity(biomaterial, biomaterial.biomaterial_id, patient)
 
     def map_study_registry_observations(self, study_registry: StudyRegistry):
         for ind_study in study_registry.individual_studies:
             study = next((s for s in study_registry.studies if s.study_id == ind_study.study_id), None)
             if study is None:
-                logger.warning('No study with identifier: {}. '
-                               'Skipping creating observation for individual study with id: {}.'
-                               .format(ind_study.study_id, ind_study.individual_id))
-                continue
+                raise CsrMappingException('No study with identifier: {}. '
+                                          'Skipping creating observation for individual study with id: {}.'
+                                          .format(ind_study.study_id, ind_study.individual_id))
             patient = self.individual_id_to_patient.get(ind_study.individual_id)
             if patient is None:
-                logger.warning('No patient with identifier: {}. Skipping creating observation for study with id: {}.'
-                               .format(ind_study.individual_id, ind_study.individual_id))
-                continue
+                raise CsrMappingException('No patient with identifier: {}. '
+                                          'Skipping creating observation for study with id: {}.'
+                                          .format(ind_study.individual_id, ind_study.individual_id))
             self.add_observations_for_entity(study, study.study_id, patient)
 
     def map_observations(self, subject_registry: CentralSubjectRegistry, study_registry: StudyRegistry):
