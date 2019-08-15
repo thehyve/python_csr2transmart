@@ -1,6 +1,5 @@
 import json
 import os
-from os import path
 from typing import Dict
 
 import pandas as pd
@@ -10,7 +9,6 @@ from csr.csr import CentralSubjectRegistry, StudyRegistry
 from csr.utils import read_subject_registry_from_tsv, read_study_registry_from_tsv
 from csr2transmart.blueprint import Blueprint, BlueprintElement
 from csr2transmart.csr_mapper import CsrMapper
-from sources2csr.csr_transformations import csr_transformation
 
 
 class TestCsrMapper:
@@ -18,20 +16,7 @@ class TestCsrMapper:
     collection = None
 
     def setup(self):
-        test_dir = './test_data'
         input_dir = './test_data/input_data/CLINICAL'
-        csr_transformation(
-            './test_data/input_data/CLINICAL',
-            test_dir,
-            './test_data/input_data/config',
-            'data_model.json',
-            'column_priority.json',
-            'file_headers.json',
-            'columns_to_csr.json',
-            'csr_transformation_data.tsv',
-            'study_registry.tsv',
-        )
-        csr_data_file_path = path.join(test_dir, 'csr_transformation_data.tsv')
         config_dir = './test_data/input_data/config'
         study_id = 'CSR'
         top_tree_node = '\\Central Subject Registry\\'

@@ -89,20 +89,22 @@ class ObservationMapper:
             entity_id = getattr(entity, id_attribute)
             patient = self.individual_id_to_patient.get(entity.individual_id)
             if patient is None:
-                raise CsrMappingException('No patient with identifier: {}. Skipping creating observation for {} with id: {}.'
-                               .format(entity.individual_id, type(entity).__name__, entity_id))
+                raise CsrMappingException('No patient with identifier: {}. '
+                                          'Skipping creating observation for {} with id: {}. Entity {}, Ind {}'
+                                          .format(entity.individual_id, type(entity).__name__, entity_id,
+                                                  entity, self.individual_id_to_patient.keys()))
             self.add_observations_for_entity(entity, entity_id, patient)
 
     def map_biomaterial_observations(self, biomaterials: Sequence[Biomaterial], biosources: Sequence[Biosource]):
         for biomaterial in biomaterials:
             linked_biosource = next((bs for bs in biosources if bs.biosource_id == biomaterial.src_biosource_id), None)
             if linked_biosource is None:
-                raise CsrMappingException('No biosource linked to biosource with id: {}. '
+                raise CsrMappingException('No biosource linked to biomaterial with id: {}. '
                                           'Skipping creating observation.'.format(biomaterial.biomaterial_id))
             patient = self.individual_id_to_patient.get(linked_biosource.individual_id)
             if patient is None:
                 raise CsrMappingException('No patient with identifier: {}. '
-                                          'Skipping creating observation for biomaterial with id: {}.'
+                                          'Skipping creating observation for Biomaterial with id: {}.'
                                           .format(linked_biosource.individual_id, biomaterial.biomaterial_id))
             self.add_observations_for_entity(biomaterial, biomaterial.biomaterial_id, patient)
 
@@ -152,7 +154,7 @@ class CsrMapper:
     def map_default_trial_visit(self, study: Study) -> TrialVisit:
         return TrialVisit(study, self.default_trial_visit_label)
 
-    def map_patients(self, individuals: List[Individual]):
+    def map_patients(self, individuals: Sequence[Individual]):
         for individual in individuals:
             mapping = IdentifierMapping('SUB_ID', individual.individual_id)
             patient = Patient(individual.individual_id, individual.gender, [mapping])
@@ -163,8 +165,7 @@ class CsrMapper:
             study_registry: StudyRegistry,
             modifiers: DataFrame,
             blueprint: Blueprint) -> DataCollection:
-
-        self.map_patients(list(subject_registry.individuals))
+        self.map_patients(subject_registry.individuals)
         study = self.map_study()
         default_trial_visit = self.map_default_trial_visit(study)
 

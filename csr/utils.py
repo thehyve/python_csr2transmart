@@ -44,6 +44,5 @@ def read_study_registry_from_tsv(input_file_dir) -> StudyRegistry:
 
 def tsv_to_list_of_dicts(file_name: str) -> List[Dict[str, Any]]:
     values_df = pd.read_csv(file_name, sep='\t')
-    values_dict = values_df.to_dict()
-    return [dict(zip(values_dict, i)) for i in zip(*values_dict.values())]
+    return values_df.to_dict('records')
 

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import Sequence, Optional
 
 from pydantic import BaseModel
@@ -11,11 +11,11 @@ class Individual(BaseModel):
     individual_id: str
     taxonomy: Optional[str]
     gender: Optional[str]
-    birth_date: Optional[datetime]
-    death_date: Optional[datetime]
+    birth_date: Optional[date]
+    death_date: Optional[date]
     ic_type: Optional[bool]
     ic_version: Optional[float]
-    ic_withdrawn_date: Optional[datetime]
+    ic_withdrawn_date: Optional[date]
     ic_material: Optional[bool]
     ic_data: Optional[bool]
     ic_linking_ext: Optional[bool]
@@ -33,7 +33,7 @@ class Diagnosis(BaseModel):
     topography: Optional[str]
     treatment_protocol: Optional[str]
     tumor_stage: Optional[str]
-    diagnosis_date: Optional[datetime]
+    diagnosis_date: Optional[date]
     center_treatment: Optional[str]
 
 
@@ -47,7 +47,7 @@ class Biosource(BaseModel):
     diagnosis_id: str
     src_biosource_id: Optional[str]
     tissue: Optional[str]
-    biosource_date: Optional[datetime]
+    biosource_date: Optional[date]
     disease_status: Optional[str]
     tumor_percentage: Optional[int]
 
@@ -59,7 +59,7 @@ class Biomaterial(BaseModel):
     biomaterial_id: str
     src_biosource_id: str
     src_biomaterial_id: Optional[str]
-    biomaterial_date: Optional[datetime]
+    biomaterial_date: Optional[date]
     type: Optional[str]
 
 
