@@ -1,14 +1,14 @@
 import json
 import os
-from os import path
 from typing import Dict
 
 import pandas as pd
 from transmart_loader.transmart import DataCollection, ValueType, DimensionType
 
+from csr.csr import CentralSubjectRegistry, StudyRegistry
+from csr.utils import read_subject_registry_from_tsv, read_study_registry_from_tsv
 from csr2transmart.blueprint import Blueprint, BlueprintElement
 from csr2transmart.csr_mapper import CsrMapper
-from sources2csr.csr_transformations import csr_transformation
 
 
 class TestCsrMapper:
@@ -16,19 +16,7 @@ class TestCsrMapper:
     collection = None
 
     def setup(self):
-        test_dir = './test_data'
-        csr_transformation(
-            './test_data/input_data/CLINICAL',
-            test_dir,
-            './test_data/input_data/config',
-            'data_model.json',
-            'column_priority.json',
-            'file_headers.json',
-            'columns_to_csr.json',
-            'csr_transformation_data.tsv',
-            'study_registry.tsv',
-        )
-        csr_data_file_path = path.join(test_dir, 'csr_transformation_data.tsv')
+        input_dir = './test_data/input_data/CLINICAL'
         config_dir = './test_data/input_data/config'
         study_id = 'CSR'
         top_tree_node = '\\Central Subject Registry\\'
@@ -38,10 +26,12 @@ class TestCsrMapper:
             bp: Dict = json.load(bpf)
         blueprint: Blueprint = {k: BlueprintElement(**v) for k, v in bp.items()}
         modifiers = pd.read_csv(modifier_file, sep='\t')
-        csr_df = pd.read_csv(csr_data_file_path, sep='\t')
+
+        subject_registry: CentralSubjectRegistry = read_subject_registry_from_tsv(input_dir)
+        study_registry: StudyRegistry = read_study_registry_from_tsv(input_dir)
 
         mapper = CsrMapper(study_id, top_tree_node)
-        self.collection: DataCollection = mapper.map(csr_df, modifiers, blueprint)
+        self.collection: DataCollection = mapper.map(subject_registry, study_registry, modifiers, blueprint)
 
     def test_studies_mapping(self):
         studies = self.collection.studies

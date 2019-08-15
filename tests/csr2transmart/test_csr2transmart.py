@@ -13,20 +13,9 @@ from sources2csr import sources2csr
 def test_transformation(tmp_path):
     target_path = tmp_path.as_posix()
     runner = CliRunner()
-    result = runner.invoke(sources2csr.sources2csr, [
-        './test_data/input_data/CLINICAL',
-        target_path,
-        './test_data/input_data/config'
-    ])
-    assert result.exit_code == 0
-
-    assert path.exists(target_path + '/study_registry.tsv')
-    assert path.exists(target_path + '/csr_transformation_data.tsv')
-
-    runner = CliRunner()
     output_path = target_path + '/data'
     result = runner.invoke(csr2transmart.csr2transmart, [
-        target_path,
+        './test_data/input_data/CLINICAL',
         output_path,
         './test_data/input_data/config'
     ])
