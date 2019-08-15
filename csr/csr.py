@@ -44,7 +44,7 @@ class Biosource(BaseModel):
     biosource_id: str
     biosource_dedicated: Optional[bool]
     individual_id: str
-    diagnosis_id: str
+    diagnosis_id: Optional[str]
     src_biosource_id: Optional[str]
     tissue: Optional[str]
     biosource_date: Optional[date]
