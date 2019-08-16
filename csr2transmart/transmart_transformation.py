@@ -9,7 +9,8 @@ from transmart_loader.copy_writer import TransmartCopyWriter
 from transmart_loader.transmart import DataCollection
 
 from csr.csr import CentralSubjectRegistry, StudyRegistry
-from csr.utils import read_subject_registry_from_tsv, read_study_registry_from_tsv
+from csr.study_registry_reader import SubjectRegistryReader
+from csr.subject_registry_reader import StudyRegistryReader
 from csr2transmart.blueprint import Blueprint, BlueprintElement
 from csr2transmart.csr_mapper import CsrMapper
 from csr2transmart.validations import get_blueprint_validator_initialised_with_modifiers
@@ -48,8 +49,10 @@ def transform(input_dir: str,
         modifiers = pd.read_csv(modifier_file, sep='\t')  # TODO remove modifiers config
 
         logger.info('Reading CSR data...')
-        subject_registry: CentralSubjectRegistry = read_subject_registry_from_tsv(input_dir)
-        study_registry: StudyRegistry = read_study_registry_from_tsv(input_dir)
+        subject_registry_reader = SubjectRegistryReader(input_dir)
+        subject_registry: CentralSubjectRegistry = subject_registry_reader.read_subject_registry()
+        study_registry_reader = StudyRegistryReader(input_dir)
+        study_registry: StudyRegistry = study_registry_reader.read_subject_registry()
 
         logger.info('Mapping CSR to Data Collection...')
         mapper = CsrMapper(study_id, top_tree_node)
