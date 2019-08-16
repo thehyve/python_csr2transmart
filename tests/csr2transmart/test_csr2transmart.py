@@ -7,7 +7,6 @@ from click.testing import CliRunner
 from os import path
 
 from csr2transmart import csr2transmart
-from sources2csr import sources2csr
 
 
 def test_transformation(tmp_path):

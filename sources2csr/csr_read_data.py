@@ -57,19 +57,7 @@ def input_file_to_df(filename, encoding, seperator=None, codebook=None):
     return df, apply_map
 
 
-def bool_is_file(filename, path):
-    """If filename is not a file, has codebook in its name or starts with a . returns False, else True
-    """
-    path_ = os.path.join(path, filename)
-    if 'codebook' in filename.lower():
-        return False
-    if filename.startswith('.'):
-        return False
-
-    return os.path.isfile(path_)
-
-
-def validate_source_file(file_prop_dict, path, file_headers_name):
+def validate_source_file(file_prop_dict, path):
     """
     Checks file encoding, headers. Checks if all expected files are present and logs if files that are not defined in
     the config files are encountered
@@ -79,7 +67,6 @@ def validate_source_file(file_prop_dict, path, file_headers_name):
 
     :param file_prop_dict: dict with expected headers as a list, date_format and date_columns as list to update.
     :param path: Path to the file
-    :param file_headers_name: dict with list of expected file headers per dataframe
     :return: returns True if errors are found, else False
     """
     filename = os.path.basename(path)
@@ -117,7 +104,7 @@ def validate_source_file(file_prop_dict, path, file_headers_name):
             logger.warning('{0} is missing mandatory header fields: {1}'.format(filename, missing))
         return False
     else:
-        logger.error('Found file {}, but not defined in {}'.format(filename, file_headers_name))
+        logger.error('Found file {}, but not defined in file_headers.tsv'.format(filename))
         return True
 
 

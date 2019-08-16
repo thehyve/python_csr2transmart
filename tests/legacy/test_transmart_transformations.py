@@ -1,25 +1,18 @@
 import pytest
 
-from sources2csr.csr_transformations import csr_transformation
+from sources2csr.sources2csr import sources2csr
 from csr2transmart.transmart_transformation import transform
-from os import path, listdir
+from os import listdir
 
 
 @pytest.mark.skip('Invalid data')
 def test_that_transformation_finishes_successfully(tmp_path):
     test_dir = tmp_path.as_posix()
     out_dir = test_dir + '/data'
-    csr_transformation(
+    sources2csr(
         './test_data/input_data/CLINICAL',
         test_dir,
-        './test_data/input_data/config',
-        'data_model.json',
-        'column_priority.json',
-        'file_headers.json',
-        'columns_to_csr.json',
-        'csr_transformation_data.tsv',
-        'study_registry.tsv',
-    )
+        './test_data/input_data/config')
     transform(
         './test_data/input_data/CLINICAL',
         out_dir,
@@ -30,7 +23,13 @@ def test_that_transformation_finishes_successfully(tmp_path):
     assert set(listdir(test_dir)) == {
         'study_registry.tsv',
         'data',
-        'csr_transformation_data.tsv'
+        'csr_transformation_data.tsv',
+        'study.tsv',
+        'individual.tsv',
+        'individual_study.tsv',
+        'diagnosis.tsv',
+        'biosource.tsv',
+        'biomaterial.tsv'
     }
     assert set(listdir(out_dir)) == {
         'i2b2demodata',
