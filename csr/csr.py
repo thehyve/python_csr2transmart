@@ -1,14 +1,14 @@
 from datetime import date
-from typing import Sequence, Optional
+from typing import Sequence, Optional, Union, Dict
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Schema
 
 
 class Individual(BaseModel):
     """
     Individual entity
     """
-    individual_id: str
+    individual_id: str = Schema(None, identity=True)
     taxonomy: Optional[str]
     gender: Optional[str]
     birth_date: Optional[date]
@@ -28,8 +28,8 @@ class Diagnosis(BaseModel):
     """
     Diagnosis entity
     """
-    diagnosis_id: str
-    individual_id: str
+    diagnosis_id: str = Schema(None, identity=True)
+    individual_id: str = Schema(None, references='Individual')
     tumor_type: Optional[str]
     topography: Optional[str]
     treatment_protocol: Optional[str]
@@ -42,11 +42,11 @@ class Biosource(BaseModel):
     """
     Biosource entity
     """
-    biosource_id: str
+    biosource_id: str = Schema(None, identity=True)
     biosource_dedicated: Optional[str]
-    individual_id: str
-    diagnosis_id: Optional[str]
-    src_biosource_id: Optional[str]
+    individual_id: str = Schema(None, references='Individual')
+    diagnosis_id: Optional[str] = Schema(None, references='Diagnosis')
+    src_biosource_id: Optional[str] = Schema(None, references='Biosource')
     tissue: Optional[str]
     biosource_date: Optional[date]
     disease_status: Optional[str]
@@ -57,9 +57,9 @@ class Biomaterial(BaseModel):
     """
     Biomaterial entity
     """
-    biomaterial_id: str
-    src_biosource_id: str
-    src_biomaterial_id: Optional[str]
+    biomaterial_id: str = Schema(None, identity=True)
+    src_biosource_id: str = Schema(None, references='Biosource')
+    src_biomaterial_id: Optional[str] = Schema(None, references='Biomaterial')
     biomaterial_date: Optional[date]
     type: Optional[str]
 
@@ -68,7 +68,7 @@ class Study(BaseModel):
     """
     Study
     """
-    study_id: str
+    study_id: str = Schema(None, identity=True)
     acronym: Optional[str]
     title: Optional[str]
     datadictionary: Optional[str]
@@ -78,9 +78,12 @@ class IndividualStudy(BaseModel):
     """
     Study to individual mapping
     """
-    individual_study_id: int
-    individual_id: str
-    study_id: str
+    individual_study_id: int = Schema(None, identity=True)
+    individual_id: str = Schema(None, references='Individual')
+    study_id: str = Schema(None, references='Study')
+
+
+SubjectEntity = Union[Individual, Diagnosis, Biosource, Biomaterial]
 
 
 class CentralSubjectRegistry(BaseModel):
@@ -92,6 +95,18 @@ class CentralSubjectRegistry(BaseModel):
     biosources: Optional[Sequence[Biosource]]
     biomaterials: Optional[Sequence[Biomaterial]]
 
+    @staticmethod
+    def create(entity_data: Dict[str, Sequence[SubjectEntity]]):
+        return CentralSubjectRegistry(
+            individuals=entity_data['Individual'],
+            diagnoses=entity_data['Diagnosis'],
+            biosources=entity_data['Biosource'],
+            biomaterials=entity_data['Biomaterial']
+        )
+
+
+StudyEntity = Union[Study, IndividualStudy]
+
 
 class StudyRegistry(BaseModel):
     """
@@ -99,3 +114,10 @@ class StudyRegistry(BaseModel):
     """
     studies: Optional[Sequence[Study]]
     individual_studies: Optional[Sequence[IndividualStudy]]
+
+    @staticmethod
+    def create(entity_data: Dict[str, Sequence[StudyEntity]]):
+        return StudyRegistry(
+            studies=entity_data['Study'],
+            individual_studies=entity_data['IndividualStudy']
+        )

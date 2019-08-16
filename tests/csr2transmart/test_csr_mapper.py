@@ -1,4 +1,5 @@
 import datetime
+from collections import Counter
 from typing import List
 
 from transmart_loader.transmart import ValueType, DimensionType, Observation, Modifier
@@ -89,48 +90,49 @@ def test_observations_mapping(mapped_data_collection):
     biomaterial_observations = get_observations_for_modifier(observations, biomaterial_modifier)
 
     assert len(patient_observations) == 17 + 8  # individual + individual studies
-    assert list(map(lambda po: po.value.value, patient_observations)) == [
+    print(list(map(lambda po: po.value.value, patient_observations)))
+    assert Counter(map(lambda po: po.value.value, patient_observations)) == Counter([
         'Human', 'f', datetime.date(1993, 2, 1), 'yes', datetime.date(2017, 3, 1), 'yes', 'yes', 'yes',  # P1
         'Human', 'm', datetime.date(1994, 4, 3), 'yes', datetime.date(2017, 5, 11), datetime.date(2017, 10, 14),
         'yes', 'not applicable', 'yes',  # P2
         'STUDY1', 'STD1', 'Study 1', 'http://www.example.com',  # individual study 1
-        'STUDY2', 'STD2', 'Study 2', 'http://www.example.com']  # individual study 2
+        'STUDY2', 'STD2', 'Study 2', 'http://www.example.com'])  # individual study 2
 
     assert len(diagnosis_observations) == 18
-    assert list(map(lambda do: do.value.value, diagnosis_observations)) == [
+    assert Counter(map(lambda do: do.value.value, diagnosis_observations)) == Counter([
         'neuroblastoma', 'liver', 'chemo', 'IV', datetime.date(2016, 5, 1), 'Center 1',  # D1
         'nephroblastoma', 'kidney', 'surgery', 'III', datetime.date(2016, 7, 2), 'Center 2',  # D2
-        'hepatoblastoma', 'bone marrow', 'Protocol 1', 'IV', datetime.date(2016, 11, 3), 'Center 3']  # D3
-    assert list(map(lambda do: do.metadata.values[diagnosis_modifier].value, diagnosis_observations)) == [
+        'hepatoblastoma', 'bone marrow', 'Protocol 1', 'IV', datetime.date(2016, 11, 3), 'Center 3'])  # D3
+    assert Counter(map(lambda do: do.metadata.values[diagnosis_modifier].value, diagnosis_observations)) == Counter([
         'D1', 'D1', 'D1', 'D1', 'D1', 'D1',
         'D2', 'D2', 'D2', 'D2', 'D2', 'D2',
-        'D3', 'D3', 'D3', 'D3', 'D3', 'D3']
+        'D3', 'D3', 'D3', 'D3', 'D3', 'D3'])
 
     assert len(biosource_observations) == 21 + 4  # TODO fix after blueprint format change (-4)
-    assert list(map(lambda bso: bso.value.value, biosource_observations)) == [
+    assert Counter(map(lambda bso: bso.value.value, biosource_observations)) == Counter([
         'Yes', 'BS1', 'medula', datetime.date(2017, 3, 12), 'ST1', 5,  # BS1
         'BS2', 'cortex', datetime.date(2017, 4, 1), 'ST2', 3,  # BS2
         'BS2', 'cortex', datetime.date(2017, 5, 14), 'ST1', 2,  # BS3
         'No', 'medula', datetime.date(2017, 6, 21), 'ST2', 1,   # BS4
-        'BS1', 'BS2', 'BS3', 'BS4']  # Additional 4 from biomaterials TODO fix after blueprint format change
-    assert list(map(lambda bso: bso.metadata.values[biosource_modifier].value, biosource_observations)) == [
+        'BS1', 'BS2', 'BS3', 'BS4'])  # Additional 4 from biomaterials TODO fix after blueprint format change
+    assert Counter(map(lambda bso: bso.metadata.values[biosource_modifier].value, biosource_observations)) == Counter([
         'BS1', 'BS1', 'BS1', 'BS1', 'BS1', 'BS1',
         'BS2', 'BS2', 'BS2', 'BS2', 'BS2',
         'BS3', 'BS3', 'BS3', 'BS3', 'BS3',
         'BS4', 'BS4', 'BS4', 'BS4', 'BS4',
-        'BM1', 'BM2', 'BM3', 'BM4']  # Additional 4 from biomaterials TODO fix after blueprint format change
+        'BM1', 'BM2', 'BM3', 'BM4'])  # Additional 4 from biomaterials TODO fix after blueprint format change
 
     assert len(biomaterial_observations) == 9
-    assert list(map(lambda bmo: bmo.value.value, biomaterial_observations)) == [
+    assert Counter(map(lambda bmo: bmo.value.value, biomaterial_observations)) == Counter([
         datetime.date(2017, 10, 12), 'RNA',  # BM1
         datetime.date(2017, 11, 22), 'DNA',  # BM2
         'BM2',  datetime.date(2017, 12, 12), 'RNA',  # BM3
-        datetime.date(2017, 10, 12), 'DNA']  # BM4
-    assert list(map(lambda bmo: bmo.metadata.values[biomaterial_modifier].value, biomaterial_observations)) == [
-        'BM1', 'BM1',
-        'BM2', 'BM2',
-        'BM3', 'BM3', 'BM3',
-        'BM4', 'BM4']
+        datetime.date(2017, 10, 12), 'DNA'])  # BM4
+    assert Counter(map(lambda bmo: bmo.metadata.values[biomaterial_modifier].value, biomaterial_observations)) ==\
+        Counter(['BM1', 'BM1',
+                 'BM2', 'BM2',
+                 'BM3', 'BM3', 'BM3',
+                 'BM4', 'BM4'])
 
     assert len(observations) == len(patient_observations) + len(diagnosis_observations) + len(
         biosource_observations) + len(biomaterial_observations)
