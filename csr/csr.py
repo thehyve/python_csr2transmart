@@ -13,14 +13,15 @@ class Individual(BaseModel):
     gender: Optional[str]
     birth_date: Optional[date]
     death_date: Optional[date]
-    ic_type: Optional[bool]
+    ic_type: Optional[str]
     ic_version: Optional[float]
+    ic_given_date: Optional[date]
     ic_withdrawn_date: Optional[date]
-    ic_material: Optional[bool]
-    ic_data: Optional[bool]
-    ic_linking_ext: Optional[bool]
-    report_her_susc: Optional[bool]
-    report_inc_findings: Optional[bool]
+    ic_material: Optional[str]
+    ic_data: Optional[str]
+    ic_linking_ext: Optional[str]
+    report_her_susc: Optional[str]
+    report_inc_findings: Optional[str]
 
 
 class Diagnosis(BaseModel):
@@ -42,7 +43,7 @@ class Biosource(BaseModel):
     Biosource entity
     """
     biosource_id: str
-    biosource_dedicated: Optional[bool]
+    biosource_dedicated: Optional[str]
     individual_id: str
     diagnosis_id: Optional[str]
     src_biosource_id: Optional[str]

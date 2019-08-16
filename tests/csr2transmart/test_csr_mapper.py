@@ -1,9 +1,10 @@
+import datetime
 import json
 import os
-from typing import Dict
+from typing import Dict, List
 
 import pandas as pd
-from transmart_loader.transmart import DataCollection, ValueType, DimensionType
+from transmart_loader.transmart import DataCollection, ValueType, DimensionType, Modifier, Observation
 
 from csr.csr import CentralSubjectRegistry, StudyRegistry
 from csr.utils import read_subject_registry_from_tsv, read_study_registry_from_tsv
@@ -11,12 +12,16 @@ from csr2transmart.blueprint import Blueprint, BlueprintElement
 from csr2transmart.csr_mapper import CsrMapper
 
 
-class TestCsrMapper:
+def get_observations_for_modifier(observations: List[Observation], modifier: Modifier) -> List[Observation]:
+    return list(filter(lambda o: o.metadata is not None and o.metadata.values.get(modifier) is not None,
+                       observations))
 
+
+class TestCsrMapper:
     collection = None
 
     def setup(self):
-        input_dir = './test_data/input_data/CLINICAL'
+        input_dir = './test_data/input_data/CSR2TRANSMART_TEST_DATA'
         config_dir = './test_data/input_data/config'
         study_id = 'CSR'
         top_tree_node = '\\Central Subject Registry\\'
@@ -49,16 +54,23 @@ class TestCsrMapper:
         assert trial_visits[0].rel_time is None
 
     def test_patients_mapping(self):
-        patients = self.collection.patients
-        assert len(patients) > 0
-
-    def test_observations_mapping(self):
-        observations = self.collection.observations
-        assert len(observations) > 0
+        patients = list(self.collection.patients)
+        assert len(patients) == 2
+        assert patients[0].identifier == 'P1'
+        assert patients[0].sex == 'f'
+        assert len(patients[0].mappings) == 1
+        assert patients[0].mappings[0].identifier == 'P1'
+        assert patients[0].mappings[0].source == 'SUB_ID'
+        assert patients[1].identifier == 'P2'
+        assert patients[1].sex == 'm'
+        assert len(patients[1].mappings) == 1
+        assert patients[1].mappings[0].identifier == 'P2'
+        assert patients[1].mappings[0].source == 'SUB_ID'
 
     def test_concepts_mapping(self):
         concepts = self.collection.concepts
         assert len(concepts) > 0
+        # assert len(concepts) == 27 TODO fix after blueprint format change
 
     def test_modifiers_mapping(self):
         modifiers = self.collection.modifiers
@@ -85,3 +97,62 @@ class TestCsrMapper:
     def test_ontology_mapping(self):
         ontology = self.collection.ontology
         assert len(ontology) == 1
+        # assert len(list(map(lambda t: t.name, ontology[0].children))) == 5 TODO fix after blueprint format change
+
+    def test_observations_mapping(self):
+        observations = self.collection.observations
+        modifiers = list(self.collection.modifiers)
+        diagnosis_modifier = modifiers[0]
+        biosource_modifier = modifiers[1]
+        biomaterial_modifier = modifiers[2]
+        patient_observations = list(filter(lambda o: o.metadata is None, observations))
+        diagnosis_observations = get_observations_for_modifier(observations, diagnosis_modifier)
+        biosource_observations = get_observations_for_modifier(observations, biosource_modifier)
+        biomaterial_observations = get_observations_for_modifier(observations, biomaterial_modifier)
+
+        assert len(patient_observations) == 17 + 8  # individual + individual studies
+        assert list(map(lambda po: po.value.value, patient_observations)) == [
+            'Human', 'f', datetime.date(1993, 2, 1), 'yes', datetime.date(2017, 3, 1), 'yes', 'yes', 'yes',  # P1
+            'Human', 'm', datetime.date(1994, 4, 3), 'yes', datetime.date(2017, 5, 11), datetime.date(2017, 10, 14),
+            'yes', 'not applicable', 'yes',  # P2
+            'STUDY1', 'STD1', 'Study 1', 'http://www.example.com',  # individual study 1
+            'STUDY2', 'STD2', 'Study 2', 'http://www.example.com']  # individual study 2
+
+        assert len(diagnosis_observations) == 18
+        assert list(map(lambda do: do.value.value, diagnosis_observations)) == [
+            'neuroblastoma', 'liver', 'chemo', 'IV', datetime.date(2016, 5, 1), 'Center 1',  # D1
+            'nephroblastoma', 'kidney', 'surgery', 'III', datetime.date(2016, 7, 2), 'Center 2',  # D2
+            'hepatoblastoma', 'bone marrow', 'Protocol 1', 'IV', datetime.date(2016, 11, 3), 'Center 3']  # D3
+        assert list(map(lambda do: do.metadata.values[diagnosis_modifier].value, diagnosis_observations)) == [
+            'D1', 'D1', 'D1', 'D1', 'D1', 'D1',
+            'D2', 'D2', 'D2', 'D2', 'D2', 'D2',
+            'D3', 'D3', 'D3', 'D3', 'D3', 'D3']
+
+        assert len(biosource_observations) == 21 + 4  # TODO fix after blueprint format change (-4)
+        assert list(map(lambda bso: bso.value.value, biosource_observations)) == [
+            'Yes', 'BS1', 'medula', datetime.date(2017, 3, 12), 'ST1', 5,  # BS1
+            'BS2', 'cortex', datetime.date(2017, 4, 1), 'ST2', 3,  # BS2
+            'BS2', 'cortex', datetime.date(2017, 5, 14), 'ST1', 2,  # BS3
+            'No', 'medula', datetime.date(2017, 6, 21), 'ST2', 1,   # BS4
+            'BS1', 'BS2', 'BS3', 'BS4']  # Additional 4 from biomaterials TODO fix after blueprint format change
+        assert list(map(lambda bso: bso.metadata.values[biosource_modifier].value, biosource_observations)) == [
+            'BS1', 'BS1', 'BS1', 'BS1', 'BS1', 'BS1',
+            'BS2', 'BS2', 'BS2', 'BS2', 'BS2',
+            'BS3', 'BS3', 'BS3', 'BS3', 'BS3',
+            'BS4', 'BS4', 'BS4', 'BS4', 'BS4',
+            'BM1', 'BM2', 'BM3', 'BM4']  # Additional 4 from biomaterials TODO fix after blueprint format change
+
+        assert len(biomaterial_observations) == 9
+        assert list(map(lambda bmo: bmo.value.value, biomaterial_observations)) == [
+            datetime.date(2017, 10, 12), 'RNA',  # BM1
+            datetime.date(2017, 11, 22), 'DNA',  # BM2
+            'BM2',  datetime.date(2017, 12, 12), 'RNA',  # BM3
+            datetime.date(2017, 10, 12), 'DNA']  # BM4
+        assert list(map(lambda bmo: bmo.metadata.values[biomaterial_modifier].value, biomaterial_observations)) == [
+            'BM1', 'BM1',
+            'BM2', 'BM2',
+            'BM3', 'BM3', 'BM3',
+            'BM4', 'BM4']
+
+        assert len(observations) == len(patient_observations) + len(diagnosis_observations) + len(
+            biosource_observations) + len(biomaterial_observations)

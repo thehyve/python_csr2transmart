@@ -15,7 +15,7 @@ def test_transformation(tmp_path):
     runner = CliRunner()
     output_path = target_path + '/data'
     result = runner.invoke(csr2transmart.csr2transmart, [
-        './test_data/input_data/CLINICAL',
+        './test_data/input_data/CSR2TRANSMART_TEST_DATA',
         output_path,
         './test_data/input_data/config'
     ])
