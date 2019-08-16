@@ -57,7 +57,10 @@ def tsv_to_list_of_dicts(file_name: str, schema: Dict) -> List[Dict[str, Any]]:
 
     for date_field in get_date_fields(schema):
         if date_field in values_df:
-            values_df[date_field] = pd.to_datetime(values_df[date_field])
+            try:
+                values_df[date_field] = pd.to_datetime(values_df[date_field], format='%d-%m-%Y')
+            except ValueError:
+                values_df[date_field] = pd.to_datetime(values_df[date_field])
     values_df.replace({pd.np.nan: None}, inplace=True)
 
     return values_df.to_dict('records')
