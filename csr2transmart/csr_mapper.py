@@ -29,15 +29,17 @@ def type_to_dimension_type(dimension_type: str) -> DimensionType:
         return DimensionType.Attribute
 
 
-def row_value_to_value(concept_col, value_type: ValueType) -> Optional[Value]:
+def row_value_to_value(row_value, value_type: ValueType) -> Optional[Value]:
+    if row_value is None:
+        return None
     if value_type is ValueType.Categorical:
-        return CategoricalValue(concept_col)
+        return CategoricalValue(row_value)
     elif value_type is ValueType.Numeric:
-        return NumericalValue(concept_col)
+        return NumericalValue(row_value)
     elif value_type is ValueType.DateValue:
-        return DateValue(concept_col)
+        return DateValue(row_value)
     else:
-        return TextValue(concept_col)
+        return TextValue(row_value)
 
 
 class ObservationMapper:
@@ -73,14 +75,15 @@ class ObservationMapper:
             concept = self.concept_key_to_concept.get(concept_key.upper())
             if concept is not None:
                 value = row_value_to_value(getattr(entity, concept_key), concept.value_type)
-                if isinstance(entity, Individual):
-                    metadata = None
-                else:
-                    modifier_key = self.concept_key_to_modifier_key.get(concept_key.upper())
-                    metadata = self.map_observation_metadata(modifier_key, entity_id)
-                observation = Observation(patient, concept, None, self.default_trial_visit, None, None, value,
-                                          metadata)
-                self.observations.append(observation)
+                if value is not None:
+                    if isinstance(entity, Individual):
+                        metadata = None
+                    else:
+                        modifier_key = self.concept_key_to_modifier_key.get(concept_key.upper())
+                        metadata = self.map_observation_metadata(modifier_key, entity_id)
+                    observation = Observation(patient, concept, None, self.default_trial_visit, None, None, value,
+                                              metadata)
+                    self.observations.append(observation)
 
     def map_individual_linked_entity_observations(self, entities: Sequence[Any], id_attribute: str):
         for entity in entities:
