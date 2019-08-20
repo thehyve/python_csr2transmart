@@ -11,7 +11,7 @@ from csr.csr import CentralSubjectRegistry, StudyRegistry, Individual
 from csr.study_registry_reader import SubjectRegistryReader
 from csr.subject_registry_reader import StudyRegistryReader
 from csr2transmart.blueprint import Blueprint, BlueprintElement
-from csr2transmart.csr_mapper import CsrMapper
+from csr2transmart.mappers.csr_mapper import CsrMapper
 
 
 @pytest.fixture

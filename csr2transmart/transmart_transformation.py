@@ -12,7 +12,7 @@ from csr.csr import CentralSubjectRegistry, StudyRegistry
 from csr.study_registry_reader import SubjectRegistryReader
 from csr.subject_registry_reader import StudyRegistryReader
 from csr2transmart.blueprint import Blueprint, BlueprintElement
-from csr2transmart.csr_mapper import CsrMapper
+from csr2transmart.mappers.csr_mapper import CsrMapper
 from csr2transmart.validations import get_blueprint_validator_initialised_with_modifiers
 
 logger = logging.getLogger(__name__)
