@@ -1,8 +1,8 @@
 import logging
+from datetime import datetime
 from typing import List, Dict, Any, Type
-
-import pandas as pd
 from pydantic import BaseModel
+from csr.tsv_reader import TsvReader
 
 logger = logging.getLogger(__name__)
 
@@ -21,18 +21,18 @@ class EntityReader:
                 date_fields.append(field['title'].lower())
         return date_fields
 
-    def read_entities(self, file_name: str, entity_type: Type[BaseModel]) -> List[Any]:
-        values_df = pd.read_csv(file_name, sep='\t', parse_dates=True)
-        values_df.columns = map(str.lower, values_df.columns)
+    def read_entities(self, file_path: str, entity_type: Type[BaseModel]) -> List[Any]:
+        try:
+            data = TsvReader(file_path).read_data()
+        except FileNotFoundError:
+            return []
 
-        for date_field in self.get_date_fields(entity_type.schema()):
-            if date_field in values_df:
-                try:
-                    values_df[date_field] = pd.to_datetime(values_df[date_field], format='%d-%m-%Y')
-                except ValueError:
-                    values_df[date_field] = pd.to_datetime(values_df[date_field])
-        values_df.replace({pd.np.nan: None}, inplace=True)
-        entity_dicts = values_df.to_dict('records')
-        return list(map(lambda i: entity_type(**i), entity_dicts))
+        date_fields = self.get_date_fields(entity_type.schema())
 
-
+        for row in data:
+            for field, value in row.items():
+                if value == '' or value == 'NA':
+                    row[field] = None
+                elif field in date_fields:
+                    row[field] = datetime.strptime(value, '%Y-%m-%d')
+        return list(data)

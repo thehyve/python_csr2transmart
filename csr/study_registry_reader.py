@@ -1,4 +1,5 @@
 import logging
+from os import path
 
 from csr.csr import CentralSubjectRegistry, Individual, Diagnosis, Biosource, Biomaterial
 from csr.entity_reader import EntityReader
@@ -15,10 +16,10 @@ class SubjectRegistryReader(EntityReader):
 
     def read_subject_registry(self) -> CentralSubjectRegistry:
         try:
-            individuals = self.read_entities('{}/{}'.format(self.input_dir, 'individual.tsv'), Individual)
-            diagnoses = self.read_entities('{}/{}'.format(self.input_dir, 'diagnosis.tsv'), Diagnosis)
-            biosources = self.read_entities('{}/{}'.format(self.input_dir, 'biosource.tsv'), Biosource)
-            biomaterials = self.read_entities('{}/{}'.format(self.input_dir, 'biomaterial.tsv'), Biomaterial)
+            individuals = self.read_entities(path.join(self.input_dir, 'individual.tsv'), Individual)
+            diagnoses = self.read_entities(path.join(self.input_dir, 'diagnosis.tsv'), Diagnosis)
+            biosources = self.read_entities(path.join(self.input_dir, 'biosource.tsv'), Biosource)
+            biomaterials = self.read_entities(path.join(self.input_dir, 'biomaterial.tsv'), Biomaterial)
             return CentralSubjectRegistry(individuals=individuals,
                                           diagnoses=diagnoses,
                                           biosources=biosources,
