@@ -15,13 +15,9 @@ class StudyRegistryReader(EntityReader):
 
     def read_subject_registry(self) -> StudyRegistry:
         try:
-            study_dicts = self.read_entities('{}/{}'.format(self.input_dir, 'study.tsv'), Study.schema())
-            studies = list(map(lambda i: Study(**i), study_dicts))
-
-            individual_study_dicts = self.read_entities('{}/{}'.format(self.input_dir, 'individual_study.tsv'),
-                                                        IndividualStudy.schema())
-            individual_studies = list(map(lambda i: IndividualStudy(**i), individual_study_dicts))
-
+            studies = self.read_entities('{}/{}'.format(self.input_dir, 'study.tsv'), Study)
+            individual_studies = self.read_entities('{}/{}'.format(self.input_dir, 'individual_study.tsv'),
+                                                    IndividualStudy)
             return StudyRegistry(studies=studies,
                                  individual_studies=individual_studies)
         except FileNotFoundError as fnfe:

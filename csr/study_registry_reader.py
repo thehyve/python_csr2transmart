@@ -15,19 +15,10 @@ class SubjectRegistryReader(EntityReader):
 
     def read_subject_registry(self) -> CentralSubjectRegistry:
         try:
-            individual_dicts = self.read_entities('{}/{}'.format(self.input_dir, 'individual.tsv'), Individual.schema())
-            individuals = list(map(lambda i: Individual(**i), individual_dicts))
-
-            diagnosis_dicts = self.read_entities('{}/{}'.format(self.input_dir, 'diagnosis.tsv'), Diagnosis.schema())
-            diagnoses = list(map(lambda i: Diagnosis(**i), diagnosis_dicts))
-
-            biosource_dicts = self.read_entities('{}/{}'.format(self.input_dir, 'biosource.tsv'), Biosource.schema())
-            biosources = list(map(lambda i: Biosource(**i), biosource_dicts))
-
-            biomaterial_dicts = self.read_entities('{}/{}'.format(self.input_dir, 'biomaterial.tsv'),
-                                                   Biomaterial.schema())
-            biomaterials = list(map(lambda i: Biomaterial(**i), biomaterial_dicts))
-
+            individuals = self.read_entities('{}/{}'.format(self.input_dir, 'individual.tsv'), Individual)
+            diagnoses = self.read_entities('{}/{}'.format(self.input_dir, 'diagnosis.tsv'), Diagnosis)
+            biosources = self.read_entities('{}/{}'.format(self.input_dir, 'biosource.tsv'), Biosource)
+            biomaterials = self.read_entities('{}/{}'.format(self.input_dir, 'biomaterial.tsv'), Biomaterial)
             return CentralSubjectRegistry(individuals=individuals,
                                           diagnoses=diagnoses,
                                           biosources=biosources,
