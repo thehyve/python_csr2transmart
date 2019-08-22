@@ -252,5 +252,8 @@
         }
       ]
     }
+  },
+  "codebooks": {
+    "individual.tsv": "codebook.txt"
   }
 }

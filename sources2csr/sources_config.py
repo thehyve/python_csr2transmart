@@ -24,9 +24,9 @@ class Entity(BaseModel):
 
 
 class SourcesConfig(BaseModel):
-    """
-    FIXME: add codebooks.
-    """
 
     """Mapping from entity name to entity sources"""
     entities: Dict[str, Entity]
+
+    """Associates input files with codebook files"""
+    codebooks: Optional[Dict[str, str]]

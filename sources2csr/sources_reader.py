@@ -7,6 +7,7 @@ from typing import Any, Tuple, Dict, Union, Sequence
 
 from csr.csr import CentralSubjectRegistry, StudyRegistry, SubjectEntity, StudyEntity
 from csr.tsv_reader import TsvReader
+from sources2csr.codebook_mapper import CodeBookMapper
 from sources2csr.data_exception import DataException
 from sources2csr.sources_config import SourcesConfig
 
@@ -57,12 +58,19 @@ class SourcesReader:
         self.output_dir = output_dir
         self.sources_config = read_configuration(config_dir)
 
+    def read_source_file_data(self, source_file) -> Sequence[Dict[str, Any]]:
+        source_file_data = TsvReader(path.join(self.input_dir, source_file)).read_data()
+        if self.sources_config.codebooks is not None:
+            codebook_filename = self.sources_config.codebooks.get(source_file, None)
+            if codebook_filename is not None:
+                codebook_mapper = CodeBookMapper(path.join(self.input_dir, codebook_filename))
+                source_file_data = codebook_mapper.apply(source_file_data)
+        return source_file_data
+
     def read_entity_data(self, entity_type) -> Sequence:
         """
         Reads data for an entity type from the source files that are specified
         in the sources config file.
-
-        FIXME: the codebooks are not yet applied.
 
         :param entity_type: the entity type, e.g., Individual.
         :return: A sequence of entities.
@@ -100,7 +108,7 @@ class SourcesReader:
         source_data = {}
         entity_data = {}
         for source_file in source_files:
-            source_file_data = TsvReader(path.join(self.input_dir, source_file)).read_data()
+            source_file_data = self.read_source_file_data(source_file)
             source_id_column = source_file_id_mapping[source_file]
             for item in source_file_data:
                 item_id = item[source_id_column]

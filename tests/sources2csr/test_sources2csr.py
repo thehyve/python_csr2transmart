@@ -6,6 +6,8 @@
 from click.testing import CliRunner
 from os import path
 
+from csr.tsv_reader import TsvReader
+
 from sources2csr import sources2csr
 
 
@@ -25,3 +27,7 @@ def test_transformation(tmp_path):
     assert path.exists(target_path + '/biomaterial.tsv')
     assert path.exists(target_path + '/study.tsv')
     assert path.exists(target_path + '/individual_study.tsv')
+
+    # test if codebook mapping has been applied
+    individual_data = TsvReader(path.join(target_path, 'individual.tsv')).read_data()
+    assert [ind['gender'] for ind in individual_data if ind['individual_id'] == 'P1'] == ['female']
