@@ -1,4 +1,0 @@
-modifier_path	modifier_cd	name_char	Data Type	dimension_type	sort_index
-\diagnose_mod	CSR_DIAGNOSIS_MOD	Diagnosis ID	CATEGORICAL	SUBJECT	2
-\biosource_mod	CSR_BIOSOURCE_MOD	Biosource ID	CATEGORICAL	SUBJECT	3
-\biomaterial_mod	CSR_BIOMATERIAL_MOD	Biomaterial ID	CATEGORICAL	SUBJECT	4

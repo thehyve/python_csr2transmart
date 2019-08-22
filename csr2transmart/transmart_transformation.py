@@ -4,7 +4,6 @@ import os
 import sys
 from typing import Dict
 
-import pandas as pd
 from transmart_loader.copy_writer import TransmartCopyWriter
 from transmart_loader.transmart import DataCollection
 
@@ -46,7 +45,6 @@ def transform(input_dir: str,
             bp: Dict = json.load(bpf)
         check_if_blueprint_valid(modifier_file, bp)
         blueprint: Blueprint = {k: BlueprintElement(**v) for k, v in bp.items()}
-        modifiers = pd.read_csv(modifier_file, sep='\t')  # TODO remove modifiers config
 
         logger.info('Reading CSR data...')
         subject_registry_reader = SubjectRegistryReader(input_dir)
@@ -56,7 +54,7 @@ def transform(input_dir: str,
 
         logger.info('Mapping CSR to Data Collection...')
         mapper = CsrMapper(study_id, top_tree_node)
-        collection: DataCollection = mapper.map(subject_registry, study_registry, modifiers, blueprint)
+        collection: DataCollection = mapper.map(subject_registry, study_registry, blueprint)
 
         logger.info('Writing files to {}'.format(output_dir))
         copy_writer = TransmartCopyWriter(str(output_dir))
