@@ -8,7 +8,10 @@ import pycodestyle  # formerly known as pep8
 def test_pep8_conformance():
     """Test that we conform to PEP-8."""
     check_paths = [
+        'csr',
         'csr2transmart',
+        'csr2tsv',
+        'sources2csr',
         'tests',
     ]
     exclude_paths = []
