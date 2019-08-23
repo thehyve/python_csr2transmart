@@ -137,6 +137,55 @@
               "file": "diagnosis.tsv"
             }
           ]
+        },
+        {
+          "name": "tumor_type",
+          "sources": [
+            {
+              "file": "diagnosis.tsv"
+            }
+          ]
+        },
+        {
+          "name": "topography",
+          "sources": [
+            {
+              "file": "diagnosis.tsv"
+            }
+          ]
+        },
+        {
+          "name": "treatment_protocol",
+          "sources": [
+            {
+              "file": "diagnosis.tsv"
+            }
+          ]
+        },
+        {
+          "name": "tumor_stage",
+          "sources": [
+            {
+              "file": "diagnosis.tsv"
+            }
+          ]
+        },
+        {
+          "name": "diagnosis_date",
+          "sources": [
+            {
+              "file": "diagnosis.tsv",
+              "date_format": "%d-%m-%Y"
+            }
+          ]
+        },
+        {
+          "name": "center_treatment",
+          "sources": [
+            {
+              "file": "diagnosis.tsv"
+            }
+          ]
         }
       ]
     },
@@ -165,6 +214,55 @@
               "file": "biosource.tsv"
             }
           ]
+        },
+        {
+          "name": "src_biosource_id",
+          "sources": [
+            {
+              "file": "biosource.tsv"
+            }
+          ]
+        },
+        {
+          "name": "biosource_dedicated",
+          "sources": [
+            {
+              "file": "biosource.tsv"
+            }
+          ]
+        },
+        {
+          "name": "tissue",
+          "sources": [
+            {
+              "file": "biosource.tsv"
+            }
+          ]
+        },
+        {
+          "name": "biosource_date",
+          "sources": [
+            {
+              "file": "biosource.tsv",
+              "date_format": "%d-%m-%Y"
+            }
+          ]
+        },
+        {
+          "name": "disease_status",
+          "sources": [
+            {
+              "file": "biosource.tsv"
+            }
+          ]
+        },
+        {
+          "name": "tumor_percentage",
+          "sources": [
+            {
+              "file": "biosource.tsv"
+            }
+          ]
         }
       ]
     },
@@ -180,6 +278,31 @@
         },
         {
           "name": "src_biosource_id",
+          "sources": [
+            {
+              "file": "biomaterial.tsv"
+            }
+          ]
+        },
+        {
+          "name": "src_biomaterial_id",
+          "sources": [
+            {
+              "file": "biomaterial.tsv"
+            }
+          ]
+        },
+        {
+          "name": "biomaterial_date",
+          "sources": [
+            {
+              "file": "biomaterial.tsv",
+              "date_format": "%d-%m-%Y"
+            }
+          ]
+        },
+        {
+          "name": "type",
           "sources": [
             {
               "file": "biomaterial.tsv"
