@@ -93,7 +93,17 @@ def test_ontology_mapping(mapped_data_collection):
     assert len(ontology[0].children[2].children) == 6  # biosource node
     assert len(ontology[0].children[3].children) == 3  # biomaterial node
     assert len(ontology[0].children[4].children) == 5  # study node
-    # TODO test metadata
+
+    assert ontology[0].children[0].children[0].concept.concept_code == 'Individual.gender'
+    assert ontology[0].children[0].children[0].metadata.values['subject_dimension'].value == 'patient'
+    assert ontology[0].children[1].children[0].concept.concept_code == 'Diagnosis.tumor_type'
+    assert ontology[0].children[1].children[0].metadata.values['subject_dimension'].value == 'Diagnosis'
+    assert ontology[0].children[2].children[0].concept.concept_code == 'Biosource.biosource_dedicated'
+    assert ontology[0].children[2].children[0].metadata.values['subject_dimension'].value == 'Biosource'
+    assert ontology[0].children[3].children[0].concept.concept_code == 'Biomaterial.src_biomaterial_id'
+    assert ontology[0].children[3].children[0].metadata.values['subject_dimension'].value == 'Biomaterial'
+    assert ontology[0].children[4].children[0].concept.concept_code == 'Study.study_id'
+    assert ontology[0].children[4].children[0].metadata.values['subject_dimension'].value == 'Study'
 
 
 def test_observations_mapping(mapped_data_collection):

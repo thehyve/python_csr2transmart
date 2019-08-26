@@ -1,8 +1,8 @@
-from typing import List, Dict, Sequence
+from typing import List, Dict, Sequence, Union
 
-from transmart_loader.transmart import Concept, TreeNode, ValueType, ConceptNode
+from transmart_loader.transmart import Concept, TreeNode, ValueType, ConceptNode, TreeNodeMetadata, Value, TextValue
 
-from csr.csr import SubjectEntity, StudyEntity
+from csr.csr import SubjectEntity, StudyEntity, Individual
 from csr2transmart.ontology_config import TreeNode as OntologyConfigTreeNode, \
     ConceptNode as OntologyConfigConceptNode
 
@@ -25,6 +25,13 @@ class OntologyMapper:
             return ValueType.Categorical
 
     @staticmethod
+    def entity_name_to_subject_dimension_value(entity_name: str) -> Value:
+        if entity_name == 'Individual':
+            return TextValue('patient')
+        else:
+            return TextValue(entity_name)
+
+    @staticmethod
     def is_concept_node(node):
         if isinstance(node, dict):
             return node.get('concept_code') is not None
@@ -38,7 +45,7 @@ class OntologyMapper:
         field_type = entity_type.schema()['properties'][entity_field_name]['type']
         return self.type_to_value_type(field_type)
 
-    def map_code(self, node: OntologyConfigConceptNode, path_elements: List[str]) -> ConceptNode:
+    def map_concept_node(self, node: OntologyConfigConceptNode, path_elements: List[str]) -> ConceptNode:
         entity_name, entity_field_name = node.concept_code.split('.')
         path_elements.append(entity_field_name)
         concept_path = '\\'.join(path_elements)
@@ -46,7 +53,12 @@ class OntologyMapper:
 
         concept = Concept(node.concept_code, node.name, concept_path, concept_type)
         self.concept_code_to_concept[node.concept_code] = concept
-        return ConceptNode(concept)
+
+        metadata_value: Dict[str, Value] = {
+            'subject_dimension': self.entity_name_to_subject_dimension_value(entity_name)}
+        concept_node = ConceptNode(concept)
+        concept_node.metadata = TreeNodeMetadata(metadata_value)
+        return concept_node
 
     #  TODO: - fix mapping of ontology nodes so all of them instance of OntologyConfigTreeNode class, not dict
     #        - check if concept exists in the csr model (for a specific subject_dimension) - pydantic validator?
@@ -56,7 +68,7 @@ class OntologyMapper:
             if self.is_concept_node(node):
                 if isinstance(node, dict):
                     node = OntologyConfigConceptNode(**node)
-                parent_node.add_child(self.map_code(node, path_elements))
+                parent_node.add_child(self.map_concept_node(node, path_elements))
             else:
                 if isinstance(node, dict):
                     name = node.get('name')
