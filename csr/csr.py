@@ -22,6 +22,8 @@ class Individual(BaseModel):
     ic_linking_ext: Optional[str]
     report_her_susc: Optional[str]
     report_inc_findings: Optional[str]
+    diagnosis_count: Optional[int]
+    age_first_diagnosis: Optional[int]
 
 
 class Diagnosis(BaseModel):
@@ -62,6 +64,8 @@ class Biomaterial(BaseModel):
     src_biomaterial_id: Optional[str] = Schema(None, references='Biomaterial')
     biomaterial_date: Optional[date]
     type: Optional[str]
+    library_strategy: Optional[str]
+    analysis_type: Optional[str]
 
 
 class Study(BaseModel):

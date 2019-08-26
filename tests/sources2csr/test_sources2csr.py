@@ -30,4 +30,9 @@ def test_transformation(tmp_path):
 
     # test if codebook mapping has been applied
     individual_data = TsvReader(path.join(target_path, 'individual.tsv')).read_data()
-    assert [ind['gender'] for ind in individual_data if ind['individual_id'] == 'P1'] == ['female']
+    p1 = [ind for ind in individual_data if ind['individual_id'] == 'P1'][0]
+    assert p1['gender'] == 'female'
+
+    # test if derived values have been added
+    assert p1['diagnosis_count'] == '2'
+    assert p1['age_first_diagnosis'] == '23'  # 01-05-2016 - 01-02-1993
