@@ -1,14 +1,13 @@
 import datetime
 from typing import Dict, Sequence, List
 
-from pandas import DataFrame
 from transmart_loader.transmart import DataCollection, Study, TrialVisit, Patient, IdentifierMapping, StudyMetadata, \
     DimensionType, ValueType, Modifier, Dimension
 
 from csr.csr import CentralSubjectRegistry, StudyRegistry, Individual, SubjectEntity
-from csr2transmart.blueprint import Blueprint
-from csr2transmart.mappers.blueprint_mapper import BlueprintMapper
 from csr2transmart.mappers.observation_mapper import ObservationMapper
+from csr2transmart.mappers.ontology_mapper import OntologyMapper
+from csr2transmart.ontology_config import TreeNode
 
 
 class CsrMapper:
@@ -44,7 +43,9 @@ class CsrMapper:
             self.individual_id_to_patient[individual.individual_id] = patient
 
     def map_dimensions_and_modifiers(self):
-        for index, entity_type in enumerate(SubjectEntity.__args__):
+        entities = list(SubjectEntity.__args__)
+        entities.remove(Individual)
+        for index, entity_type in enumerate(entities):
             type_name = entity_type.schema()['title']
             modifier = Modifier(type_name,
                                 type_name,
@@ -55,34 +56,34 @@ class CsrMapper:
             modifier_dimension = Dimension(type_name,
                                            modifier,
                                            DimensionType.Subject,
-                                           index)
+                                           index+2)
             self.dimensions.append(modifier_dimension)
 
     def map(self,
             subject_registry: CentralSubjectRegistry,
             study_registry: StudyRegistry,
-            blueprint: Blueprint) -> DataCollection:
+            src_ontology: Sequence[TreeNode]) -> DataCollection:
         self.map_patients(subject_registry.individuals)
         study = self.map_study()
         default_trial_visit = self.map_default_trial_visit(study)
+        self.map_dimensions_and_modifiers()
 
-        bp_mapper = BlueprintMapper(self.individual_id_to_patient, self.top_tree_node)
-        bp_mapper.map(blueprint)
+        ontology_mapper = OntologyMapper(self.top_tree_node)
+        ontology = ontology_mapper.map(src_ontology)
 
         observation_mapper = ObservationMapper(default_trial_visit,
                                                self.individual_id_to_patient,
-                                               bp_mapper.concept_key_to_concept,
-                                               bp_mapper.concept_key_to_modifier_key,
-                                               bp_mapper.modifier_key_to_modifier)
+                                               ontology_mapper.concept_code_to_concept,
+                                               self.modifier_key_to_modifier)
         observation_mapper.map_observations(subject_registry, study_registry)
 
-        return DataCollection(bp_mapper.concept_key_to_concept.values(),
-                              bp_mapper.modifier_key_to_modifier.values(),
-                              bp_mapper.dimensions,
+        return DataCollection(ontology_mapper.concept_code_to_concept.values(),
+                              self.modifier_key_to_modifier.values(),
+                              self.dimensions,
                               [study],
                               [default_trial_visit],
                               [],
-                              bp_mapper.ontology,
+                              ontology,
                               self.individual_id_to_patient.values(),
                               observation_mapper.observations,
                               [],
