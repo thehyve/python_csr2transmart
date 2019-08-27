@@ -25,7 +25,7 @@ an open source data sharing and analytics platform for translational biomedical 
 The output of the transformation is a collection of tab-separated files that can be loaded into
 a TranSMART database using the transmart-copy_ tool.
 
-.. _TranSMART: https://github.com/thehyve/transmart_core
+.. _TranSMART: https://github.com/thehyve/transmart-core
 .. _transmart-copy: https://github.com/thehyve/transmart-core/tree/dev/transmart-copy
 
 ⚠️ Note: this is a very preliminary version, still under development.
