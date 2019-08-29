@@ -3,7 +3,17 @@ import logging
 from datetime import datetime
 from math import isnan
 from os import path
-from typing import Any, Tuple, Dict, Union, Sequence
+from typing import Any, Tuple, Dict, Union, Sequence, Optional
+
+from sources2csr.ngs_reader import NgsReader
+
+from sources2csr.ngs_seg_reader import NgsSegReader
+
+from sources2csr.ngs_maf_reader import NgsMafReader
+
+from sources2csr.ngs_txt_reader import NgsTxtReader
+
+from sources2csr.ngs import NGS
 
 from csr.csr import CentralSubjectRegistry, StudyRegistry, SubjectEntity, StudyEntity
 from csr.tsv_reader import TsvReader
@@ -49,6 +59,28 @@ def read_configuration(config_dir) -> SourcesConfig:
         raise DataException(f'Cannot find {sources_config_path}')
     with open(sources_config_path, 'r') as sources_config_file:
         return SourcesConfig(**json.load(sources_config_file))
+
+
+def read_ngs_files(input_dir) -> Optional[Sequence[NGS]]:
+    """ Reads NGS files inside input_dir in 3 different formats: `.txt`, `.maf.gz` and `.seg`.
+
+    :param input_dir: NGS files directory
+    :return: Sequence of NGS objects
+    """
+    ngs_data = []
+    txt_reader = NgsTxtReader(input_dir)
+    maf_reader = NgsMafReader(input_dir)
+    seg_reader = NgsSegReader(input_dir)
+
+    for filename in NgsReader.files(input_dir):
+        # logger.debug('Parsing {} data file from {}'.format(filename, directory))
+        if filename.endswith('maf.gz'):
+            ngs_data += maf_reader.read_data(filename)
+        if filename.endswith('seg'):
+            ngs_data += seg_reader.read_data(filename)
+        elif filename.endswith('_all_data_by_genes.txt') or filename.endswith('_all_thresholded.by_genes.txt'):
+            ngs_data += txt_reader.read_data(filename)
+    return ngs_data
 
 
 class SourcesReader:

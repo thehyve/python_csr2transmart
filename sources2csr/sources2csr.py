@@ -8,7 +8,7 @@ from csr2tsv.subject_registry_writer import SubjectRegistryWriter
 
 from csr2tsv.study_registry_writer import StudyRegistryWriter
 from sources2csr.derived_values import add_derived_values
-from sources2csr.legacy_sources_reader import LegacySourcesReader
+from sources2csr.legacy.legacy_sources_reader import LegacySourcesReader
 from sources2csr.sources_reader import SourcesReader
 
 
@@ -40,7 +40,6 @@ def legacy_sources2csr(input_dir, output_dir, config_dir):
 def sources2csr(input_dir, output_dir, config_dir):
     try:
         reader = SourcesReader(input_dir=input_dir, output_dir=output_dir, config_dir=config_dir)
-
         subject_registry = reader.read_subject_data()
         add_derived_values(subject_registry)
         subject_registry_writer = SubjectRegistryWriter(output_dir)
