@@ -60,7 +60,6 @@ class OntologyMapper:
         return concept_node
 
     #  TODO: - fix mapping of ontology nodes so all of them instance of OntologyConfigTreeNode class, not dict
-    #        - check if concept exists in the csr model (for a specific subject_dimension) - pydantic validator?
     def map_nodes(self, nodes: Sequence[OntologyConfigTreeNode], parent_node: TreeNode):
         for node in nodes:
             if self.is_concept_node(node):
@@ -79,7 +78,6 @@ class OntologyMapper:
                 parent_node.add_child(intermediate_node)
 
     def map(self, src_nodes: Sequence[OntologyConfigTreeNode]) -> Sequence[TreeNode]:
-        path = [self.top_tree_node]
         top_node = TreeNode(self.top_tree_node)
         self.map_nodes(src_nodes, top_node)
         return [top_node]
