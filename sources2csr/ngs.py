@@ -25,3 +25,9 @@ class NGS(BaseModel):
     biomaterial_id: str
     library_strategy: LibraryStrategy
     analysis_type: Optional[AnalysisType]
+
+    def __hash__(self):
+        return hash(('biosource_id', self.biosource_id,
+                     'biomaterial_id', self.biomaterial_id,
+                     'library_strategy', self.library_strategy,
+                     'analysis_type', self.analysis_type))

@@ -50,7 +50,7 @@ class NgsReader:
             return biosource_biomaterial_pair[0], biosource_biomaterial_pair[1]
 
     @staticmethod
-    def files(input_dir: str) -> List[str]:
+    def list_files(input_dir: str) -> List[str]:
         """ Get list of file names inside a directory
         :param input_dir: directory with input files
         :return: List of file paths with names

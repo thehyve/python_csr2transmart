@@ -2,25 +2,19 @@ import json
 import logging
 from datetime import datetime
 from math import isnan
+import os
 from os import path
-from typing import Any, Tuple, Dict, Union, Sequence, Optional
-
+from typing import Any, Tuple, Dict, Union, Sequence,  Set, List
 from sources2csr.ngs_reader import NgsReader
-
 from sources2csr.ngs_seg_reader import NgsSegReader
-
 from sources2csr.ngs_maf_reader import NgsMafReader
-
 from sources2csr.ngs_txt_reader import NgsTxtReader
-
 from sources2csr.ngs import NGS
-
 from csr.csr import CentralSubjectRegistry, StudyRegistry, SubjectEntity, StudyEntity
 from csr.tsv_reader import TsvReader
 from sources2csr.codebook_mapper import CodeBookMapper
 from sources2csr.data_exception import DataException
 from sources2csr.sources_config import SourcesConfig
-
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +55,7 @@ def read_configuration(config_dir) -> SourcesConfig:
         return SourcesConfig(**json.load(sources_config_file))
 
 
-def read_ngs_files(input_dir) -> Optional[Sequence[NGS]]:
+def read_ngs_files(input_dir: str) -> List[NGS]:
     """ Reads NGS files inside input_dir in 3 different formats: `.txt`, `.maf.gz` and `.seg`.
 
     :param input_dir: NGS files directory
@@ -72,7 +66,7 @@ def read_ngs_files(input_dir) -> Optional[Sequence[NGS]]:
     maf_reader = NgsMafReader(input_dir)
     seg_reader = NgsSegReader(input_dir)
 
-    for filename in NgsReader.files(input_dir):
+    for filename in NgsReader.list_files(input_dir):
         # logger.debug('Parsing {} data file from {}'.format(filename, directory))
         if filename.endswith('maf.gz'):
             ngs_data += maf_reader.read_data(filename)
@@ -89,6 +83,15 @@ class SourcesReader:
         self.input_dir = input_dir
         self.output_dir = output_dir
         self.sources_config = read_configuration(config_dir)
+
+    def read_ngs_data(self) -> Set[NGS]:
+        for parent_dir, dirs, files in os.walk(self.input_dir):
+            if 'NGS' in dirs:
+                ngs_data_dir = os.path.join(parent_dir, dirs[dirs.index('NGS')])
+                logger.info('Found NGS data directory: {}'.format(ngs_data_dir))
+                return set(read_ngs_files(self.input_dir))
+        logger.info('No NGS data found.')
+        return set()
 
     def read_source_file_data(self, source_file) -> Sequence[Dict[str, Any]]:
         source_file_data = TsvReader(path.join(self.input_dir, source_file)).read_data()

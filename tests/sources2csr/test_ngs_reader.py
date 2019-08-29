@@ -4,8 +4,6 @@
 """Tests for the code book reader.
 """
 import pytest
-from sources2csr.ngs_maf_reader import GzipMafReaderException
-
 from sources2csr.ngs_reader import NgsReaderException
 
 from sources2csr.ngs import LibraryStrategy
@@ -15,6 +13,7 @@ from sources2csr.sources_reader import read_ngs_files
 def test_valid_ngs():
     ngs_list = read_ngs_files('./test_data/input_data/CLINICAL/NGS')
     assert len(ngs_list) == 4 + 2 + 4  # .txt + .seg + .maf.gz
+    assert len(set(ngs_list)) == 4
     # .txt files
     assert ngs_list[0].analysis_type is None and ngs_list[0].library_strategy == LibraryStrategy.CNV
     assert ngs_list[0].biosource_id == 'PMCBS000AAB' and ngs_list[0].biomaterial_id == 'PMCBM000AAB'

@@ -1,15 +1,16 @@
 from collections import defaultdict
-from operator import attrgetter
-from typing import List, Dict
+from typing import List, Dict, Set
 
 from dateutil.relativedelta import relativedelta
 
 from csr.csr import CentralSubjectRegistry, Diagnosis
+from sources2csr.ngs import NGS
 
 
-def add_derived_values(subject_registry: CentralSubjectRegistry) -> CentralSubjectRegistry:
+def add_derived_values(subject_registry: CentralSubjectRegistry, ngs_set: Set[NGS]) -> CentralSubjectRegistry:
     """
 
+    :param ngs_set:
     :param subject_registry:
     :return:
     """
@@ -36,5 +37,15 @@ def add_derived_values(subject_registry: CentralSubjectRegistry) -> CentralSubje
             first_diagnosis_date = first_diagnosis_date_per_individual.get(individual.individual_id, None)
             if first_diagnosis_date is not None:
                 individual.age_first_diagnosis = relativedelta(first_diagnosis_date, individual.birth_date).years
+
+    # Add library_strategy aggregates and analysis_type to biomaterials
+    if subject_registry.biomaterials and len(ngs_set) > 0:
+        for biomaterial in subject_registry.biomaterials:
+            for ngs in ngs_set:
+                if biomaterial.biomaterial_id == ngs.biomaterial_id and \
+                   biomaterial.src_biosource_id == ngs.biosource_id:
+                    if ngs.analysis_type is not None:
+                        biomaterial.analysis_type.append(ngs.analysis_type.value)
+                    biomaterial.library_strategy.append(ngs.library_strategy.value)
 
     return subject_registry

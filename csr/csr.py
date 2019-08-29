@@ -64,8 +64,8 @@ class Biomaterial(BaseModel):
     src_biomaterial_id: Optional[str] = Schema(None, references='Biomaterial')
     biomaterial_date: Optional[date]
     type: Optional[str]
-    library_strategy: Optional[List[str]]
-    analysis_type: Optional[List[str]]
+    library_strategy: Optional[List[str]] = []
+    analysis_type: Optional[List[str]] = []
 
 
 class Study(BaseModel):
