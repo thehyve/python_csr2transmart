@@ -1,8 +1,8 @@
-from typing import List, Dict, Sequence, Union
+from typing import Dict, Sequence
 
 from transmart_loader.transmart import Concept, TreeNode, ValueType, ConceptNode, TreeNodeMetadata, Value, TextValue
 
-from csr.csr import SubjectEntity, StudyEntity, Individual
+from csr.csr import SubjectEntity, StudyEntity
 from csr2transmart.ontology_config import TreeNode as OntologyConfigTreeNode, \
     ConceptNode as OntologyConfigConceptNode
 
@@ -45,10 +45,9 @@ class OntologyMapper:
         field_type = entity_type.schema()['properties'][entity_field_name]['type']
         return self.type_to_value_type(field_type)
 
-    def map_concept_node(self, node: OntologyConfigConceptNode, path_elements: List[str]) -> ConceptNode:
+    def map_concept_node(self, node: OntologyConfigConceptNode) -> ConceptNode:
         entity_name, entity_field_name = node.concept_code.split('.')
-        path_elements.append(entity_field_name)
-        concept_path = '\\'.join(path_elements)
+        concept_path = '\\\\CSR\\\\' + node.concept_code
         concept_type = self.get_concept_type(entity_name, entity_field_name)
 
         concept = Concept(node.concept_code, node.name, concept_path, concept_type)
@@ -62,13 +61,12 @@ class OntologyMapper:
 
     #  TODO: - fix mapping of ontology nodes so all of them instance of OntologyConfigTreeNode class, not dict
     #        - check if concept exists in the csr model (for a specific subject_dimension) - pydantic validator?
-    def map_nodes(self, nodes: Sequence[OntologyConfigTreeNode], parent_node: TreeNode, path_elements: List[str]):
+    def map_nodes(self, nodes: Sequence[OntologyConfigTreeNode], parent_node: TreeNode):
         for node in nodes:
-            children_path = path_elements.copy()
             if self.is_concept_node(node):
                 if isinstance(node, dict):
                     node = OntologyConfigConceptNode(**node)
-                parent_node.add_child(self.map_concept_node(node, path_elements))
+                parent_node.add_child(self.map_concept_node(node))
             else:
                 if isinstance(node, dict):
                     name = node.get('name')
@@ -76,13 +74,12 @@ class OntologyMapper:
                 else:
                     name = node.name
                     children = node.children
-                children_path.append(name)
                 intermediate_node = TreeNode(name)
-                self.map_nodes(children, intermediate_node, children_path)
+                self.map_nodes(children, intermediate_node)
                 parent_node.add_child(intermediate_node)
 
     def map(self, src_nodes: Sequence[OntologyConfigTreeNode]) -> Sequence[TreeNode]:
         path = [self.top_tree_node]
         top_node = TreeNode(self.top_tree_node)
-        self.map_nodes(src_nodes, top_node, path)
+        self.map_nodes(src_nodes, top_node)
         return [top_node]
