@@ -33,6 +33,7 @@ setup(
     url='https://github.com/thehyve/python_csr2transmart',
     packages=[
         'csr2transmart',
+        'csr2transmart.mappers',
         'sources2csr',
         'csr',
         'csr2tsv'

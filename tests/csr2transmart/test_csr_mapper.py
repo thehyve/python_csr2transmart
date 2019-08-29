@@ -44,19 +44,24 @@ def test_patients_mapping(mapped_data_collection):
 
 def test_concepts_mapping(mapped_data_collection):
     concepts = mapped_data_collection.concepts
-    assert len(concepts) > 0
-    # assert len(concepts) == 27 TODO fix after blueprint format change
+    assert len(concepts) == 32
+    assert len(list(filter(lambda c: c.concept_code.startswith('Individual.'), concepts))) == 12
+    assert len(list(filter(lambda c: c.concept_code.startswith('Diagnosis.'), concepts))) == 6
+    assert len(list(filter(lambda c: c.concept_code.startswith('Biosource.'), concepts))) == 6
+    assert len(list(filter(lambda c: c.concept_code.startswith('Biomaterial.'), concepts))) == 3
+    assert len(list(filter(lambda c: c.concept_code.startswith('Study.'), concepts))) == 4
+    assert len(list(filter(lambda c: c.concept_code.startswith('IndividualStudy.'), concepts))) == 1
 
 
 def test_modifiers_mapping(mapped_data_collection):
     modifiers = mapped_data_collection.modifiers
     assert len(modifiers) == 3
     assert list(map(lambda m: m.modifier_code, modifiers)) == [
-        'CSR_DIAGNOSIS_MOD', 'CSR_BIOSOURCE_MOD', 'CSR_BIOMATERIAL_MOD']
+        'Diagnosis', 'Biosource', 'Biomaterial']
     assert list(map(lambda m: m.name, modifiers)) == [
-        'Diagnosis ID', 'Biosource ID', 'Biomaterial ID']
+        'Diagnosis', 'Biosource', 'Biomaterial']
     assert list(map(lambda m: m.modifier_path, modifiers)) == [
-        '\\diagnose_mod', '\\biosource_mod', '\\biomaterial_mod']
+        'Diagnosis', 'Biosource', 'Biomaterial']
     assert list(map(lambda m: m.value_type, modifiers)) == [
         ValueType.Categorical, ValueType.Categorical, ValueType.Categorical]
 
@@ -64,9 +69,9 @@ def test_modifiers_mapping(mapped_data_collection):
 def test_dimensions_mapping(mapped_data_collection):
     dimensions = mapped_data_collection.dimensions
     assert len(dimensions) == 3
-    assert list(map(lambda d: d.name, dimensions)) == ['Diagnosis ID', 'Biosource ID', 'Biomaterial ID']
+    assert list(map(lambda d: d.name, dimensions)) == ['Diagnosis', 'Biosource', 'Biomaterial']
     assert list(map(lambda d: d.modifier.name if d.modifier else None, dimensions)) == [
-        'Diagnosis ID', 'Biosource ID', 'Biomaterial ID']
+        'Diagnosis', 'Biosource', 'Biomaterial']
     assert list(map(lambda d: d.dimension_type, dimensions)) == [
         DimensionType.Subject, DimensionType.Subject, DimensionType.Subject]
     assert list(map(lambda d: d.sort_index, dimensions)) == [2, 3, 4]
@@ -75,7 +80,30 @@ def test_dimensions_mapping(mapped_data_collection):
 def test_ontology_mapping(mapped_data_collection):
     ontology = mapped_data_collection.ontology
     assert len(ontology) == 1
-    # assert len(list(map(lambda t: t.name, ontology[0].children))) == 5 TODO fix after blueprint format change
+    assert len(ontology[0].children) == 5
+    assert list(map(lambda t: t.name, ontology[0].children)) == ['01. Patient information',
+                                                                 '02. Diagnosis information',
+                                                                 '03. Biosource information',
+                                                                 '04. Biomaterial information',
+                                                                 '05. Study information']
+    assert len(ontology[0].children[0].children) == 5  # individual node
+    assert ontology[0].children[0].children[4].name == 'Informed_consent'
+    assert len(ontology[0].children[0].children[4].children) == 8  # individual.Informed_consent node
+    assert len(ontology[0].children[1].children) == 6  # diagnosis node
+    assert len(ontology[0].children[2].children) == 6  # biosource node
+    assert len(ontology[0].children[3].children) == 3  # biomaterial node
+    assert len(ontology[0].children[4].children) == 5  # study node
+
+    assert ontology[0].children[0].children[0].concept.concept_code == 'Individual.gender'
+    assert ontology[0].children[0].children[0].metadata.values['subject_dimension'].value == 'patient'
+    assert ontology[0].children[1].children[0].concept.concept_code == 'Diagnosis.tumor_type'
+    assert ontology[0].children[1].children[0].metadata.values['subject_dimension'].value == 'Diagnosis'
+    assert ontology[0].children[2].children[0].concept.concept_code == 'Biosource.biosource_dedicated'
+    assert ontology[0].children[2].children[0].metadata.values['subject_dimension'].value == 'Biosource'
+    assert ontology[0].children[3].children[0].concept.concept_code == 'Biomaterial.src_biomaterial_id'
+    assert ontology[0].children[3].children[0].metadata.values['subject_dimension'].value == 'Biomaterial'
+    assert ontology[0].children[4].children[0].concept.concept_code == 'Study.study_id'
+    assert ontology[0].children[4].children[0].metadata.values['subject_dimension'].value == 'Study'
 
 
 def test_observations_mapping(mapped_data_collection):
@@ -108,19 +136,17 @@ def test_observations_mapping(mapped_data_collection):
         'D2', 'D2', 'D2', 'D2', 'D2', 'D2',
         'D3', 'D3', 'D3', 'D3', 'D3', 'D3'])
 
-    assert len(biosource_observations) == 21 + 4  # TODO fix after blueprint format change (-4)
+    assert len(biosource_observations) == 21
     assert Counter(map(lambda bso: bso.value.value, biosource_observations)) == Counter([
         'Yes', 'BS1', 'medula', datetime.date(2017, 3, 12), 'ST1', 5,  # BS1
-        'BS2', 'cortex', datetime.date(2017, 4, 1), 'ST2', 3,  # BS2
+        'BS2', 'cortex', datetime.date(2017, 4, 1), 'ST2', 3,   # BS2
         'BS2', 'cortex', datetime.date(2017, 5, 14), 'ST1', 2,  # BS3
-        'No', 'medula', datetime.date(2017, 6, 21), 'ST2', 1,   # BS4
-        'BS1', 'BS2', 'BS3', 'BS4'])  # Additional 4 from biomaterials TODO fix after blueprint format change
+        'No', 'medula', datetime.date(2017, 6, 21), 'ST2', 1])  # BS4
     assert Counter(map(lambda bso: bso.metadata.values[biosource_modifier].value, biosource_observations)) == Counter([
         'BS1', 'BS1', 'BS1', 'BS1', 'BS1', 'BS1',
         'BS2', 'BS2', 'BS2', 'BS2', 'BS2',
         'BS3', 'BS3', 'BS3', 'BS3', 'BS3',
-        'BS4', 'BS4', 'BS4', 'BS4', 'BS4',
-        'BM1', 'BM2', 'BM3', 'BM4'])  # Additional 4 from biomaterials TODO fix after blueprint format change
+        'BS4', 'BS4', 'BS4', 'BS4', 'BS4'])
 
     assert len(biomaterial_observations) == 9
     assert Counter(map(lambda bmo: bmo.value.value, biomaterial_observations)) == Counter([

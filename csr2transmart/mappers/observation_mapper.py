@@ -14,13 +14,11 @@ class ObservationMapper:
     def __init__(self,
                  default_trial_visit: TrialVisit,
                  individual_id_to_patient: Dict[str, Patient],
-                 concept_key_to_concept: Dict[str, Concept],
-                 concept_key_to_modifier_key: Dict[str, str],
+                 concept_code_to_concept: Dict[str, Concept],
                  modifier_key_to_modifier: Dict[str, Modifier]):
         self.default_trial_visit = default_trial_visit
         self.individual_id_to_patient = individual_id_to_patient
-        self.concept_key_to_concept = concept_key_to_concept
-        self.concept_key_to_modifier_key = concept_key_to_modifier_key
+        self.concept_code_to_concept = concept_code_to_concept
         self.modifier_key_to_modifier = modifier_key_to_modifier
         self.observations: List[Observation] = []
 
@@ -96,17 +94,18 @@ class ObservationMapper:
         :param patient: individual linked to the observation
         :return:
         """
-        concept_keys = entity.fields.keys()
-        for concept_key in concept_keys:
-            concept = self.concept_key_to_concept.get(concept_key.upper())
+        entity_fields = entity.fields.keys()
+        entity_name = entity.schema()['title']
+        for entity_field in entity_fields:
+            concept_code = '{}.{}'.format(entity_name, entity_field)
+            concept = self.concept_code_to_concept.get(concept_code)
             if concept is not None:
-                value = self.row_value_to_value(getattr(entity, concept_key), concept.value_type)
+                value = self.row_value_to_value(getattr(entity, entity_field), concept.value_type)
                 if value is not None:
                     if isinstance(entity, Individual):
                         metadata = None
                     else:
-                        modifier_key = self.concept_key_to_modifier_key.get(concept_key.upper())
-                        metadata = self.map_observation_metadata(modifier_key, entity_id)
+                        metadata = self.map_observation_metadata(entity_name, entity_id)
                     observation = Observation(patient, concept, None, self.default_trial_visit, None, None, value,
                                               metadata)
                     self.observations.append(observation)

@@ -1,19 +1,16 @@
 import json
 import logging
-import os
 import sys
-from typing import Dict
+from os import path
 
-import pandas as pd
 from transmart_loader.copy_writer import TransmartCopyWriter
 from transmart_loader.transmart import DataCollection
 
 from csr.csr import CentralSubjectRegistry, StudyRegistry
 from csr.study_registry_reader import SubjectRegistryReader
 from csr.subject_registry_reader import StudyRegistryReader
-from csr2transmart.blueprint import Blueprint, BlueprintElement
 from csr2transmart.mappers.csr_mapper import CsrMapper
-from csr2transmart.validations import get_blueprint_validator_initialised_with_modifiers
+from csr2transmart.ontology_config import OntologyConfig
 
 logger = logging.getLogger(__name__)
 
@@ -22,14 +19,16 @@ class TransmartTransformationException(Exception):
     pass
 
 
-def check_if_blueprint_valid(modifier_file, blueprint):
-    logger.info('Validating blueprint file')
-    blueprint_validator = get_blueprint_validator_initialised_with_modifiers(modifier_file)
-    violations = list(blueprint_validator.collect_tree_node_dimension_violations(blueprint))
-    if violations:
-        all_err_messages = '\n'.join(violations)
-        raise TransmartTransformationException(
-            '{} tree node violations have found:\n{}'.format(len(violations), all_err_messages))
+def read_configuration(config_dir) -> OntologyConfig:
+    """ Parse configuration files and return set of dictionaries
+
+    :param config_dir: Path to directory where the configs are stored
+    """
+    ontology_config_path = path.join(config_dir, 'ontology_config.json')
+    if not path.exists(ontology_config_path) or not path.isfile(ontology_config_path):
+        raise TransmartTransformationException(f'Cannot find {ontology_config_path}')
+    with open(ontology_config_path, 'r') as ontology_config_file:
+        return OntologyConfig(**json.load(ontology_config_file))
 
 
 def transform(input_dir: str,
@@ -38,15 +37,9 @@ def transform(input_dir: str,
               study_id: str,
               top_tree_node: str):
 
-    modifier_file = os.path.join(config_dir, 'modifiers.txt')
-    blueprint_file = os.path.join(config_dir, 'blueprint.json')
     try:
         logger.info('Reading configuration data...')
-        with open(blueprint_file, 'r') as bpf:
-            bp: Dict = json.load(bpf)
-        check_if_blueprint_valid(modifier_file, bp)
-        blueprint: Blueprint = {k: BlueprintElement(**v) for k, v in bp.items()}
-        modifiers = pd.read_csv(modifier_file, sep='\t')  # TODO remove modifiers config
+        ontology_config = read_configuration(config_dir)
 
         logger.info('Reading CSR data...')
         subject_registry_reader = SubjectRegistryReader(input_dir)
@@ -56,7 +49,7 @@ def transform(input_dir: str,
 
         logger.info('Mapping CSR to Data Collection...')
         mapper = CsrMapper(study_id, top_tree_node)
-        collection: DataCollection = mapper.map(subject_registry, study_registry, modifiers, blueprint)
+        collection: DataCollection = mapper.map(subject_registry, study_registry, ontology_config.nodes)
 
         logger.info('Writing files to {}'.format(output_dir))
         copy_writer = TransmartCopyWriter(str(output_dir))

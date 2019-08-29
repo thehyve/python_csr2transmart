@@ -1,17 +1,14 @@
-import json
-from os import path
-from typing import Sequence, Dict
+from typing import Sequence
 
-import pandas as pd
 import pytest
 from transmart_loader.transmart import DataCollection
 
 from csr.csr import CentralSubjectRegistry, StudyRegistry, Individual
-
 from csr.study_registry_reader import SubjectRegistryReader
 from csr.subject_registry_reader import StudyRegistryReader
-from csr2transmart.blueprint import Blueprint, BlueprintElement
 from csr2transmart.mappers.csr_mapper import CsrMapper
+from csr2transmart.ontology_config import OntologyConfig
+from csr2transmart.transmart_transformation import read_configuration
 
 
 @pytest.fixture
@@ -35,16 +32,11 @@ def mapped_data_collection() -> DataCollection:
     config_dir = './test_data/input_data/config'
     study_id = 'CSR'
     top_tree_node = '\\Central Subject Registry\\'
-    modifier_file = path.join(config_dir, 'modifiers.txt')
-    blueprint_file = path.join(config_dir, 'blueprint.json')
-    with open(blueprint_file, 'r') as bpf:
-        bp: Dict = json.load(bpf)
-    blueprint: Blueprint = {k: BlueprintElement(**v) for k, v in bp.items()}
-    modifiers = pd.read_csv(modifier_file, sep='\t')
+    ontology_config: OntologyConfig = read_configuration(config_dir)
     subject_registry_reader = SubjectRegistryReader(input_dir)
     subject_registry: CentralSubjectRegistry = subject_registry_reader.read_subject_registry()
     study_registry_reader = StudyRegistryReader(input_dir)
     study_registry: StudyRegistry = study_registry_reader.read_subject_registry()
 
     mapper = CsrMapper(study_id, top_tree_node)
-    return mapper.map(subject_registry, study_registry, modifiers, blueprint)
+    return mapper.map(subject_registry, study_registry, ontology_config.nodes)
