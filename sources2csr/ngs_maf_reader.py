@@ -1,46 +1,8 @@
-import csv
-import gzip
 import os
-from typing import Optional, Sequence, Dict, Any
+from typing import Optional, Sequence
 
 from sources2csr.ngs import NGS, LibraryStrategy
-from sources2csr.ngs_reader import NgsReader, NgsReaderException
-
-
-class GzipMafReaderException(Exception):
-    pass
-
-
-class GzipMafReader:
-    """ Reads gzipped MAF files.
-        MAF files, excluding the first row, are parsed as tab-separated text.
-    """
-    def __iter__(self):
-        return self.reader.__iter__()
-
-    def read_data(self) -> Sequence[Dict[str, Any]]:
-        data = []
-        header = None
-        for idx, line in enumerate(self):
-            if idx == 1:
-                header = line
-            elif idx > 1:
-                if not len(line) == len(header):
-                    raise GzipMafReaderException(f'Unexpected line length {line}. Expected {len(header)}')
-                record = dict([(header[i], line[i]) for i in range(0, len(header))])
-                data.append(record)
-        return data
-
-    def __init__(self, path: str):
-        self.file = gzip.open(path, 'rt')
-        self.reader = csv.reader(self.file, delimiter='\t')
-
-    def close(self) -> None:
-        if self.file:
-            self.file.close()
-
-    def __del__(self):
-        self.close()
+from sources2csr.ngs_reader import NgsReader, NgsReaderException, NgsFileReader
 
 
 class NgsMafReader(NgsReader):
@@ -59,7 +21,7 @@ class NgsMafReader(NgsReader):
         :param filename: name of the input file
         :return: Sequence of NGS objects
         """
-        data = GzipMafReader(os.path.join(self.input_dir, filename)).read_data()
+        data = NgsFileReader(os.path.join(self.input_dir, filename)).read_data()
         print(data)
         biosource_biomaterial_dict = dict()
         if len(data) > 1:

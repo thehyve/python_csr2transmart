@@ -1,11 +1,53 @@
+import csv
+import gzip
 import os
-from typing import Optional, Sequence, Dict, List
+from typing import Optional, Sequence, Dict, List, Any
 
 from sources2csr.ngs import AnalysisType, NGS, LibraryStrategy
 
 
 class NgsReaderException(Exception):
     pass
+
+
+class NgsFileReader:
+    """ Reads tab-separated files, including gzipped files.
+    Skips comment lines - lines starting with '#'.
+    """
+    def __iter__(self):
+        return self.reader.__iter__()
+
+    def read_data(self) -> Sequence[Dict[str, Any]]:
+        data = []
+        first = True
+        header = None
+        for line in self:
+            if len(line) > 0 and str.startswith(line[0], '#'):
+                # skip comment lines
+                continue
+            if first:
+                header = line
+                first = False
+            else:
+                if not len(line) == len(header):
+                    raise NgsReaderException(f'Unexpected line length {line}. Expected {len(header)}')
+                record = dict([(header[i], line[i]) for i in range(0, len(header))])
+                data.append(record)
+        return data
+
+    def __init__(self, path: str):
+        if str.endswith(path, '.gz'):
+            self.file = gzip.open(path, 'rt')
+        else:
+            self.file = open(path, 'r')
+        self.reader = csv.reader(self.file, delimiter='\t')
+
+    def close(self) -> None:
+        if self.file:
+            self.file.close()
+
+    def __del__(self):
+        self.close()
 
 
 class NgsReader:
