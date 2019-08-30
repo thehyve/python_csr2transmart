@@ -1,0 +1,3 @@
+Gene Symbol	Gene ID	Cytoband
+BRAF	673	7q34
+TP53	7157	17p13.1

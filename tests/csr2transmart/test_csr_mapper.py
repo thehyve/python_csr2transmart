@@ -118,7 +118,6 @@ def test_observations_mapping(mapped_data_collection):
     biomaterial_observations = get_observations_for_modifier(observations, biomaterial_modifier)
 
     assert len(patient_observations) == 17 + 8  # individual + individual studies
-    print(list(map(lambda po: po.value.value, patient_observations)))
     assert Counter(map(lambda po: po.value.value, patient_observations)) == Counter([
         'Human', 'f', datetime.date(1993, 2, 1), 'yes', datetime.date(2017, 3, 1), 'yes', 'yes', 'yes',  # P1
         'Human', 'm', datetime.date(1994, 4, 3), 'yes', datetime.date(2017, 5, 11), datetime.date(2017, 10, 14),
@@ -148,6 +147,7 @@ def test_observations_mapping(mapped_data_collection):
         'BS3', 'BS3', 'BS3', 'BS3', 'BS3',
         'BS4', 'BS4', 'BS4', 'BS4', 'BS4'])
 
+    print(list(map(lambda po: po.value.value, biomaterial_observations)))
     assert len(biomaterial_observations) == 9
     assert Counter(map(lambda bmo: bmo.value.value, biomaterial_observations)) == Counter([
         datetime.date(2017, 10, 12), 'RNA',  # BM1

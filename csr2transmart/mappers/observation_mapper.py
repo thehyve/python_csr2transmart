@@ -86,6 +86,11 @@ class ObservationMapper:
         mod_metadata[modifier] = CategoricalValue(value)
         return ObservationMetadata(mod_metadata)
 
+    def get_observation_for_value(self, row_value, concept: Concept, metadata: ObservationMetadata,
+                                  patient: Patient) -> Observation:
+        value = self.row_value_to_value(row_value, concept.value_type)
+        return Observation(patient, concept, None, self.default_trial_visit, None, None, value, metadata)
+
     def map_observation(self, entity: BaseModel, entity_id: str, patient: Patient):
         """
         Map entity to trasmart-loader Observation
@@ -100,15 +105,19 @@ class ObservationMapper:
             concept_code = '{}.{}'.format(entity_name, entity_field)
             concept = self.concept_code_to_concept.get(concept_code)
             if concept is not None:
-                value = self.row_value_to_value(getattr(entity, entity_field), concept.value_type)
-                if value is not None:
-                    if isinstance(entity, Individual):
-                        metadata = None
+                if isinstance(entity, Individual):
+                    metadata = None
+                else:
+                    metadata = self.map_observation_metadata(entity_name, entity_id)
+                entity_value = getattr(entity, entity_field)
+                if entity_value is not None:
+                    if isinstance(entity_value, List):
+                        for v in entity_value:
+                            self.observations.append(
+                                self.get_observation_for_value(v, concept, metadata, patient))
                     else:
-                        metadata = self.map_observation_metadata(entity_name, entity_id)
-                    observation = Observation(patient, concept, None, self.default_trial_visit, None, None, value,
-                                              metadata)
-                    self.observations.append(observation)
+                        self.observations.append(
+                            self.get_observation_for_value(entity_value, concept, metadata, patient))
 
     def map_individual_linked_entity_observations(self, entities: Sequence[BaseModel]):
         """
