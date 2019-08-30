@@ -22,7 +22,6 @@ class NgsMafReader(NgsReader):
         :return: Sequence of NGS objects
         """
         data = NgsFileReader(os.path.join(self.input_dir, filename)).read_data()
-        print(data)
         biosource_biomaterial_dict = dict()
         if len(data) > 1:
             for row in data:
