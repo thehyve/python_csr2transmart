@@ -1,7 +1,7 @@
 import pytest
 
+from csr2transmart.csr2transmart import csr2transmart
 from sources2csr.sources2csr import sources2csr
-from csr2transmart.transmart_transformation import transform
 from os import listdir
 
 
@@ -13,7 +13,7 @@ def test_that_transformation_finishes_successfully(tmp_path):
         './test_data/input_data/CLINICAL',
         test_dir,
         './test_data/input_data/config')
-    transform(
+    csr2transmart(
         './test_data/input_data/CLINICAL',
         out_dir,
         './test_data/input_data/config',

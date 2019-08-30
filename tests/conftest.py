@@ -6,9 +6,9 @@ from transmart_loader.transmart import DataCollection
 from csr.csr import CentralSubjectRegistry, StudyRegistry, Individual
 from csr.study_registry_reader import SubjectRegistryReader
 from csr.subject_registry_reader import StudyRegistryReader
+from csr2transmart.csr2transmart import read_configuration
 from csr2transmart.mappers.csr_mapper import CsrMapper
 from csr2transmart.ontology_config import OntologyConfig
-from csr2transmart.transmart_transformation import read_configuration
 
 
 @pytest.fixture

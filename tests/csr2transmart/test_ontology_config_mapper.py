@@ -1,8 +1,8 @@
 import pytest
 
+from csr2transmart.csr2transmart import read_configuration
 from csr2transmart.mappers.ontology_mapper import OntologyMapper
 from csr2transmart.ontology_config import OntologyConfigValidationException
-from csr2transmart.transmart_transformation import read_configuration
 
 """Tests for the ontology config mapper.
 """
