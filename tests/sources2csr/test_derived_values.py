@@ -8,7 +8,7 @@ from collections import Counter
 import pytest
 from csr.csr import CentralSubjectRegistry, Individual, Diagnosis, Biosource, Biomaterial
 
-from sources2csr.derived_values import add_derived_values
+from sources2csr.helper_variables import add_derived_values, add_ngs_data
 from sources2csr.ngs import NGS, LibraryStrategy, AnalysisType
 
 
@@ -27,7 +27,7 @@ def registry_with_diagnoses() -> CentralSubjectRegistry:
 
 
 def test_diagnosis_aggregates(registry_with_diagnoses):
-    subject_registry = add_derived_values(registry_with_diagnoses, set())
+    subject_registry = add_derived_values(registry_with_diagnoses)
     expected_counts = {'P1': 2, 'P2': 1}
     expected_age = {'P1': 59, 'P2': 10}
     for individual in subject_registry.individuals:
@@ -55,7 +55,7 @@ def registry_with_missing_diagnosis_data() -> CentralSubjectRegistry:
 
 
 def test_diagnosis_aggregates_with_missing_data(registry_with_missing_diagnosis_data):
-    subject_registry = add_derived_values(registry_with_missing_diagnosis_data, set())
+    subject_registry = add_derived_values(registry_with_missing_diagnosis_data)
     expected_counts = {'P1': 1, 'P2': 2, 'P3': None, 'P4': 1}
     expected_age = {'P1': 59, 'P2': None, 'P3': None, 'P4': None}
     for individual in subject_registry.individuals:
@@ -93,7 +93,7 @@ def test_biomaterial_library_strategy_and_analysis_type(registry_with_biosources
         NGS(biosource_id='BS2', biomaterial_id='BM2', library_strategy=LibraryStrategy.CNV,
             analysis_type=AnalysisType.WXS),
     ]
-    subject_registry = add_derived_values(registry_with_biosources_and_biomaterials, set(ngs_data))
+    subject_registry = add_ngs_data(registry_with_biosources_and_biomaterials, set(ngs_data))
 
     assert len(subject_registry.biomaterials) == 2
     assert Counter(subject_registry.biomaterials[0].library_strategy) == Counter(['CNV', 'SNV'])
