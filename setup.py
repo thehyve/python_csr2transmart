@@ -35,7 +35,6 @@ setup(
         'csr2transmart',
         'csr2transmart.mappers',
         'sources2csr',
-        'sources2csr.legacy',
         'csr',
         'csr2tsv'
     ],
