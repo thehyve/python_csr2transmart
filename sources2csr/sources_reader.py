@@ -85,11 +85,10 @@ class SourcesReader:
         self.sources_config = read_configuration(config_dir)
 
     def read_ngs_data(self) -> Set[NGS]:
-        for parent_dir, dirs, files in os.walk(self.input_dir):
-            if 'NGS' in dirs:
-                ngs_data_dir = os.path.join(parent_dir, dirs[dirs.index('NGS')])
-                logger.info('Found NGS data directory: {}'.format(ngs_data_dir))
-                return set(read_ngs_files(self.input_dir))
+        ngs_dir = os.path.join(self.input_dir, 'NGS')
+        if os.path.isdir(ngs_dir):
+            logger.info('Reading NGS data.')
+            return set(read_ngs_files(ngs_dir))
         logger.info('No NGS data found.')
         return set()
 
