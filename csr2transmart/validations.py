@@ -1,4 +1,3 @@
-# TODO check if possible to replace with pydantic validators: https://pydantic-docs.helpmanual.io/#validators
 class BlueprintValidations:
     def __init__(self, modifier_dimensions=set()):
         self.dimensions = {'patient'} | modifier_dimensions
