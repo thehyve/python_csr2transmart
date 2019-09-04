@@ -10,7 +10,6 @@ def test_pep8_conformance():
     check_paths = [
         'csr',
         'csr2transmart',
-        'csr2tsv',
         'sources2csr',
         'tests',
     ]

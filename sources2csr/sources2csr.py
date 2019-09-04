@@ -2,9 +2,9 @@ import logging
 import sys
 
 import click
-from csr2tsv.subject_registry_writer import SubjectRegistryWriter
+from csr.subject_registry_writer import SubjectRegistryWriter
 
-from csr2tsv.study_registry_writer import StudyRegistryWriter
+from csr.study_registry_writer import StudyRegistryWriter
 from sources2csr.derived_values import add_derived_values
 from sources2csr.ngs2csr import add_ngs_data
 from sources2csr.sources_reader import SourcesReader
