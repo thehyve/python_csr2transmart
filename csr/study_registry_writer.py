@@ -1,5 +1,5 @@
 from csr.csr import StudyRegistry, Study, IndividualStudy
-from csr2tsv.entity_writer import EntityWriter
+from csr.entity_writer import EntityWriter
 
 
 class StudyRegistryWriter(EntityWriter):
