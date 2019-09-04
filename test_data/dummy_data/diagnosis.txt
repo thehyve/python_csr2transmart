@@ -1,2 +1,0 @@
-DIAGNOSIS_ID	STUDY_ID	COLUMN3
-adsfads	dsfadsf	asdfa
