@@ -1,9 +1,8 @@
 from collections import defaultdict
-from typing import List, Dict, Set
+from typing import List, Dict
 from dateutil.relativedelta import relativedelta
 
 from csr.csr import CentralSubjectRegistry, Diagnosis
-from sources2csr.ngs import NGS
 
 
 def add_derived_values(subject_registry: CentralSubjectRegistry) -> CentralSubjectRegistry:
@@ -35,33 +34,4 @@ def add_derived_values(subject_registry: CentralSubjectRegistry) -> CentralSubje
             if first_diagnosis_date is not None:
                 individual.age_first_diagnosis = relativedelta(first_diagnosis_date, individual.birth_date).years
 
-    return subject_registry
-
-
-def add_ngs_data(subject_registry: CentralSubjectRegistry, ngs_set: Set[NGS]) -> CentralSubjectRegistry:
-    """Add library_strategy aggregates and analysis_type to biomaterials based on the NGS data
-    :param subject_registry: Central Subject Registry
-    :param ngs_set: set of NGS objects from the NGS input files
-    :return: updated Central Subject Registry
-    """
-
-    if subject_registry.biomaterials and len(ngs_set) > 0:
-        for biomaterial in subject_registry.biomaterials:
-            for ngs in ngs_set:
-                if biomaterial.biomaterial_id == ngs.biomaterial_id and \
-                   biomaterial.src_biosource_id == ngs.biosource_id:
-                    if ngs.analysis_type is not None:
-                        biomaterial.analysis_type.append(ngs.analysis_type.value)
-                    biomaterial.library_strategy.append(ngs.library_strategy.value)
-    return subject_registry
-
-
-def add_helper_variables(subject_registry: CentralSubjectRegistry, ngs_set: Set[NGS]) -> CentralSubjectRegistry:
-    """Extend subject registry with derived values and values from additional data sources: NGS files
-    :param subject_registry: Central Subject Registry
-    :param ngs_set: set of NGS objects from the NGS input files
-    :return: updated Central Subject Registry
-    """
-    add_derived_values(subject_registry)
-    add_ngs_data(subject_registry, ngs_set)
     return subject_registry
