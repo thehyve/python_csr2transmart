@@ -1,2 +1,0 @@
-INDIVIDUAL_ID	something
-asdfa	dsfasdummy_data
