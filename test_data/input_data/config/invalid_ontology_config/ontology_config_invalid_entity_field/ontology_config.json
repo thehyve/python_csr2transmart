@@ -1,0 +1,17 @@
+{
+  "nodes": [
+    {
+      "name": "01. Patient information",
+      "children": [
+        {
+          "name": "02. Gender",
+          "concept_code": "Individual.gender"
+        },
+        {
+          "name": "01. Date of birth",
+          "concept_code": "Individual.not_existing_field"
+        }
+      ]
+    }
+  ]
+}

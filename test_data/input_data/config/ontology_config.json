@@ -1,0 +1,162 @@
+{
+  "nodes": [
+    {
+      "name": "01. Patient information",
+      "children": [
+        {
+          "name": "02. Gender",
+          "concept_code": "Individual.gender"
+        },
+        {
+          "name": "01. Date of birth",
+          "concept_code": "Individual.birth_date"
+        },
+        {
+          "name": "Taxonomy",
+          "concept_code": "Individual.taxonomy"
+        },
+        {
+          "name": "05. Date of death",
+          "concept_code": "Individual.death_date"
+        },
+        {
+          "name": "Informed_consent",
+          "children": [
+            {
+              "name": "01. Informed consent type",
+              "concept_code": "Individual.ic_type"
+            },
+            {
+              "name": "Informed consent version",
+              "concept_code": "Individual.ic_version"
+            },
+            {
+              "name": "02. Date informed Consent given",
+              "concept_code": "Individual.ic_given_date"
+            },
+            {
+              "name": "03. Date informed consent withdrawn",
+              "concept_code": "Individual.ic_withdrawn_date"
+            },
+            {
+              "name": "04. Informed consent material",
+              "concept_code": "Individual.ic_material"
+            },
+            {
+              "name": "05. Informed consent data",
+              "concept_code": "Individual.ic_data"
+            },
+            {
+              "name": "06. Informed consent linking external database",
+              "concept_code": "Individual.ic_linking_ext"
+            },
+            {
+              "name": "07. Report hereditary susceptibility",
+              "concept_code": "Individual.report_her_susc"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02. Diagnosis information",
+      "children": [
+        {
+          "name": "02. Tumor type",
+          "concept_code": "Diagnosis.tumor_type"
+        },
+        {
+          "name": "03. Topography",
+          "concept_code": "Diagnosis.topography"
+        },
+        {
+          "name": "Treatment",
+          "concept_code": "Diagnosis.treatment_protocol"
+        },
+        {
+          "name": "04. Tumor stage",
+          "concept_code": "Diagnosis.tumor_stage"
+        },
+        {
+          "name": "01. Date of diagnosis",
+          "concept_code": "Diagnosis.diagnosis_date"
+        },
+        {
+          "name": "05. Center of treatment",
+          "concept_code": "Diagnosis.center_treatment"
+        }
+      ]
+    },
+    {
+      "name": "03. Biosource information",
+      "children": [
+        {
+          "name": "06. Biosource dedicated for specific study",
+          "concept_code": "Biosource.biosource_dedicated"
+        },
+        {
+          "name": "01. Biosource parent",
+          "concept_code": "Biosource.src_biosource_id"
+        },
+        {
+          "name": "03. Tissue",
+          "concept_code": "Biosource.tissue"
+        },
+        {
+          "name": "02. Date of biosource",
+          "concept_code": "Biosource.biosource_date"
+        },
+        {
+          "name": "04. Disease status",
+          "concept_code": "Biosource.disease_status"
+        },
+        {
+          "name": "05. Tumor percentage",
+          "concept_code": "Biosource.tumor_percentage"
+        }
+      ]
+    },
+    {
+      "name": "04. Biomaterial information",
+      "children": [
+        {
+          "name": "01. Biomaterial parent",
+          "concept_code": "Biomaterial.src_biomaterial_id"
+        },
+        {
+          "name": "02. Date of biomaterial",
+          "concept_code": "Biomaterial.biomaterial_date"
+        },
+        {
+          "name": "03. Biomaterial type",
+          "concept_code": "Biomaterial.type"
+        }
+      ]
+    },
+    {
+      "name": "05. Study information",
+      "children": [
+        {
+          "name": "01. Study ID",
+          "concept_code": "Study.study_id"
+        },
+        {
+          "name": "02. Study acronym",
+          "concept_code": "Study.acronym"
+        },
+        {
+          "name": "03. Study title",
+          "concept_code": "Study.title"
+        },
+        {
+          "name": "Study datadictionary",
+          "concept_code": "Study.datadictionary"
+        },
+        {
+          "name": "04. Individual Study ID",
+          "concept_code": "IndividualStudy.individual_study_id"
+        }
+      ]
+    }
+  ]
+}

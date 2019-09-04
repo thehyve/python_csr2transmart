@@ -1,0 +1,5 @@
+biosource_id	biosource_dedicated	individual_id	diagnosis_id	src_biosource_id	tissue	biosource_date	disease_status	tumor_percentage
+BS1	Yes	P1	D1	BS1	medula	2017-03-12	ST1	5
+BS2		P2	D2	BS2	cortex	2017-04-01	ST2	3
+BS3		P2		BS2	cortex	2017-05-14	ST1	2
+BS4	No	P2	D3		medula	2017-06-21	ST2	1

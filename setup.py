@@ -12,9 +12,9 @@ if sys.version_info < (3, 6):
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-# To update the package version number, edit csr2transmart/__version__.py
+# To update the package version number, edit __version__.py
 version = {}
-with open(os.path.join(here, 'csr2transmart', '__version__.py')) as f:
+with open(os.path.join(here, '__version__.py')) as f:
     exec(f.read(), version)
 
 with open('README.rst') as readme_file:
@@ -33,10 +33,13 @@ setup(
     url='https://github.com/thehyve/python_csr2transmart',
     packages=[
         'csr2transmart',
+        'csr2transmart.mappers',
+        'sources2csr',
+        'csr'
     ],
-    package_dir={'csr2transmart': 'csr2transmart'},
     entry_points={
-        'console_scripts': ['csr2transmart=csr2transmart.csr2transmart:main'],
+        'console_scripts': ['csr2transmart=csr2transmart.csr2transmart:main',
+                            'sources2csr=sources2csr.sources2csr:main'],
     },
     include_package_data=True,
     license="MIT",

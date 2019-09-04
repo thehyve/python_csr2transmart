@@ -1,0 +1,21 @@
+{
+  "nodes": [
+    {
+      "name": "01. Patient information",
+      "children": [
+        {
+          "name": "02. Gender",
+          "concept_code": "gender"
+        },
+        {
+          "name": "01. Date of birth",
+          "concept_code": "Individual.birth_date"
+        },
+        {
+          "name": "Taxonomy",
+          "concept_code": "InvalidEntity.taxonomy"
+        }
+      ]
+    }
+  ]
+}
