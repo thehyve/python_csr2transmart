@@ -36,3 +36,11 @@ def test_transformation(tmp_path):
     # test if derived values have been added
     assert p1['diagnosis_count'] == '2'
     assert p1['age_first_diagnosis'] == '23'  # 01-05-2016 - 01-02-1993
+
+    # check if data from second input file is included
+    p2 = [ind for ind in individual_data if ind['individual_id'] == 'P2'][0]
+    assert p2['ic_withdrawn_date'] == '2018-06-02'
+
+    # check if data from higher priority files are not overwritten
+    p6 = [ind for ind in individual_data if ind['individual_id'] == 'P6'][0]
+    assert p6['ic_withdrawn_date'] == '2017-10-14'
