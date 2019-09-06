@@ -35,11 +35,13 @@ setup(
         'csr2transmart',
         'csr2transmart.mappers',
         'sources2csr',
+        'csr2cbio',
         'csr'
     ],
     entry_points={
         'console_scripts': ['csr2transmart=csr2transmart.csr2transmart:main',
-                            'sources2csr=sources2csr.sources2csr:main'],
+                            'sources2csr=sources2csr.sources2csr:main',
+                            'csr2cbio=csr2cbio.csr2cbio:main'],
     },
     include_package_data=True,
     license="MIT",
