@@ -2,10 +2,8 @@ import json
 import logging
 from datetime import datetime
 from math import isnan
-import os
 from os import path
 from typing import Any, Tuple, Dict, Union, Sequence,  Set
-from sources2csr.ngs import NGS
 from csr.csr import CentralSubjectRegistry, StudyRegistry, SubjectEntity, StudyEntity
 from csr.tsv_reader import TsvReader
 from sources2csr.codebook_mapper import CodeBookMapper
