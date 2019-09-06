@@ -50,16 +50,133 @@ or from sources:
   pip install .
 
 
+Data model
+----------
+
+The Central Subject Registry (CSR) data model contains individual,
+diagnosis, biosource and biomaterial entities. The data model is defined
+as a data class in `<csr/csr.py>`_
+
+
 Usage
 ------
 
-TODO: Add example
+This repository contains a number of command line tools:
+
+* ``sources2csr``: Reads from source files and produces tab delimited CSR files.
+* ``csr2transmart``: Reads CSR files and transforms the data to the TranSMART data model,
+  creating files that can be imported to TranSMART using `transmart-copy`.
+* ``csr2cbioportal``: Reads CSR files and transforms the data to patient and sample files
+  to imported into cBioPortal.
+
+``sources2csr``
+~~~~~~~~~~~~~~~
+
+.. code-block:: console
+
+  sources2csr <input_dir> <output_dir> <config_dir>
+
+The tool reads input files from ``<input_dir>`` and
+writes CSR files in tab delimited format (one file per entity type) to
+``<output_dir>``.
+The output directory ``<output_dir>`` needs to be either empty or not yet existing.
+
+The sources configuration will be read from ``<config_dir>/sources_config.json``,
+a JSON file that contains two attributes:
+
+* ``entities``: a map from entity type name to a description of the sources for that entity type. E.g.,
+
+  .. code-block:: json
+
+    {
+      "Individual": {
+        "attributes": [
+          {
+            "name": "individual_id",
+            "sources": [
+              {
+                "file": "individual.tsv",
+                "column": "individual_id"
+              }
+            ]
+          },
+          {
+            "name": "birth_date",
+            "sources": [
+              {
+                "file": "individual.tsv",
+                "date_format": "%d-%m-%Y"
+              }
+            ]
+          }
+        ]
+      }
+    }
+
+  The entity type names have to match the entity type names in the CSR data model and
+  the attribute names should match the attribute names in the data model as well.
+  The ``column`` field is optional, by default the column name is assumed to be
+  the same as the attribute name.
+  For date fields, a ``date_format`` can be specified. If not specified, it is
+  assumed to be ``%Y-%m-%d`` or any other `date formats supported by Pydantic`_.
+  If multiple input files are specified for an attribute, data for that attribute
+  is read in that order, i.e., only if the first file has no data for an attribute
+  for a specific entity, data for that attribute for that entity is read from the next file, etc.
+
+* ``codebooks``: a map from input file name to codebook file name, e.g., ``{"individual.tsv": "codebook.txt"}``.
+
+See `<test_data/input_data/config/sources_config.json>`_ for an example.
+
+.. _`date formats supported by Pydantic`: https://pydantic-docs.helpmanual.io/#datetime-types
+
+
+``csr2transmart``
+~~~~~~~~~~~~~~~~~
+
+.. code-block:: console
+
+  csr2transmart <input_dir> <output_dir> <config_dir>
+
+The tool reads CSR files from ``<input_dir>`` (one file per entity type),
+transforms the CSR data to the TranSMART data model and
+writes the output in ``transmart-copy`` format to ``<output_dir>``.
+The output directory ``<output_dir>`` needs to be either empty or not yet existing.
+
+The ontology configuration will be read from ``<config_dir>/ontology_config.json``.
+See `<test_data/input_data/config/ontology_config.json>`_ for an example.
+
+
+``csr2cbioportal``
+~~~~~~~~~~~~~~~~~~
+
+.. code-block:: console
+
+  csr2cbioportal <input_dir> <ngs_dir> <output_dir>
+
+The tool reads CSR files from ``<input_dir>`` (one file per entity type),
+and NGS data (genomics data) from ``<ngs_dir>``,
+transforms the CSR data to the clinical data format for cBioPortal and
+writes the following data types to ``<output_dir>``:
+
+* Clinical data 
+* Mutation data
+* CNA Segment data
+* CNA Continuous data
+* CNA Discrete data
+
+File structure, case lists and meta files will also be also added in the output folder.
+See the  `cBioPortal file formats`_ documentation for further details.
+
+The output directory ``<output_dir>`` needs to be either empty or not yet existing.
+
+.. _`cBioPortal file formats`: https://docs.cbioportal.org/5.1-data-loading/data-loading/file-formats
+
 
 
 Python versions
 ---------------
 
-This repository is set up with Python version 3.6
+This package supports Python versions 3.6 and 3.7.
 
 
 Package management and dependencies
@@ -67,17 +184,15 @@ Package management and dependencies
 
 This project uses `pip` for installing dependencies and package management.
 
-* Dependencies should be added to `setup.py` in the `install_requires` list.
+* Dependencies should be added to `<requirements.txt>`_.
 
 Testing and code coverage
 -------------------------
 
 * Tests are in the ``tests`` folder.
 
-* The ``tests`` folder contains:
-
-  - A test if the `csr2transmart` script starts (file: ``test_csr2transmart``)
-  - A test that checks whether your code conforms to the Python style guide (PEP 8) (file: ``test_lint.py``)
+* The ``tests`` folder contains tests for each of the tools and
+  a test that checks whether your code conforms to the Python style guide (PEP 8) (file: ``test_lint.py``)
 
 * The testing framework used is `PyTest <https://pytest.org>`_
 
