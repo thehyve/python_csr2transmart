@@ -51,7 +51,7 @@ def add_ngs_data(subject_registry: CentralSubjectRegistry, input_dir: str) -> Ce
     :return: updated Central Subject Registry
     """
     ngs_data = read_ngs_files(input_dir)
-    if subject_registry.biomaterials and len(ngs_data) > 0:
+    if subject_registry.biomaterials and ngs_data:
         for biomaterial in subject_registry.biomaterials:
             for ngs in ngs_data:
                 if biomaterial.biomaterial_id == ngs.biomaterial_id and \

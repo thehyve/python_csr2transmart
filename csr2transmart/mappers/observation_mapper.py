@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from transmart_loader.transmart import TrialVisit, Patient, Concept, Modifier, Observation, ObservationMetadata, \
     Value, CategoricalValue, ValueType, NumericalValue, DateValue, TextValue
 
-from csr.csr import CentralSubjectRegistry, StudyRegistry, Individual, Diagnosis, Biosource, Biomaterial, SubjectEntity
+from csr.csr import CentralSubjectRegistry, StudyRegistry, Individual, SubjectEntity
 from csr2transmart.csr_mapping_exception import CsrMappingException
 
 
@@ -121,11 +121,11 @@ class ObservationMapper:
 
     def map_individual_linked_entity_observations(self, entities: Sequence[BaseModel]):
         """
-        Map observations foe entities that have a direct linc to individuals,
+        Map observations for entities that have a direct link to individuals,
         :param entities: Central subject registry entities
         :return:
         """
-        if len(entities) > 0:
+        if entities:
             entity_type = type(entities[0])
             id_attribute = self.get_id_field_name(entity_type)
             for entity in entities:
@@ -142,13 +142,13 @@ class ObservationMapper:
                                                       entities: Sequence[SubjectEntity],
                                                       ref_entities: Sequence[SubjectEntity]):
         """
-        Map observations foe entities that do not have a direct linc to individuals,
+        Map observations for entities that do not have a direct link to individuals,
         but have a reference linking to individuals.
         :param entities: Central subject registry entities
         :param ref_entities: reference entities that have a link to individuals
         :return:
         """
-        if len(entities) > 0:
+        if entities and ref_entities:
             entity_type = type(entities[0])
             ref_entity_type = type(ref_entities[0])
             entity_id_field_name = self.get_id_field_name(entity_type)
@@ -201,7 +201,7 @@ class ObservationMapper:
         :param ref_entities: Optional, Central subject registry entities that link to individuals
         :return:
         """
-        if len(ref_entities) == 0:
+        if not ref_entities:
             self.map_individual_linked_entity_observations(entities)
         else:
             self.map_non_individual_linked_entity_observations(entities, ref_entities)

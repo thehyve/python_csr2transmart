@@ -20,7 +20,7 @@ def add_derived_values(subject_registry: CentralSubjectRegistry) -> CentralSubje
     for individual_id, diagnoses in diagnoses_per_individual.items():
         diagnosis_count_per_individual[individual_id] = len(diagnoses)
         diagnosis_dates = [d.diagnosis_date for d in diagnoses if d.diagnosis_date is not None]
-        if len(diagnosis_dates) > 0:
+        if diagnosis_dates:
             first_diagnosis_date = sorted(diagnosis_dates)[0]
             first_diagnosis_date_per_individual[individual_id] = first_diagnosis_date
 

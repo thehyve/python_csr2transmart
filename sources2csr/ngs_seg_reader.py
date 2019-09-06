@@ -1,7 +1,6 @@
 import os
 from typing import Optional, Sequence
 
-from csr.tsv_reader import TsvReader
 from sources2csr.ngs import NGS, LibraryStrategy
 from sources2csr.ngs_reader import NgsReader, NgsReaderException, NgsFileReader
 
