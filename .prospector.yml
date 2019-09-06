@@ -1,0 +1,6 @@
+strictness: medium
+
+ignore-paths:
+  - build
+  - dist
+  - venv

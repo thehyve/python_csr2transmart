@@ -22,7 +22,7 @@ class NgsFileReader:
         first = True
         header = None
         for line in self:
-            if len(line) > 0 and str.startswith(line[0], '#'):
+            if line and str.startswith(line[0], '#'):
                 # skip comment lines
                 continue
             if first:
