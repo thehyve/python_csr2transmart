@@ -39,7 +39,7 @@ DESCRIPTION = 'Transformed to cBioPortal format on: %s' % time.strftime("%d-%m-%
 TYPE_OF_CANCER = 'mixed'
 
 
-def create_cbio_study(clinical_input_file, ngs_dir, output_dir):
+def create_cbio_study(input_dir, ngs_dir, output_dir):
     # Remove old output directory and recreate to ensure all NGS data is
     if os.path.exists(output_dir):
         shutil.rmtree(output_dir)
@@ -56,8 +56,8 @@ def create_cbio_study(clinical_input_file, ngs_dir, output_dir):
             raise oe
 
     # Clinical data
-    logger.info('Transforming clinical data: %s' % clinical_input_file)
-    subject_registry_reader = SubjectRegistryReader(clinical_input_file)
+    logger.info('Transforming clinical data: %s' % input_dir)
+    subject_registry_reader = SubjectRegistryReader(input_dir)
     subject_registry: CentralSubjectRegistry = subject_registry_reader.read_subject_registry()
 
     # Transform patient file
@@ -298,41 +298,17 @@ def get_complete_header(paths_to_process):
 
 
 @click.command()
-@click.argument('clinical_input_file', type=click.Path(exists=True))
-@click.argument('ngs_dir', type=click.Path(exists=True))
-@click.argument('output_dir', type=click.Path(exists=True))
-@click.argument('loggerconfig', type=click.Path(exists=True))
-def run(clinical_input_file, ngs_dir, output_dir, loggerconfig):
-    fileConfig(loggerconfig)
-    create_cbio_study(clinical_input_file, ngs_dir, output_dir)
+@click.argument('input_dir')
+@click.argument('ngs_dir')
+@click.argument('output_dir')
+@click.version_option()
+def run(input_dir, ngs_dir, output_dir):
+    create_cbio_study(input_dir, ngs_dir, output_dir)
 
 
-def main(clinical_input_file, ngs_dir, output_dir, loggerconfig):
-    run(clinical_input_file, ngs_dir, output_dir, loggerconfig)
+def main():
+    run()
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
-        usage="-c <clinical_input_file> -n <dir_for_ngs_files> -o <dir_for_output_files>",
-        description="Transforms all files for all studies in input folder to cBioPortal staging files")
-
-    arguments = parser.add_argument_group('Named arguments')
-
-    arguments.add_argument("-c", "--clinical_input_file",
-                           required=True,
-                           help="Clinical input file")
-
-    arguments.add_argument("-n", "--ngs_dir",
-                           required=True,
-                           help="Directory NGS files")
-
-    arguments.add_argument("-o", "--output_dir",
-                           required=True,
-                           help="Directory where studies with cBioPortal staging files are written.")
-
-    arguments.add_argument("-l", "--loggerconfig",
-                           required=True,
-                           help="Path to logging config file")
-
-    args = parser.parse_args()
-    main(args.clinical_input_file, args.ngs_dir, args.output_dir, args.loggerconfig)
+    main()

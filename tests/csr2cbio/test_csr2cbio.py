@@ -5,16 +5,21 @@
 """
 from os import path
 
+from click.testing import CliRunner
+
 from csr2cbio import csr2cbio
 
 
 def test_transformation(tmp_path):
     target_path = tmp_path.as_posix()
     output_path = target_path + '/data'
-    csr2cbio.main('./test_data/input_data/cbio_clinical',
-                  './test_data/input_data/cbio_clinical/NGS',
-                  output_path,
-                  './test_data/input_data/config/logging.cfg')
+    runner = CliRunner()
+    result = runner.invoke(csr2cbio.run, [
+        './test_data/input_data/cbio_clinical',
+        './test_data/input_data/cbio_clinical/NGS',
+        output_path
+    ])
+    assert result.exit_code == 0
 
     assert path.exists(output_path + '/data_clinical_patient.txt')
     assert path.exists(output_path + '/meta_clinical_patient.txt')
