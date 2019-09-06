@@ -5,12 +5,12 @@ import pandas as pd
 import pytest
 from csr.csr import CentralSubjectRegistry
 from csr.study_registry_reader import SubjectRegistryReader
-from csr2cbio.cbio_transform_clinical import transform_patient_clinical_data, transform_sample_clinical_data
+from csr2cbioportal.transform_clinical import transform_patient_clinical_data, transform_sample_clinical_data
 
 
 @pytest.fixture
 def patient_clinical_data() -> pd.DataFrame:
-    input_dir = './test_data/input_data/cbio_clinical'
+    input_dir = './test_data/input_data/CSR2CBIOPORTAL_TEST_DATA'
     subject_registry_reader = SubjectRegistryReader(input_dir)
     subject_registry: CentralSubjectRegistry = subject_registry_reader.read_subject_registry()
     return transform_patient_clinical_data(subject_registry)[0]
@@ -18,7 +18,7 @@ def patient_clinical_data() -> pd.DataFrame:
 
 @pytest.fixture
 def sample_clinical_data() -> pd.DataFrame:
-    input_dir = './test_data/input_data/cbio_clinical'
+    input_dir = './test_data/input_data/CSR2CBIOPORTAL_TEST_DATA'
     subject_registry_reader = SubjectRegistryReader(input_dir)
     subject_registry: CentralSubjectRegistry = subject_registry_reader.read_subject_registry()
     return transform_sample_clinical_data(subject_registry)[0]

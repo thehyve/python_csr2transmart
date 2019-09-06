@@ -1,22 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Tests for the csr2transmart application.
+"""Tests for the csr2cbioportal application.
 """
 from os import path
 
 from click.testing import CliRunner
 
-from csr2cbio import csr2cbio
+from csr2cbioportal import csr2cbioportal
 
 
 def test_transformation(tmp_path):
     target_path = tmp_path.as_posix()
     output_path = target_path + '/data'
     runner = CliRunner()
-    result = runner.invoke(csr2cbio.run, [
-        './test_data/input_data/cbio_clinical',
-        './test_data/input_data/cbio_clinical/NGS',
+    result = runner.invoke(csr2cbioportal.run, [
+        './test_data/input_data/CSR2CBIOPORTAL_TEST_DATA',
+        './test_data/input_data/CSR2CBIOPORTAL_TEST_DATA/NGS',
         output_path
     ])
     assert result.exit_code == 0

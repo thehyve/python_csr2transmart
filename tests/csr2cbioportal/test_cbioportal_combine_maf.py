@@ -5,7 +5,7 @@ import unittest
 import tempfile
 import os
 
-from csr2cbio import csr2cbio
+from csr2cbioportal import csr2cbioportal
 
 
 def create_tsv_file(file, table):
@@ -53,7 +53,7 @@ class CbioCombineMafTest(unittest.TestCase):
         out_dir = tempfile.mkdtemp()
         result_maf_file = os.path.join(out_dir, 'result.maf')
 
-        samples = csr2cbio.combine_maf(
+        samples = csr2cbioportal.combine_maf(
             ngs_dir=ngs_dir,
             output_file_location=result_maf_file)
 
@@ -85,7 +85,7 @@ class CbioCombineMafTest(unittest.TestCase):
         out_dir = tempfile.mkdtemp()
         result_maf_file = os.path.join(out_dir, 'result.maf')
 
-        samples = csr2cbio.combine_maf(
+        samples = csr2cbioportal.combine_maf(
             ngs_dir=ngs_dir,
             output_file_location=result_maf_file)
 
@@ -104,7 +104,7 @@ class CbioCombineMafTest(unittest.TestCase):
         out_dir = tempfile.mkdtemp()
         result_maf_file = os.path.join(out_dir, 'result.maf')
 
-        samples = csr2cbio.combine_maf(
+        samples = csr2cbioportal.combine_maf(
             ngs_dir=ngs_dir,
             output_file_location=result_maf_file)
 
