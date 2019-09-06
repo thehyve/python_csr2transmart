@@ -3,29 +3,23 @@
 # Code to transform PMC processed data to cBioPortal staging files
 # Author: Sander Tan, The Hyve
 
-import sys
-import os
+import csv
 import errno
-import argparse
+import gzip
+import logging
+import os
+import shutil
+import sys
+import time
 
 import click
+import pandas as pd
 
 from csr.csr import CentralSubjectRegistry
 from csr.study_registry_reader import SubjectRegistryReader
-
-from .transform_clinical import write_clinical, transform_patient_clinical_data, transform_sample_clinical_data
-from .create_metafile import create_meta_content
 from .create_caselist import create_caselist
-import pandas as pd
-import shutil
-import time
-import json
-import logging
-from logging.config import fileConfig
-import gzip
-import csv
-
-sys.dont_write_bytecode = True
+from .create_metafile import create_meta_content
+from .transform_clinical import write_clinical, transform_patient_clinical_data, transform_sample_clinical_data
 
 logger = logging.getLogger(__name__)
 logger.name = logger.name.rsplit('.', 1)[1]
