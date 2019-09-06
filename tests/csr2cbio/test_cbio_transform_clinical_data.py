@@ -5,31 +5,23 @@ import pandas as pd
 import pytest
 from csr.csr import CentralSubjectRegistry
 from csr.study_registry_reader import SubjectRegistryReader
-
-from scripts.cbioportal_transformation.cbio_transform_clinical import \
-    transform_patient_clinical_data, transform_sample_clinical_data
+from csr2cbio.cbio_transform_clinical import transform_patient_clinical_data, transform_sample_clinical_data
 
 
 @pytest.fixture
 def patient_clinical_data() -> pd.DataFrame:
-    input_dir = './test_data/default_data'
+    input_dir = './test_data/input_data/cbio_clinical'
     subject_registry_reader = SubjectRegistryReader(input_dir)
     subject_registry: CentralSubjectRegistry = subject_registry_reader.read_subject_registry()
-    descriptions_file = './test_data/config/cbioportal_header_descriptions.json'
-    with open(descriptions_file, 'r') as des:
-        description_map = json.loads(des.read())
-    return transform_patient_clinical_data(subject_registry, description_map)[0]
+    return transform_patient_clinical_data(subject_registry)[0]
 
 
 @pytest.fixture
 def sample_clinical_data() -> pd.DataFrame:
-    input_dir = './test_data/default_data'
+    input_dir = './test_data/input_data/cbio_clinical'
     subject_registry_reader = SubjectRegistryReader(input_dir)
     subject_registry: CentralSubjectRegistry = subject_registry_reader.read_subject_registry()
-    descriptions_file = './test_data/config/cbioportal_header_descriptions.json'
-    with open(descriptions_file, 'r') as des:
-        description_map = json.loads(des.read())
-    return transform_sample_clinical_data(subject_registry, description_map)[0]
+    return transform_sample_clinical_data(subject_registry)[0]
 
 
 def test_patient_clinical_data(patient_clinical_data):

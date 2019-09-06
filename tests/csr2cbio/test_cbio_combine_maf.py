@@ -1,8 +1,33 @@
+import csv
+import gzip
+import shutil
 import unittest
 import tempfile
 import os
-from tests.file_helpers import create_tsv_file, read_tsv_file, gz_file
-from scripts.cbioportal_transformation import cbio_wrapper
+
+from csr2cbio import csr2cbio
+
+
+def create_tsv_file(file, table):
+    with open(file, 'w') as tsvfile:
+        writer = csv.writer(tsvfile, delimiter='\t')
+        for row in table:
+            writer.writerow(row)
+
+
+def read_tsv_file(file):
+    table = []
+    with open(file, 'r') as tsvfile:
+        reader = csv.reader(tsvfile, delimiter='\t')
+        for row in reader:
+            table.append(row)
+    return table
+
+
+def gz_file(file):
+    result_file = file + '.gz'
+    with open(file, 'rb') as f_in, gzip.open(result_file, 'wb') as f_out:
+        shutil.copyfileobj(f_in, f_out)
 
 
 class CbioCombineMafTest(unittest.TestCase):
@@ -28,7 +53,7 @@ class CbioCombineMafTest(unittest.TestCase):
         out_dir = tempfile.mkdtemp()
         result_maf_file = os.path.join(out_dir, 'result.maf')
 
-        samples = cbio_wrapper.combine_maf(
+        samples = csr2cbio.combine_maf(
             ngs_dir=ngs_dir,
             output_file_location=result_maf_file)
 
@@ -60,7 +85,7 @@ class CbioCombineMafTest(unittest.TestCase):
         out_dir = tempfile.mkdtemp()
         result_maf_file = os.path.join(out_dir, 'result.maf')
 
-        samples = cbio_wrapper.combine_maf(
+        samples = csr2cbio.combine_maf(
             ngs_dir=ngs_dir,
             output_file_location=result_maf_file)
 
@@ -79,7 +104,7 @@ class CbioCombineMafTest(unittest.TestCase):
         out_dir = tempfile.mkdtemp()
         result_maf_file = os.path.join(out_dir, 'result.maf')
 
-        samples = cbio_wrapper.combine_maf(
+        samples = csr2cbio.combine_maf(
             ngs_dir=ngs_dir,
             output_file_location=result_maf_file)
 

@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 logger.name = logger.name.rsplit('.', 1)[1]
 
 # Rename column headers in patient clinical data
-RENAME_PATIENT_DATA_HEADER = {'INDIVIDUAL_ID': 'PATIENT_ID'}
+RENAME_CLINICAL_DATA_HEADER = {'INDIVIDUAL_ID': 'PATIENT_ID'}
 # Force some datatypes to be remappad to STRING
 FORCE_STRING_LIST = ['CENTER_TREATMENT', 'CID', 'DIAGNOSIS_ID', 'GENDER', 'IC_DATA', 'IC_LINKING_EXT', 'IC_MATERIAL',
                      'IC_TYPE', 'INDIVIDUAL_STUDY_ID', 'TOPOGRAPHY', 'TUMOR_TYPE']
@@ -100,6 +100,9 @@ def subject_registry_to_sample_data_df(subject_registry: CentralSubjectRegistry)
     biosource_data.columns = [x.upper() for x in biosource_data.columns]
     biomaterial_data.columns = [x.upper() for x in biomaterial_data.columns]
 
+    diagnosis_data.rename(columns=RENAME_CLINICAL_DATA_HEADER, inplace=True)
+    biosource_data.rename(columns=RENAME_CLINICAL_DATA_HEADER, inplace=True)
+
     return to_sample_data(biosource_data, biomaterial_data, diagnosis_data)
 
 
@@ -107,7 +110,7 @@ def subject_registry_to_patient_data_df(subject_registry: CentralSubjectRegistry
     patient_data = pd.DataFrame.from_records([s.__dict__ for s in subject_registry.individuals])
 
     patient_data.columns = [x.upper() for x in patient_data.columns]
-    patient_data.rename(columns=RENAME_PATIENT_DATA_HEADER, inplace=True)
+    patient_data.rename(columns=RENAME_CLINICAL_DATA_HEADER, inplace=True)
 
     return patient_data
 
@@ -182,7 +185,7 @@ def transform_patient_clinical_data(subject_registry: CentralSubjectRegistry) ->
     patient_data_df.dropna(axis=1, how='all', inplace=True)
     # Create header
     patient_data_header = create_clinical_header(patient_data_df)
-    patient_data_df= modify_clinical_data_column_names(patient_data_df)
+    patient_data_df = modify_clinical_data_column_names(patient_data_df)
     patient_data_df = modify_clinical_data_column_values(patient_data_df)
 
     return patient_data_df, patient_data_header
