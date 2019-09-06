@@ -16,7 +16,7 @@ import pandas as pd
 from csr.csr import CentralSubjectRegistry
 from csr.study_registry_reader import SubjectRegistryReader
 
-from .cbio_create_metafile import create_meta_content
+from .create_metafile import create_meta_content
 
 sys.dont_write_bytecode = True
 
