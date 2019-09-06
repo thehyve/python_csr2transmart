@@ -3,22 +3,16 @@
 # Code to transform clinical data
 # Author: Sander Tan, The Hyve
 
-import argparse
-import json
 import logging
 import os
 import re
 import sys
-from typing import Dict
 
 import numpy as np
 import pandas as pd
+
 from csr.csr import CentralSubjectRegistry
-from csr.study_registry_reader import SubjectRegistryReader
-
 from .create_metafile import create_meta_content
-
-sys.dont_write_bytecode = True
 
 logger = logging.getLogger(__name__)
 logger.name = logger.name.rsplit('.', 1)[1]
