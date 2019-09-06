@@ -2,10 +2,8 @@ import json
 import logging
 from datetime import datetime
 from math import isnan
-import os
 from os import path
-from typing import Any, Tuple, Dict, Union, Sequence,  Set
-from sources2csr.ngs import NGS
+from typing import Any, Tuple, Dict, Union, Sequence
 from csr.csr import CentralSubjectRegistry, StudyRegistry, SubjectEntity, StudyEntity
 from csr.tsv_reader import TsvReader
 from sources2csr.codebook_mapper import CodeBookMapper
@@ -19,7 +17,7 @@ logger = logging.getLogger(__name__)
 def format_column(column: Union[str, Tuple[str, str]]):
     if isinstance(column, str):
         return column.lower()
-    return column[0].lower() if column[1] is '' else column[1].lower()
+    return column[0].lower() if column[1] == '' else column[1].lower()
 
 
 def format_value(schema: Dict, column: str, value: Any):
@@ -86,7 +84,7 @@ class SourcesReader:
         schema_columns = list(schema['properties'].keys())
         print(f'Schema columns: {schema_columns}')
         invalid_columns = set(source_columns) - set(schema_columns)
-        if len(invalid_columns) > 0:
+        if invalid_columns:
             raise DataException(f'Unknown columns in source configuration: {invalid_columns}')
         id_column = list([name for (name, prop) in schema['properties'].items()
                           if 'identity' in prop and prop['identity'] is True])[0]
@@ -103,7 +101,7 @@ class SourcesReader:
         print(f'Source file id mapping: {source_file_id_mapping}')
 
         source_files_without_id_column = source_files - set(source_file_id_mapping.keys())
-        if len(source_files_without_id_column) > 0:
+        if source_files_without_id_column:
             raise DataException(f'Id column missing in source files: {source_files_without_id_column}')
 
         source_data = {}
