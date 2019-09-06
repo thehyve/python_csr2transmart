@@ -8,6 +8,10 @@
             {
               "file": "individual.tsv",
               "column": "individual_id"
+            },
+            {
+              "file": "ic_withdrawal.tsv",
+              "column": "person_id"
             }
           ]
         },
@@ -71,6 +75,10 @@
               "file": "individual.tsv",
               "column": "IC_withdrawn_date",
               "date_format": "%d-%m-%Y"
+            },
+            {
+              "file": "ic_withdrawal.tsv",
+              "column": "ic_withdrawn_at"
             }
           ]
         },

@@ -130,7 +130,7 @@ class SourcesReader:
                     print(f'Adding data for attribute {attribute.name} from source {source.file}:{source_column}')
                     source_id_column = source_file_id_mapping[source.file]
                     for entity_id, entity in entity_data.items():
-                        if attribute.name not in entity:
+                        if attribute.name not in entity or entity[attribute.name] is None:
                             source_records = list([record for record in source_data[source.file]
                                                    if record[source_id_column] == entity_id])
                             if len(source_records) > 1:
