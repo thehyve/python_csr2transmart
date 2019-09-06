@@ -11,6 +11,7 @@ def test_pep8_conformance():
         'csr',
         'csr2transmart',
         'sources2csr',
+        'csr2cbio',
         'tests',
     ]
     exclude_paths = []
