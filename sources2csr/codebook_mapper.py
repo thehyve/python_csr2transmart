@@ -1,10 +1,7 @@
 from typing import Any, Dict, List, Optional, Sequence
 
+from csr.exceptions import DataException
 from sources2csr.codebook import CodeBook, ColumnValueMapping
-
-
-class CodeBookMapperException(Exception):
-    pass
 
 
 def read_codebook(codebook_filename: str) -> CodeBook:
@@ -36,7 +33,7 @@ def read_codebook(codebook_filename: str) -> CodeBook:
                 # Start new column mapping
                 tokens = line.split('\t')
                 if len(tokens) != 2:
-                    raise CodeBookMapperException(
+                    raise DataException(
                         f'Invalid header in codebook {codebook_filename} on line {line_number}')
                 current_columns = [column_name.lower() for column_name in tokens[1].split(' ')]
                 current_value_mapping = {}
@@ -44,7 +41,7 @@ def read_codebook(codebook_filename: str) -> CodeBook:
                 # Add values to current value mapping
                 tokens = line.split('\t')[1:]
                 if len(tokens) % 2 != 0:
-                    raise CodeBookMapperException(
+                    raise DataException(
                         f'Invalid value mapping in codebook {codebook_filename} on line {line_number}')
                 it = iter(tokens)
                 for code, value in zip(it, it):
