@@ -4,7 +4,7 @@ from collections import Counter
 import pandas as pd
 import pytest
 from csr.csr import CentralSubjectRegistry
-from csr.study_registry_reader import SubjectRegistryReader
+from csr.subject_registry_reader import SubjectRegistryReader
 from csr2cbioportal.transform_clinical import transform_patient_clinical_data, transform_sample_clinical_data
 
 
