@@ -16,7 +16,7 @@ import click
 import pandas as pd
 
 from csr.csr import CentralSubjectRegistry
-from csr.study_registry_reader import SubjectRegistryReader
+from csr.subject_registry_reader import SubjectRegistryReader
 from .create_caselist import create_caselist
 from .create_metafile import create_meta_content
 from .transform_clinical import write_clinical, transform_patient_clinical_data, transform_sample_clinical_data

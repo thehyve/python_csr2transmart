@@ -8,8 +8,8 @@ from transmart_loader.copy_writer import TransmartCopyWriter
 from transmart_loader.transmart import DataCollection
 
 from csr.csr import CentralSubjectRegistry, StudyRegistry
-from csr.study_registry_reader import SubjectRegistryReader
-from csr.subject_registry_reader import StudyRegistryReader
+from csr.subject_registry_reader import SubjectRegistryReader
+from csr.study_registry_reader import StudyRegistryReader
 from csr2transmart.mappers.csr_mapper import CsrMapper
 from csr2transmart.ontology_config import OntologyConfig
 
