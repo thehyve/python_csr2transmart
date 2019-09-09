@@ -38,8 +38,7 @@ class CsrMapper:
 
     def map_patients(self, individuals: Sequence[Individual]):
         for individual in individuals:
-            mapping = IdentifierMapping('SUB_ID', individual.individual_id)
-            patient = Patient(individual.individual_id, individual.gender, [mapping])
+            patient = Patient(individual.individual_id, individual.gender, [])
             self.individual_id_to_patient[individual.individual_id] = patient
 
     def map_dimensions_and_modifiers(self):
