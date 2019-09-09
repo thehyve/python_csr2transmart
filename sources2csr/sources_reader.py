@@ -79,16 +79,16 @@ class SourcesReader:
             raise DataException(f'No source configuration found for the {entity_type.__name__} entity')
         entity_sources_config = self.sources_config.entities[entity_type.__name__]
         source_columns = list([attribute.name for attribute in entity_sources_config.attributes])
-        print(f'Source columns: {source_columns}')
+        logger.debug(f'Source columns: {source_columns}')
         schema = entity_type.schema()
         schema_columns = list(schema['properties'].keys())
-        print(f'Schema columns: {schema_columns}')
+        logger.debug(f'Schema columns: {schema_columns}')
         invalid_columns = set(source_columns) - set(schema_columns)
         if invalid_columns:
             raise DataException(f'Unknown columns in source configuration: {invalid_columns}')
         id_column = list([name for (name, prop) in schema['properties'].items()
                           if 'identity' in prop and prop['identity'] is True])[0]
-        print(f'Id column: {id_column}')
+        logger.debug(f'Id column: {id_column}')
 
         source_files = set([source.file
                             for attribute in entity_sources_config.attributes
@@ -97,8 +97,8 @@ class SourcesReader:
                                        for attribute in entity_sources_config.attributes
                                        for source in attribute.sources
                                        if attribute.name == id_column])
-        print(f'Source files: {source_files}')
-        print(f'Source file id mapping: {source_file_id_mapping}')
+        logger.debug(f'Source files: {source_files}')
+        logger.debug(f'Source file id mapping: {source_file_id_mapping}')
 
         source_files_without_id_column = source_files - set(source_file_id_mapping.keys())
         if source_files_without_id_column:
@@ -115,17 +115,18 @@ class SourcesReader:
                     entity_data[item_id] = {id_column: item_id}
             source_data[source_file] = source_file_data
 
-        print(f'{entity_type.__name__} entity data: {entity_data}')
+        logger.debug(f'{entity_type.__name__} entity data: {entity_data}')
 
         for attribute in entity_sources_config.attributes:
             if not attribute.name == id_column:
                 # add data to entities for attribute
-                print(f'Adding data for attribute {attribute.name}')
+                logger.debug(f'Adding data for attribute {attribute.name}')
                 for source in attribute.sources:
                     # default column name is the attribute name
                     source_column = source.column if source.column is not None else attribute.name
                     # add data from source to attribute
-                    print(f'Adding data for attribute {attribute.name} from source {source.file}:{source_column}')
+                    logger.debug(
+                        f'Adding data for attribute {attribute.name} from source {source.file}:{source_column}')
                     source_id_column = source_file_id_mapping[source.file]
                     for entity_id, entity in entity_data.items():
                         if attribute.name not in entity or entity[attribute.name] is None:
@@ -142,7 +143,7 @@ class SourcesReader:
                                     value = datetime.strptime(value, source.date_format)
                                 entity[attribute.name] = value
 
-        print(f'{entity_type.__name__} entity data: {entity_data}')
+        logger.debug(f'{entity_type.__name__} entity data: {entity_data}')
 
         return transform_entities(
             entity_data.values(),
