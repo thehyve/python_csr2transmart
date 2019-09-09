@@ -3,11 +3,8 @@ import gzip
 import os
 from typing import Optional, Sequence, Dict, List, Any
 
+from csr.exceptions import ReaderException
 from sources2csr.ngs import AnalysisType, NGS, LibraryStrategy
-
-
-class NgsReaderException(Exception):
-    pass
 
 
 class NgsFileReader:
@@ -30,7 +27,7 @@ class NgsFileReader:
                 first = False
             else:
                 if not len(line) == len(header):
-                    raise NgsReaderException(f'Unexpected line length {line}. Expected {len(header)}')
+                    raise ReaderException(f'Unexpected line length {line}. Expected {len(header)}')
                 record = dict([(header[i], line[i]) for i in range(0, len(header))])
                 data.append(record)
         return data
@@ -86,8 +83,8 @@ class NgsReader:
 
         biosource_biomaterial_pair = sample_id.split(by)
         if len(biosource_biomaterial_pair) != 2:
-            raise NgsReaderException('Invalid sample_id format found in {} NGS file. sample_id: {}'
-                                     .format(filename, sample_id))
+            raise ReaderException('Invalid sample_id format found in {} NGS file. sample_id: {}'
+                                  .format(filename, sample_id))
         else:
             return biosource_biomaterial_pair[0], biosource_biomaterial_pair[1]
 

@@ -5,7 +5,8 @@
 """
 import pytest
 
-from sources2csr.codebook_mapper import read_codebook, CodeBookMapperException, CodeBookMapper
+from csr.exceptions import DataException
+from sources2csr.codebook_mapper import read_codebook, CodeBookMapper
 
 
 def test_valid_codebook():
@@ -16,13 +17,13 @@ def test_valid_codebook():
 
 
 def test_invalid_codebook():
-    with pytest.raises(CodeBookMapperException) as excinfo:
+    with pytest.raises(DataException) as excinfo:
         read_codebook('./test_data/input_data/codebooks/invalid_codebook.txt')
     assert 'Invalid value mapping in codebook' in str(excinfo.value)
 
 
 def test_invalid_header():
-    with pytest.raises(CodeBookMapperException) as excinfo:
+    with pytest.raises(DataException) as excinfo:
         read_codebook('./test_data/input_data/codebooks/invalid_header.txt')
     assert 'Invalid header in codebook' in str(excinfo.value)
 

@@ -2,7 +2,7 @@ import os
 from typing import Optional, Sequence
 
 from sources2csr.ngs import NGS, LibraryStrategy
-from sources2csr.ngs_reader import NgsReader, NgsReaderException, NgsFileReader
+from sources2csr.ngs_reader import NgsReader, ReaderException, NgsFileReader
 
 
 class NgsSegReader(NgsReader):
@@ -28,5 +28,5 @@ class NgsSegReader(NgsReader):
                 biosource_biomaterial = self.biosource_biomaterial_from_sample_id(sample_id, filename)
                 biosource_biomaterial_dict.setdefault(biosource_biomaterial[0], []).append(biosource_biomaterial[1])
         else:
-            raise NgsReaderException("Cannot read NGS data from file: {}. Empty data.".format(filename))
+            raise ReaderException("Cannot read NGS data from file: {}. Empty data.".format(filename))
         return self.map_ngs(biosource_biomaterial_dict, filename)

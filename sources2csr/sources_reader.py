@@ -7,7 +7,7 @@ from typing import Any, Tuple, Dict, Union, Sequence
 from csr.csr import CentralSubjectRegistry, StudyRegistry, SubjectEntity, StudyEntity
 from csr.tsv_reader import TsvReader
 from sources2csr.codebook_mapper import CodeBookMapper
-from sources2csr.data_exception import DataException
+from csr.exceptions import DataException
 from sources2csr.sources_config import SourcesConfig
 
 

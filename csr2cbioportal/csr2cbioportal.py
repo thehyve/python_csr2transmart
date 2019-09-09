@@ -11,21 +11,21 @@ import os
 import shutil
 import sys
 import time
+from typing import List, Set
 
 import click
 import pandas as pd
 
 from csr.csr import CentralSubjectRegistry
+from csr.exceptions import DataException
 from csr.subject_registry_reader import SubjectRegistryReader
 from .create_caselist import create_caselist
 from .create_metafile import create_meta_content
 from .transform_clinical import write_clinical, transform_patient_clinical_data, transform_sample_clinical_data
 
 logger = logging.getLogger(__name__)
-logger.name = logger.name.rsplit('.', 1)[1]
 
 # Define study properties
-# TODO: Move study properties to configuration file
 STUDY_ID = 'csr'
 NAME = "Central Subject Registry"
 NAME_SHORT = "Central Subject Registry"
@@ -33,7 +33,7 @@ DESCRIPTION = 'Transformed to cBioPortal format on: %s' % time.strftime("%d-%m-%
 TYPE_OF_CANCER = 'mixed'
 
 
-def create_cbioportal_study(input_dir, ngs_dir, output_dir):
+def prepare_output_directory(output_dir: str):
     # Remove old output directory and recreate to ensure all NGS data is
     if os.path.exists(output_dir):
         shutil.rmtree(output_dir)
@@ -44,13 +44,17 @@ def create_cbioportal_study(input_dir, ngs_dir, output_dir):
         if oe.errno == errno.EEXIST:
             logger.error('Failed to create the output directory {} as it already exists.\
              It was not cleared successfully, Error {}'.format(output_dir, oe))
-            sys.exit(1)
-        # Raise all other errors as these could be caused by other issues like read only
-        else:
-            raise oe
+        raise oe
 
+
+def process_clinical_data(input_dir: str, output_dir: str) -> List[str]:
+    """
+    Reads subject registry data from input_dir and transforms the data
+    to clinical data files for cBioPortal.
+    Writes the generated data files to output_dir.
+    Returns the list of sample identifiers in the clinical data.
+    """
     # Clinical data
-    logger.info('Transforming clinical data: %s' % input_dir)
     subject_registry_reader = SubjectRegistryReader(input_dir)
     subject_registry: CentralSubjectRegistry = subject_registry_reader.read_subject_registry()
 
@@ -62,20 +66,18 @@ def create_cbioportal_study(input_dir, ngs_dir, output_dir):
     sample_clinical_data, sample_clinical_header = transform_sample_clinical_data(subject_registry)
     write_clinical(sample_clinical_data, sample_clinical_header, 'sample', output_dir, STUDY_ID)
 
-    sample_ids = sample_clinical_data['SAMPLE_ID'].unique().tolist()
+    return sample_clinical_data['SAMPLE_ID'].unique().tolist()
 
-    # Select NGS study files
-    study_files = []
-    for study_file in os.listdir(ngs_dir):
-        if not study_file.startswith('.'):
-            study_files.append(study_file)
 
-    # Create sample list, required for cnaseq case list
-    cna_samples = []
+def process_mutation_data(ngs_dir: str, output_dir: str, clinical_sample_ids: List[str]) -> Set[str]:
+    """
+    Reads data from all MAF files in ngs_dir and creates a combined mutation data file
+    and the meta and caselist files for the mutation data.
 
-    output_file = 'data_mutations.maf'
-    output_file_location = os.path.join(output_dir, output_file)
-    mutation_samples = combine_maf(ngs_dir, output_file_location)
+    Returns the list of sample identifiers found in the mutation data.
+    An exception is raised when any of the sample identifiers is not in the clinical_sample_ids list.
+    """
+    mutation_samples = combine_maf(ngs_dir, os.path.join(output_dir, 'data_mutations.maf'))
 
     if mutation_samples:
         # Create meta file
@@ -84,7 +86,7 @@ def create_cbioportal_study(input_dir, ngs_dir, output_dir):
                             genetic_alteration_type='MUTATION_EXTENDED', datatype='MAF',
                             stable_id='mutations', show_profile_in_analysis_tab='true',
                             profile_name='Mutations', profile_description='Mutation data',
-                            data_filename=output_file, variant_classification_filter='',
+                            data_filename='data_mutations.maf', variant_classification_filter='',
                             swissprot_identifier='accession')
 
         # Create case list
@@ -96,33 +98,48 @@ def create_cbioportal_study(input_dir, ngs_dir, output_dir):
                         case_list_ids="\t".join(mutation_samples))
 
         # Test for samples in MAF files that are not in clinical data
-        if not set(sample_ids).issuperset(mutation_samples):
+        if not set(clinical_sample_ids).issuperset(mutation_samples):
             logger.error("Found samples in MAF files that are not in clinical data: {}".format(
-                         ", ".join(mutation_samples.difference(set(sample_ids)))))
-            sys.exit(1)
+                ", ".join(mutation_samples.difference(set(clinical_sample_ids)))))
+            raise DataException('Found samples in MAF files that are not in clinical data')
+    return mutation_samples
+
+
+def process_cna_files(ngs_dir: str, output_dir: str, clinical_sample_ids: List[str]) -> List[str]:
+    """
+    Reads CNA data files (segmented, continuous and discrete) from ngs_dir, copies the files,
+    drops and renames certain columns, and writes meta and case list files.
+
+    Returns list of CNA sample identifiers.
+    An exception is raised when any of the sample identifiers is not in the clinical_sample_ids list.
+    """
+    # Select all non-hidden files
+    study_files = []
+    for study_file in os.listdir(ngs_dir):
+        if not study_file.startswith('.'):
+            study_files.append(study_file)
+
+    # Create sample list, required for cnaseq case list
+    cna_samples = []
 
     # Transform CNA data files
     for study_file in study_files:
         if study_file.endswith('sha1'):
             continue
-        study_file_location = os.path.join(ngs_dir, study_file)
 
         # CNA Segment data
         if study_file.split('.')[-1] == 'seg':
             logger.debug('Transforming segment data: %s' % study_file)
 
-            # TODO: Merge possible multiple files per study, into 1 file per study
             output_file = 'data_cna_segments.seg'
-            output_file_location = os.path.join(output_dir, output_file)
-            shutil.copyfile(study_file_location, output_file_location)
 
-            # Replace header in old file
-            with open(output_file_location) as segment_file:
+            # Read file and replace header
+            with open(os.path.join(ngs_dir, study_file)) as segment_file:
                 segment_lines = segment_file.readlines()
                 segment_lines[0] = 'ID	chrom	loc.start	loc.end	num.mark	seg.mean\n'
 
-            # Write new file
-            with open(output_file_location, 'w') as segment_file:
+            # Write a copy with replaced header
+            with open(os.path.join(output_dir, output_file), 'w') as segment_file:
                 segment_file.writelines(segment_lines)
 
             # Create meta file
@@ -135,13 +152,11 @@ def create_cbioportal_study(input_dir, ngs_dir, output_dir):
         elif 'data_by_genes' in study_file:
             logger.debug('Transforming continuous CNA data: %s' % study_file)
 
-            # TODO: Merge possibly multiple files per study, into 1 file per study
             output_file = 'data_cna_continuous.txt'
-            output_file_location = os.path.join(output_dir, output_file)
-            shutil.copyfile(study_file_location, output_file_location)
 
+            # Read file
+            cna_data = pd.read_csv(os.path.join(ngs_dir, study_file), sep='\t', na_values=[''], dtype={'Gene ID': str})
             # Remove column and rename column names
-            cna_data = pd.read_csv(output_file_location, sep='\t', na_values=[''], dtype={'Gene ID': str})
             cna_data.drop('Cytoband', axis=1, inplace=True)
             cna_data.rename(columns={'Gene Symbol': 'Hugo_Symbol', 'Gene ID': 'Entrez_Gene_Id'}, inplace=True)
 
@@ -149,7 +164,7 @@ def create_cbioportal_study(input_dir, ngs_dir, output_dir):
             for index, row in cna_data.iterrows():
                 if int(row['Entrez_Gene_Id']) < -1:
                     cna_data.loc[index, 'Entrez_Gene_Id'] = ''
-            cna_data.to_csv(output_file_location, sep='\t', index=False, header=True)
+            cna_data.to_csv(os.path.join(output_dir, output_file), sep='\t', index=False, header=True)
 
             # Create meta file
             meta_filename = os.path.join(output_dir, 'meta_cna_continuous.txt')
@@ -168,23 +183,21 @@ def create_cbioportal_study(input_dir, ngs_dir, output_dir):
                             case_list_ids="\t".join(cna_samples))
 
             # Test for samples in CNA files that are not in clinical data
-            if not set(sample_ids).issuperset(set(cna_samples)):
+            if not set(clinical_sample_ids).issuperset(set(cna_samples)):
                 logger.error("Found samples in CNA files that are not in clinical data: {}".format(
-                    ", ".join(set(cna_samples).difference(set(sample_ids))))
+                    ", ".join(set(cna_samples).difference(set(clinical_sample_ids))))
                 )
-                sys.exit(1)
+                raise DataException('Found samples in CNA files that are not in clinical data')
 
         # CNA Discrete
         elif 'thresholded.by_genes' in study_file:
             logger.debug('Transforming discrete CNA data: %s' % study_file)
 
-            # TODO: Merge possibly multiple files per study, into 1 file per study
             output_file = 'data_cna_discrete.txt'
-            output_file_location = os.path.join(output_dir, output_file)
-            shutil.copyfile(study_file_location, output_file_location)
 
+            # Read input file
+            cna_data = pd.read_csv(os.path.join(ngs_dir, study_file), sep='\t', na_values=[''], dtype={'Gene ID': str})
             # Remove column and rename column names
-            cna_data = pd.read_csv(output_file_location, sep='\t', na_values=[''], dtype={'Gene ID': str})
             cna_data.drop('Cytoband', axis=1, inplace=True)
             cna_data.rename(columns={'Gene Symbol': 'Hugo_Symbol', 'Locus ID': 'Entrez_Gene_Id'}, inplace=True)
 
@@ -192,7 +205,7 @@ def create_cbioportal_study(input_dir, ngs_dir, output_dir):
             for index, row in cna_data.iterrows():
                 if int(row['Entrez_Gene_Id']) < -1:
                     cna_data.loc[index, 'Entrez_Gene_Id'] = ''
-            cna_data.to_csv(output_file_location, sep='\t', index=False, header=True)
+            cna_data.to_csv(os.path.join(output_dir, output_file), sep='\t', index=False, header=True)
 
             # Create meta file
             meta_filename = os.path.join(output_dir, 'meta_cna_discrete.txt')
@@ -212,6 +225,18 @@ def create_cbioportal_study(input_dir, ngs_dir, output_dir):
 
         else:
             logger.warning("Unknown file type: %s" % study_file)
+    return cna_samples
+
+
+def create_cbioportal_study(input_dir: str, ngs_dir: str, output_dir: str):
+    prepare_output_directory(output_dir)
+
+    logger.info('Reading clinical data: %s' % input_dir)
+    clinical_sample_ids = process_clinical_data(input_dir, output_dir)
+
+    logger.info('Reading NGS data: %s' % ngs_dir)
+    mutation_samples = process_mutation_data(ngs_dir, output_dir, clinical_sample_ids)
+    cna_samples = process_cna_files(ngs_dir, output_dir, clinical_sample_ids)
 
     # Create cnaseq case list
     cnaseq_samples = list(mutation_samples.union(cna_samples))
@@ -235,12 +260,12 @@ def create_cbioportal_study(input_dir, ngs_dir, output_dir):
 
 
 def combine_maf(ngs_dir, output_file_location):
-    '''
+    """
     combines all found NGS files in one. It filters out variants without hugo symbol.
     :param ngs_dir: directory with NGS files
     :param output_file_location: the result NGS file
     :return: unique list of samples in the result file
-    '''
+    """
     samples = set()
 
     paths_to_process = get_paths_to_non_hidden_maf_gz_files(ngs_dir)
@@ -291,13 +316,21 @@ def get_complete_header(paths_to_process):
     return fieldnames
 
 
+def csr2cbioportal(input_dir: str, ngs_dir: str, output_dir: str):
+    try:
+        create_cbioportal_study(input_dir, ngs_dir, output_dir)
+    except Exception as e:
+        logger.error(f'Error: {e}')
+        sys.exit(1)
+
+
 @click.command()
 @click.argument('input_dir')
 @click.argument('ngs_dir')
 @click.argument('output_dir')
 @click.version_option()
 def run(input_dir, ngs_dir, output_dir):
-    create_cbioportal_study(input_dir, ngs_dir, output_dir)
+    csr2cbioportal(input_dir, ngs_dir, output_dir)
 
 
 def main():

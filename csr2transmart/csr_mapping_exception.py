@@ -1,2 +1,0 @@
-class CsrMappingException(Exception):
-    pass
