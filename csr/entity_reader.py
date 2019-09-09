@@ -1,3 +1,4 @@
+import json
 import logging
 from datetime import datetime
 from typing import List, Dict, Any, Type
@@ -21,6 +22,12 @@ class EntityReader:
                 date_fields.append(field['title'].lower())
         return date_fields
 
+    @staticmethod
+    def get_array_fields(schema: Dict[str, Any]) -> List[str]:
+        return [field['title'].lower()
+                for field in schema['properties'].values()
+                if field.get('type') == 'array']
+
     def read_entities(self, file_path: str, entity_type: Type[BaseModel]) -> List[Any]:
         try:
             data = TsvReader(file_path).read_data()
@@ -28,6 +35,7 @@ class EntityReader:
             return []
 
         date_fields = self.get_date_fields(entity_type.schema())
+        array_fields = self.get_array_fields(entity_type.schema())
 
         for row in data:
             for field, value in row.items():
@@ -35,4 +43,6 @@ class EntityReader:
                     row[field] = None
                 elif field in date_fields:
                     row[field] = datetime.strptime(value, '%Y-%m-%d')
+                elif field in array_fields:
+                    row[field] = json.loads(value)
         return list(data)
