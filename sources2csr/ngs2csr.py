@@ -35,8 +35,8 @@ def read_ngs_files(ngs_dir: str) -> Set[NGS]:
     return ngs_data
 
 
-def read_ngs_data(self) -> Set[NGS]:
-    ngs_dir = os.path.join(self.input_dir, 'NGS')
+def read_ngs_data(input_dir: str) -> Set[NGS]:
+    ngs_dir = os.path.join(input_dir, 'NGS')
     if not os.path.isdir(ngs_dir):
         logger.info('No NGS data found.')
         return set()
@@ -50,7 +50,7 @@ def add_ngs_data(subject_registry: CentralSubjectRegistry, input_dir: str) -> Ce
     :param input_dir: input directory that contains the directory with NGS input files
     :return: updated Central Subject Registry
     """
-    ngs_data = read_ngs_files(input_dir)
+    ngs_data = read_ngs_data(input_dir)
     if subject_registry.biomaterials and ngs_data:
         for biomaterial in subject_registry.biomaterials:
             for ngs in ngs_data:

@@ -6,8 +6,10 @@
 from collections import Counter
 
 import pytest
+from csr.subject_registry_reader import SubjectRegistryReader
 
 from csr.csr import Individual, Diagnosis, Biosource, Biomaterial, CentralSubjectRegistry
+from csr.subject_registry_writer import SubjectRegistryWriter
 from sources2csr.ngs_reader import NgsReaderException
 
 from sources2csr.ngs import LibraryStrategy, NGS, AnalysisType
@@ -80,10 +82,22 @@ def registry_with_biosources_and_biomaterials() -> CentralSubjectRegistry:
 
 
 def test_biomaterial_library_strategy_and_analysis_type(registry_with_biosources_and_biomaterials):
-    subject_registry = add_ngs_data(registry_with_biosources_and_biomaterials, './test_data/input_data/CLINICAL/NGS')
+    subject_registry = add_ngs_data(registry_with_biosources_and_biomaterials, './test_data/input_data/CLINICAL')
 
     assert len(subject_registry.biomaterials) == 2
     assert Counter(subject_registry.biomaterials[0].library_strategy) == Counter({'CNV': 2, 'SNV': 1})
     assert set(subject_registry.biomaterials[1].library_strategy) == {'CNV', 'SNV'}
     assert subject_registry.biomaterials[0].analysis_type == ['WGS']
     assert subject_registry.biomaterials[1].analysis_type == []
+
+
+def test_serialising_and_deserialising_biomaterials(registry_with_biosources_and_biomaterials, tmp_path):
+    subject_registry = add_ngs_data(registry_with_biosources_and_biomaterials, './test_data/input_data/CLINICAL')
+
+    writer = SubjectRegistryWriter(tmp_path.as_posix())
+    writer.write(subject_registry)
+    reader = SubjectRegistryReader(tmp_path.as_posix())
+    subject_registry = reader.read_subject_registry()
+
+    assert len(subject_registry.biomaterials) == 2
+    assert Counter(subject_registry.biomaterials[0].library_strategy) == Counter({'CNV': 2, 'SNV': 1})
