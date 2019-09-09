@@ -32,14 +32,10 @@ def test_patients_mapping(mapped_data_collection):
     assert len(patients) == 2
     assert patients[0].identifier == 'P1'
     assert patients[0].sex == 'f'
-    assert len(patients[0].mappings) == 1
-    assert patients[0].mappings[0].identifier == 'P1'
-    assert patients[0].mappings[0].source == 'SUB_ID'
+    assert len(patients[0].mappings) == 0
     assert patients[1].identifier == 'P2'
     assert patients[1].sex == 'm'
-    assert len(patients[1].mappings) == 1
-    assert patients[1].mappings[0].identifier == 'P2'
-    assert patients[1].mappings[0].source == 'SUB_ID'
+    assert len(patients[1].mappings) == 0
 
 
 def test_concepts_mapping(mapped_data_collection):
