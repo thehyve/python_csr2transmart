@@ -1,9 +1,7 @@
 import csv
 from typing import Sequence, Dict, Any
 
-
-class TsvReaderException(Exception):
-    pass
+from csr.exceptions import ReaderException
 
 
 class TsvReader:
@@ -23,7 +21,7 @@ class TsvReader:
                 first = False
             else:
                 if not len(line) == len(header):
-                    raise TsvReaderException(f'Unexpected line length {len(line)}. Expected {len(header)}')
+                    raise ReaderException(f'Unexpected line length {len(line)}. Expected {len(header)}')
                 record = dict([(header[i], line[i]) for i in range(0, len(header))])
                 data.append(record)
         return data

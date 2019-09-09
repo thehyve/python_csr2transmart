@@ -4,7 +4,8 @@ from transmart_loader.transmart import TrialVisit, Patient, Concept, Modifier, O
     Value, CategoricalValue, ValueType, NumericalValue, DateValue, TextValue
 
 from csr.csr import CentralSubjectRegistry, StudyRegistry, Individual, SubjectEntity
-from csr2transmart.csr_mapping_exception import CsrMappingException
+
+from csr.exceptions import MappingException
 
 
 class ObservationMapper:
@@ -132,10 +133,10 @@ class ObservationMapper:
                 entity_id = getattr(entity, id_attribute)
                 patient = self.individual_id_to_patient.get(entity.individual_id)
                 if patient is None:
-                    raise CsrMappingException('No patient with identifier: {}. '
-                                              'Failed to create observation for {} with id: {}. Entity {}, Ind {}'
-                                              .format(entity.individual_id, type(entity).__name__, entity_id,
-                                                      entity, self.individual_id_to_patient.keys()))
+                    raise MappingException('No patient with identifier: {}. '
+                                           'Failed to create observation for {} with id: {}. Entity {}, Ind {}'
+                                           .format(entity.individual_id, type(entity).__name__, entity_id,
+                                                   entity, self.individual_id_to_patient.keys()))
                 self.map_observation(entity, entity_id, patient)
 
     def map_non_individual_linked_entity_observations(self,
@@ -160,17 +161,17 @@ class ObservationMapper:
                     re for re in ref_entities
                     if entity.__getattribute__(entity_ref_field_name) == re.__getattribute__(ref_id_field_name)), None)
                 if linked_entity is None:
-                    raise CsrMappingException('No {} linked to {} with id: {}. '
-                                              'Failed to create observation.'
-                                              .format(ref_entity_type.schema()['title'],
-                                                      entity_type.schema()['title'],
-                                                      entity_id))
+                    raise MappingException('No {} linked to {} with id: {}. '
+                                           'Failed to create observation.'
+                                           .format(ref_entity_type.schema()['title'],
+                                                   entity_type.schema()['title'],
+                                                   entity_id))
                 patient = self.individual_id_to_patient.get(linked_entity.individual_id)
                 if patient is None:
-                    raise CsrMappingException('No patient with identifier: {}. '
-                                              'Failed to create observation for {} with id: {}.'
-                                              .format(linked_entity.individual_id, entity.schema()['title'],
-                                                      entity_id))
+                    raise MappingException('No patient with identifier: {}. '
+                                           'Failed to create observation for {} with id: {}.'
+                                           .format(linked_entity.individual_id, entity.schema()['title'],
+                                                   entity_id))
                 self.map_observation(entity, entity_id, patient)
 
     def map_study_registry_observations(self, study_registry: StudyRegistry):
@@ -182,14 +183,14 @@ class ObservationMapper:
         for ind_study in study_registry.individual_studies:
             study = next((s for s in study_registry.studies if s.study_id == ind_study.study_id), None)
             if study is None:
-                raise CsrMappingException('No study with identifier: {}. '
-                                          'Failed to create observation for individual study with id: {}.'
-                                          .format(ind_study.study_id, ind_study.individual_id))
+                raise MappingException('No study with identifier: {}. '
+                                       'Failed to create observation for individual study with id: {}.'
+                                       .format(ind_study.study_id, ind_study.individual_id))
             patient = self.individual_id_to_patient.get(ind_study.individual_id)
             if patient is None:
-                raise CsrMappingException('No patient with identifier: {}. '
-                                          'Skipping creating observation for study with id: {}.'
-                                          .format(ind_study.individual_id, ind_study.individual_id))
+                raise MappingException('No patient with identifier: {}. '
+                                       'Skipping creating observation for study with id: {}.'
+                                       .format(ind_study.individual_id, ind_study.individual_id))
             self.map_observation(study, study.study_id, patient)
 
     def map_subject_registry_observations(self,

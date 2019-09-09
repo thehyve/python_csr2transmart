@@ -10,7 +10,7 @@ from csr.subject_registry_reader import SubjectRegistryReader
 
 from csr.csr import Individual, Diagnosis, Biosource, Biomaterial, CentralSubjectRegistry
 from csr.subject_registry_writer import SubjectRegistryWriter
-from sources2csr.ngs_reader import NgsReaderException
+from sources2csr.ngs_reader import ReaderException
 
 from sources2csr.ngs import LibraryStrategy, NGS, AnalysisType
 from sources2csr.ngs2csr import read_ngs_files, add_ngs_data
@@ -34,27 +34,27 @@ def test_valid_ngs():
 
 
 def test_invalid_txt():
-    with pytest.raises(NgsReaderException) as excinfo:
+    with pytest.raises(ReaderException) as excinfo:
         read_ngs_files('./test_data/input_data/CLINICAL/NGS/invalid/invalid_txt')
     assert 'Cannot read NGS data from file: pmc_invalid_all_data_by_genes.txt. ' \
            'No sample_id found in header' in str(excinfo.value)
 
 
 def test_invalid_sample_id():
-    with pytest.raises(NgsReaderException) as excinfo:
+    with pytest.raises(ReaderException) as excinfo:
         read_ngs_files('./test_data/input_data/CLINICAL/NGS/invalid/invalid_sample_id')
     assert 'Invalid sample_id format found in pmc_invalid_sample_id_all_data_by_genes.txt NGS file. ' \
            'sample_id: PMCBS000AAB-PMCBM000AAB' in str(excinfo.value)
 
 
 def test_invalid_seg():
-    with pytest.raises(NgsReaderException) as excinfo:
+    with pytest.raises(ReaderException) as excinfo:
         read_ngs_files('./test_data/input_data/CLINICAL/NGS/invalid/invalid_seg')
     assert 'Cannot read NGS data from file: invalid.seg. Empty data.' in str(excinfo.value)
 
 
 def test_maf_invalid_header():
-    with pytest.raises(NgsReaderException) as excinfo:
+    with pytest.raises(ReaderException) as excinfo:
         read_ngs_files('./test_data/input_data/CLINICAL/NGS/invalid/invalid_maf_header')
     assert 'Invalid invalid_header.maf.gz file. No column with name Tumor_Sample_Barcode. ' \
            'Cannot read sample ids.' in str(excinfo.value)

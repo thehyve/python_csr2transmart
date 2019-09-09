@@ -5,7 +5,7 @@ from os import path
 from typing import Optional, Sequence, Dict, List, Any
 
 from pydantic import BaseModel
-from sources2csr.data_exception import DataException
+from csr.exceptions import FileSystemException
 from transmart_loader.tsv_writer import TsvWriter
 
 
@@ -35,7 +35,7 @@ class EntityWriter:
     def write_entities(self, filename: str, schema: Dict, elements: Optional[Sequence[BaseModel]]):
         output_path = self.output_dir + '/' + filename
         if path.exists(output_path):
-            raise DataException('File already exists: {}'.format(output_path))
+            raise FileSystemException('File already exists: {}'.format(output_path))
         writer: TsvWriter = TsvWriter(output_path)
         writer.writerow(list(schema['properties'].keys()))
         if elements:
