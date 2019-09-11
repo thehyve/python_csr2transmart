@@ -1,4 +1,5 @@
 import csv
+import gzip
 from typing import Sequence, Dict, Any
 
 from csr.exceptions import ReaderException
@@ -15,13 +16,19 @@ class TsvReader:
         data = []
         first = True
         header = None
+        line_num = 0
         for line in self:
+            line_num += 1
+            if line and str.startswith(line[0], '#'):
+                # skip comment lines
+                continue
             if first:
                 header = line
                 first = False
             else:
                 if not len(line) == len(header):
-                    raise ReaderException(f'Unexpected line length {len(line)}. Expected {len(header)}')
+                    raise ReaderException(f'Unexpected line length {len(line)}. Expected {len(header)}. '
+                                          f'File {self.path}, line number: {line_num}.')
                 record = dict([(header[i], line[i]) for i in range(0, len(header))])
                 data.append(record)
         return data
@@ -31,7 +38,11 @@ class TsvReader:
             self.file.close()
 
     def __init__(self, path: str):
-        self.file = open(path, 'r')
+        self.path = path
+        if str.endswith(path, '.gz'):
+            self.file = gzip.open(path, 'rt')
+        else:
+            self.file = open(path, 'r')
         self.reader = csv.reader(self.file, delimiter='\t')
 
     def __del__(self):
