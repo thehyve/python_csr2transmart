@@ -60,9 +60,9 @@ def csr2transmart(input_dir: str,
 
 
 @click.command()
-@click.argument('input_dir')
-@click.argument('output_dir')
-@click.argument('config_dir')
+@click.argument('input_dir', type=click.Path(file_okay=False, exists=True, readable=True))
+@click.argument('output_dir', type=click.Path(file_okay=False, writable=True))
+@click.argument('config_dir', type=click.Path(file_okay=False, exists=True, readable=True))
 @click.version_option()
 def run(input_dir, output_dir, config_dir):
     csr2transmart(
