@@ -8,7 +8,7 @@ class Individual(BaseModel):
     """
     Individual entity
     """
-    individual_id: str = Schema(None, identity=True)
+    individual_id: str = Schema(..., min_length=1, identity=True)
     taxonomy: Optional[str]
     gender: Optional[str]
     birth_date: Optional[date]
@@ -30,8 +30,8 @@ class Diagnosis(BaseModel):
     """
     Diagnosis entity
     """
-    diagnosis_id: str = Schema(None, identity=True)
-    individual_id: str = Schema(None, references='Individual')
+    diagnosis_id: str = Schema(..., min_length=1, identity=True)
+    individual_id: str = Schema(..., min_length=1, references='Individual')
     tumor_type: Optional[str]
     topography: Optional[str]
     treatment_protocol: Optional[str]
@@ -44,11 +44,11 @@ class Biosource(BaseModel):
     """
     Biosource entity
     """
-    biosource_id: str = Schema(None, identity=True)
+    biosource_id: str = Schema(..., min_length=1, identity=True)
     biosource_dedicated: Optional[str]
-    individual_id: str = Schema(None, references='Individual')
-    diagnosis_id: Optional[str] = Schema(None, references='Diagnosis')
-    src_biosource_id: Optional[str] = Schema(None, references='Biosource')
+    individual_id: str = Schema(..., min_length=1, references='Individual')
+    diagnosis_id: Optional[str] = Schema(None, min_length=1, references='Diagnosis')
+    src_biosource_id: Optional[str] = Schema(None, min_length=1, references='Biosource')
     tissue: Optional[str]
     biosource_date: Optional[date]
     disease_status: Optional[str]
@@ -59,9 +59,9 @@ class Biomaterial(BaseModel):
     """
     Biomaterial entity
     """
-    biomaterial_id: str = Schema(None, identity=True)
-    src_biosource_id: str = Schema(None, references='Biosource')
-    src_biomaterial_id: Optional[str] = Schema(None, references='Biomaterial')
+    biomaterial_id: str = Schema(..., min_length=1, identity=True)
+    src_biosource_id: str = Schema(..., min_length=1, references='Biosource')
+    src_biomaterial_id: Optional[str] = Schema(None, min_length=1, references='Biomaterial')
     biomaterial_date: Optional[date]
     type: Optional[str]
     library_strategy: Optional[List[str]] = []
@@ -72,7 +72,7 @@ class Study(BaseModel):
     """
     Study
     """
-    study_id: str = Schema(None, identity=True)
+    study_id: str = Schema(..., min_length=1, identity=True)
     acronym: Optional[str]
     title: Optional[str]
     datadictionary: Optional[str]
@@ -82,9 +82,9 @@ class IndividualStudy(BaseModel):
     """
     Study to individual mapping
     """
-    individual_study_id: int = Schema(None, identity=True)
-    individual_id: str = Schema(None, references='Individual')
-    study_id: str = Schema(None, references='Study')
+    individual_study_id: int = Schema(..., identity=True)
+    individual_id: str = Schema(..., min_length=1, references='Individual')
+    study_id: str = Schema(..., min_length=1, references='Study')
 
 
 SubjectEntity = Union[Individual, Diagnosis, Biosource, Biomaterial]

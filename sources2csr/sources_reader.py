@@ -109,8 +109,12 @@ class SourcesReader:
         for source_file in source_files:
             source_file_data = self.read_source_file_data(source_file)
             source_id_column = source_file_id_mapping[source_file]
+            record_number = 0
             for item in source_file_data:
+                record_number += 1
                 item_id = item[source_id_column]
+                if item_id is None or item_id == '':
+                    raise DataException(f'Empty identifier in {source_file} record number {record_number}')
                 if item_id not in entity_data:
                     entity_data[item_id] = {id_column: item_id}
             source_data[source_file] = source_file_data
