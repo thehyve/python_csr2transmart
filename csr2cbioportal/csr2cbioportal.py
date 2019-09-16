@@ -325,9 +325,9 @@ def csr2cbioportal(input_dir: str, ngs_dir: str, output_dir: str):
 
 
 @click.command()
-@click.argument('input_dir')
-@click.argument('ngs_dir')
-@click.argument('output_dir')
+@click.argument('input_dir', type=click.Path(file_okay=False, exists=True, readable=True))
+@click.argument('ngs_dir', type=click.Path(file_okay=False, exists=True, readable=True))
+@click.argument('output_dir', type=click.Path(file_okay=False, writable=True))
 @click.version_option()
 def run(input_dir, ngs_dir, output_dir):
     csr2cbioportal(input_dir, ngs_dir, output_dir)
