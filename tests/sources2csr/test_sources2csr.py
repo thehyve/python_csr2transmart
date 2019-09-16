@@ -3,12 +3,15 @@
 
 """Tests for the sources2csr application.
 """
+import pytest
 from click.testing import CliRunner
 from os import path
 
+from csr.exceptions import DataException
 from csr.tsv_reader import TsvReader
 
 from sources2csr import sources2csr
+from sources2csr.sources_reader import SourcesReader
 
 
 def test_transformation(tmp_path):
@@ -44,3 +47,14 @@ def test_transformation(tmp_path):
     # check if data from higher priority files are not overwritten
     p6 = [ind for ind in individual_data if ind['individual_id'] == 'P6'][0]
     assert p6['ic_withdrawn_date'] == '2017-10-14'
+
+
+def test_missing_identifier(tmp_path):
+    target_path = tmp_path.as_posix()
+    reader = SourcesReader(
+        input_dir='./test_data/input_data/CLINICAL',
+        output_dir=target_path,
+        config_dir='./test_data/input_data/config/invalid_sources_config/empty_identifier')
+    with pytest.raises(DataException) as excinfo:
+        reader.read_subject_data()
+    assert 'Empty identifier' in str(excinfo.value)
