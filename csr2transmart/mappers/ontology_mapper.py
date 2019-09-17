@@ -25,11 +25,11 @@ class OntologyMapper:
             return ValueType.Categorical
 
     @staticmethod
-    def entity_name_to_subject_dimension_value(entity_name: str) -> Value:
+    def entity_name_to_subject_dimension_value(entity_name: str) -> str:
         if entity_name == 'Individual':
-            return TextValue('patient')
+            return 'patient'
         else:
-            return TextValue(entity_name)
+            return entity_name
 
     @staticmethod
     def is_concept_node(node):
