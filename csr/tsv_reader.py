@@ -1,5 +1,6 @@
 import csv
 import gzip
+import os
 from typing import Sequence, Dict, Any
 
 from csr.exceptions import ReaderException
@@ -38,7 +39,10 @@ class TsvReader:
             self.file.close()
 
     def __init__(self, path: str):
+        self.file = None
         self.path = path
+        if not os.path.isfile(path):
+            raise ReaderException(f'File not found: {path}')
         if str.endswith(path, '.gz'):
             self.file = gzip.open(path, 'rt')
         else:
