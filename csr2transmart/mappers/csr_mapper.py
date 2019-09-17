@@ -1,8 +1,8 @@
 import datetime
 from typing import Dict, Sequence, List
 
-from transmart_loader.transmart import DataCollection, Study, TrialVisit, Patient, IdentifierMapping, StudyMetadata, \
-    DimensionType, ValueType, Modifier, Dimension
+from transmart_loader.transmart import DataCollection, Study, TrialVisit, Patient, DimensionType, ValueType, Modifier, \
+    Dimension
 
 from csr.csr import CentralSubjectRegistry, StudyRegistry, Individual, SubjectEntity
 from csr2transmart.mappers.observation_mapper import ObservationMapper
@@ -23,15 +23,8 @@ class CsrMapper:
         self.dimensions: List[Dimension] = []
         self.modifier_key_to_modifier: Dict[str, Modifier] = {}
 
-    @staticmethod
-    def get_study_metadata() -> StudyMetadata:
-        # Add loading date to metadata
-        date = datetime.datetime.now().strftime('%d-%m-%Y')
-        return StudyMetadata({'Load date': date})
-
     def map_study(self) -> Study:
-        metadata = self.get_study_metadata()
-        return Study(self.study_id, self.study_id, metadata)
+        return Study(self.study_id, self.study_id)
 
     def map_default_trial_visit(self, study: Study) -> TrialVisit:
         return TrialVisit(study, self.default_trial_visit_label)
