@@ -7,8 +7,8 @@ import pytest
 from click.testing import CliRunner
 from os import path
 
-from csr.exceptions import DataException
-from csr.tsv_reader import TsvReader
+from csr.exceptions import DataException, ReaderException
+from csr.tabular_file_reader import TabularFileReader
 
 from sources2csr import sources2csr
 from sources2csr.sources_reader import SourcesReader
@@ -32,7 +32,7 @@ def test_transformation(tmp_path):
     assert path.exists(target_path + '/individual_study.tsv')
 
     # test if codebook mapping has been applied
-    individual_data = TsvReader(path.join(target_path, 'individual.tsv')).read_data()
+    individual_data = TabularFileReader(path.join(target_path, 'individual.tsv')).read_data()
     p1 = [ind for ind in individual_data if ind['individual_id'] == 'P1'][0]
     assert p1['gender'] == 'female'
 
@@ -48,8 +48,15 @@ def test_transformation(tmp_path):
     p6 = [ind for ind in individual_data if ind['individual_id'] == 'P6'][0]
     assert p6['ic_withdrawn_date'] == '2017-10-14'
 
+    biosource_data = TabularFileReader(path.join(target_path, 'biosource.tsv')).read_data()
+    # test reading of biosources from CSV file
+    bs1 = [biosource for biosource in biosource_data if biosource['biosource_id'] == 'BS1'][0]
+    assert bs1['tissue'] == 'medula'
+    assert bs1['biosource_date'] == '2017-03-12'
+    assert bs1['tumor_percentage'] == '5'
 
-def test_missing_identifier(tmp_path):
+
+def test_empty_identifier(tmp_path):
     target_path = tmp_path.as_posix()
     reader = SourcesReader(
         input_dir='./test_data/input_data/CLINICAL',
@@ -58,3 +65,27 @@ def test_missing_identifier(tmp_path):
     with pytest.raises(DataException) as excinfo:
         reader.read_subject_data()
     assert 'Empty identifier' in str(excinfo.value)
+
+
+def test_wrong_file_format(tmp_path):
+    target_path = tmp_path.as_posix()
+    reader = SourcesReader(
+        input_dir='./test_data/input_data/CLINICAL',
+        output_dir=target_path,
+        config_dir='./test_data/input_data/config/invalid_sources_config/wrong_file_format')
+    with pytest.raises(DataException) as excinfo:
+        reader.read_subject_data()
+    # The columns in the biosource.csv file are not correctly parsed, resulting
+    # in a missing identifier
+    assert 'Empty identifier' in str(excinfo.value)
+
+
+def test_non_existing_file(tmp_path):
+    target_path = tmp_path.as_posix()
+    reader = SourcesReader(
+        input_dir='./test_data/input_data/CLINICAL',
+        output_dir=target_path,
+        config_dir='./test_data/input_data/config/invalid_sources_config/non_existing_file')
+    with pytest.raises(ReaderException) as excinfo:
+        reader.read_subject_data()
+    assert 'File not found' in str(excinfo.value)

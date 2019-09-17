@@ -6,9 +6,9 @@ from typing import Sequence, Dict, Any
 from csr.exceptions import ReaderException
 
 
-class TsvReader:
+class TabularFileReader:
     """
-    Tab-separated values reader.
+    Delimiter-separated values reader.
     """
     def __iter__(self):
         return self.reader.__iter__()
@@ -38,7 +38,7 @@ class TsvReader:
         if self.file:
             self.file.close()
 
-    def __init__(self, path: str):
+    def __init__(self, path: str, delimiter='\t'):
         self.file = None
         self.path = path
         if not os.path.isfile(path):
@@ -47,7 +47,7 @@ class TsvReader:
             self.file = gzip.open(path, 'rt')
         else:
             self.file = open(path, 'r')
-        self.reader = csv.reader(self.file, delimiter='\t')
+        self.reader = csv.reader(self.file, delimiter=delimiter)
 
     def __del__(self):
         self.close()

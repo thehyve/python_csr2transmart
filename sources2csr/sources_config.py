@@ -1,6 +1,6 @@
 from typing import Dict, Sequence, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Schema
 
 
 class Source(BaseModel):
@@ -23,6 +23,10 @@ class Entity(BaseModel):
     attributes: Sequence[Attribute]
 
 
+class FileFormat(BaseModel):
+    delimiter: str = Schema('\t', min_length=1, max_length=1)
+
+
 class SourcesConfig(BaseModel):
 
     """Mapping from entity name to entity sources"""
@@ -30,3 +34,6 @@ class SourcesConfig(BaseModel):
 
     """Associates input files with codebook files"""
     codebooks: Optional[Dict[str, str]]
+
+    """File format configuration for input files"""
+    file_format: Optional[Dict[str, FileFormat]]

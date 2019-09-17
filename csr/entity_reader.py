@@ -3,7 +3,7 @@ import logging
 from datetime import datetime
 from typing import List, Dict, Any, Type
 from pydantic import BaseModel
-from csr.tsv_reader import TsvReader
+from csr.tabular_file_reader import TabularFileReader
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ class EntityReader:
 
     def read_entities(self, file_path: str, entity_type: Type[BaseModel]) -> List[Any]:
         try:
-            data = TsvReader(file_path).read_data()
+            data = TabularFileReader(file_path).read_data()
         except FileNotFoundError:
             return []
 
