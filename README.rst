@@ -127,6 +127,18 @@ a JSON file that contains two attributes:
 
 See `<test_data/input_data/config/sources_config.json>`_ for an example.
 
+Content of the codebook files has to match the following format:
+
+*   First a header line with a number and column names the codes apply to. 
+    The first field has a number, the second field a space separated list of column names. i.e. 1\tSEX GENDER
+*   The lines following the header start with an empty field. 
+    Then the lines follow the format of code\tvalue until the end of the line. 
+    i.e. ''\t1\tMale\t2\tFemale
+*   The start of a new header, which is detected by the first field not being empty 
+    starts the process over again.
+
+See `<test_data/input_data/codebooks/valid_codebook.txt>`_ for a codebook file example.
+
 .. _`date formats supported by Pydantic`: https://pydantic-docs.helpmanual.io/#datetime-types
 
 
@@ -138,8 +150,10 @@ See `<test_data/input_data/config/sources_config.json>`_ for an example.
   csr2transmart <input_dir> <output_dir> <config_dir>
 
 The tool reads CSR files from ``<input_dir>`` (one file per entity type),
-transforms the CSR data to the TranSMART data model and
-writes the output in ``transmart-copy`` format to ``<output_dir>``.
+transforms the CSR data to the TranSMART data model. 
+In addition, if there is an ``NGS`` folder inside ``<input_dir>``, 
+the tool will read the NGS files inside to determine values of additional CSR biomaterial variables.
+The tool writes the output in ``transmart-copy`` format to ``<output_dir>``.
 The output directory ``<output_dir>`` needs to be either empty or not yet existing.
 
 The ontology configuration will be read from ``<config_dir>/ontology_config.json``.
