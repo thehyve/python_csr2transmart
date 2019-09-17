@@ -5,7 +5,7 @@ from math import isnan
 from os import path
 from typing import Any, Tuple, Dict, Union, Sequence
 from csr.csr import CentralSubjectRegistry, StudyRegistry, SubjectEntity, StudyEntity
-from csr.tsv_reader import TsvReader
+from csr.tabular_file_reader import TabularFileReader
 from sources2csr.codebook_mapper import CodeBookMapper
 from csr.exceptions import DataException
 from sources2csr.sources_config import SourcesConfig
@@ -58,7 +58,13 @@ class SourcesReader:
         self.sources_config = read_configuration(config_dir)
 
     def read_source_file_data(self, source_file) -> Sequence[Dict[str, Any]]:
-        source_file_data = TsvReader(path.join(self.input_dir, source_file)).read_data()
+        file_format = self.sources_config.file_format.get(source_file, None)\
+            if self.sources_config.file_format else None
+        if file_format is not None:
+            reader = TabularFileReader(path.join(self.input_dir, source_file), file_format.delimiter)
+        else:
+            reader = TabularFileReader(path.join(self.input_dir, source_file))
+        source_file_data = reader.read_data()
         if self.sources_config.codebooks is not None:
             codebook_filename = self.sources_config.codebooks.get(source_file, None)
             if codebook_filename is not None:
@@ -112,7 +118,7 @@ class SourcesReader:
             record_number = 0
             for item in source_file_data:
                 record_number += 1
-                item_id = item[source_id_column]
+                item_id = item.get(source_id_column, None)
                 if item_id is None or item_id == '':
                     raise DataException(f'Empty identifier in {source_file} record number {record_number}')
                 if item_id not in entity_data:

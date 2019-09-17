@@ -6,7 +6,7 @@
           "name": "individual_id",
           "sources": [
             {
-              "file": "individual_with_empty_identifier.tsv",
+              "file": "individual.tsv",
               "column": "individual_id"
             },
             {
@@ -19,7 +19,7 @@
           "name": "taxonomy",
           "sources": [
             {
-              "file": "individual_with_empty_identifier.tsv"
+              "file": "individual.tsv"
             }
           ]
         },
@@ -27,7 +27,7 @@
           "name": "birth_date",
           "sources": [
             {
-              "file": "individual_with_empty_identifier.tsv",
+              "file": "individual.tsv",
               "date_format": "%d-%m-%Y"
             }
           ]
@@ -36,7 +36,7 @@
           "name": "gender",
           "sources": [
             {
-              "file": "individual_with_empty_identifier.tsv"
+              "file": "individual.tsv"
             }
           ]
         },
@@ -44,7 +44,7 @@
           "name": "death_date",
           "sources": [
             {
-              "file": "individual_with_empty_identifier.tsv",
+              "file": "individual.tsv",
               "date_format": "%d-%m-%Y"
             }
           ]
@@ -53,7 +53,7 @@
           "name": "ic_type",
           "sources": [
             {
-              "file": "individual_with_empty_identifier.tsv",
+              "file": "individual.tsv",
               "column": "IC_type"
             }
           ]
@@ -62,7 +62,7 @@
           "name": "ic_given_date",
           "sources": [
             {
-              "file": "individual_with_empty_identifier.tsv",
+              "file": "individual.tsv",
               "column": "IC_given_date",
               "date_format": "%d-%m-%Y"
             }
@@ -72,7 +72,7 @@
           "name": "ic_withdrawn_date",
           "sources": [
             {
-              "file": "individual_with_empty_identifier.tsv",
+              "file": "individual.tsv",
               "column": "IC_withdrawn_date",
               "date_format": "%d-%m-%Y"
             },
@@ -86,7 +86,7 @@
           "name": "ic_material",
           "sources": [
             {
-              "file": "individual_with_empty_identifier.tsv",
+              "file": "individual.tsv",
               "column": "IC_material"
             }
           ]
@@ -95,7 +95,7 @@
           "name": "ic_data",
           "sources": [
             {
-              "file": "individual_with_empty_identifier.tsv",
+              "file": "individual.tsv",
               "column": "IC_data"
             }
           ]
@@ -104,7 +104,7 @@
           "name": "ic_linking_ext",
           "sources": [
             {
-              "file": "individual_with_empty_identifier.tsv",
+              "file": "individual.tsv",
               "column": "IC_linking_ext"
             }
           ]
@@ -113,7 +113,7 @@
           "name": "report_her_susc",
           "sources": [
             {
-              "file": "individual_with_empty_identifier.tsv"
+              "file": "individual.tsv"
             }
           ]
         },
@@ -121,7 +121,7 @@
           "name": "report_inc_findings",
           "sources": [
             {
-              "file": "individual_with_empty_identifier.tsv",
+              "file": "individual.tsv",
               "column": "report_inc_finding"
             }
           ]
@@ -385,11 +385,6 @@
     }
   },
   "codebooks": {
-    "individual_with_empty_identifier.tsv": "codebook.txt"
-  },
-  "file_format": {
-    "biosource.csv": {
-      "delimiter": ","
-    }
+    "individual.tsv": "codebook.txt"
   }
 }

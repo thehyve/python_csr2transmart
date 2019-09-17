@@ -203,7 +203,7 @@
           "name": "biosource_id",
           "sources": [
             {
-              "file": "biosource.tsv"
+              "file": "biosource.csv"
             }
           ]
         },
@@ -211,7 +211,7 @@
           "name": "individual_id",
           "sources": [
             {
-              "file": "biosource.tsv"
+              "file": "biosource.csv"
             }
           ]
         },
@@ -219,7 +219,7 @@
           "name": "diagnosis_id",
           "sources": [
             {
-              "file": "biosource.tsv"
+              "file": "biosource.csv"
             }
           ]
         },
@@ -227,7 +227,7 @@
           "name": "src_biosource_id",
           "sources": [
             {
-              "file": "biosource.tsv"
+              "file": "biosource.csv"
             }
           ]
         },
@@ -235,7 +235,7 @@
           "name": "biosource_dedicated",
           "sources": [
             {
-              "file": "biosource.tsv"
+              "file": "biosource.csv"
             }
           ]
         },
@@ -243,7 +243,7 @@
           "name": "tissue",
           "sources": [
             {
-              "file": "biosource.tsv"
+              "file": "biosource.csv"
             }
           ]
         },
@@ -251,7 +251,7 @@
           "name": "biosource_date",
           "sources": [
             {
-              "file": "biosource.tsv",
+              "file": "biosource.csv",
               "date_format": "%d-%m-%Y"
             }
           ]
@@ -260,7 +260,7 @@
           "name": "disease_status",
           "sources": [
             {
-              "file": "biosource.tsv"
+              "file": "biosource.csv"
             }
           ]
         },
@@ -268,7 +268,7 @@
           "name": "tumor_percentage",
           "sources": [
             {
-              "file": "biosource.tsv"
+              "file": "biosource.csv"
             }
           ]
         }
@@ -386,5 +386,10 @@
   },
   "codebooks": {
     "individual.tsv": "codebook.txt"
+  },
+  "file_format": {
+    "biosource.csv": {
+      "delimiter": ","
+    }
   }
 }
