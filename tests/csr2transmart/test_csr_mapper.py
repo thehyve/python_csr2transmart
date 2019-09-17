@@ -15,7 +15,7 @@ def test_studies_mapping(mapped_data_collection):
     assert len(studies) == 1
     assert studies[0].name == 'CSR'
     assert studies[0].study_id == 'CSR'
-    assert studies[0].metadata.values['Load date'] is not None
+    assert studies[0].metadata is None
 
 
 def test_trial_visits_mapping(mapped_data_collection):
