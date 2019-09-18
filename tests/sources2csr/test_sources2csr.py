@@ -67,6 +67,17 @@ def test_empty_identifier(tmp_path):
     assert 'Empty identifier' in str(excinfo.value)
 
 
+def test_duplicate_identifier(tmp_path):
+    target_path = tmp_path.as_posix()
+    reader = SourcesReader(
+        input_dir='./test_data/input_data/CLINICAL',
+        output_dir=target_path,
+        config_dir='./test_data/input_data/config/invalid_sources_config/duplicate_identifier')
+    with pytest.raises(DataException) as excinfo:
+        reader.read_subject_data()
+    assert 'Duplicate identifier' in str(excinfo.value)
+
+
 def test_wrong_file_format(tmp_path):
     target_path = tmp_path.as_posix()
     reader = SourcesReader(
@@ -76,8 +87,19 @@ def test_wrong_file_format(tmp_path):
     with pytest.raises(DataException) as excinfo:
         reader.read_subject_data()
     # The columns in the biosource.csv file are not correctly parsed, resulting
-    # in a missing identifier
-    assert 'Empty identifier' in str(excinfo.value)
+    # in a missing identifier column
+    assert 'Identifier column \'biosource_id\' not found' in str(excinfo.value)
+
+
+def test_missing_column(tmp_path):
+    target_path = tmp_path.as_posix()
+    reader = SourcesReader(
+        input_dir='./test_data/input_data/CLINICAL',
+        output_dir=target_path,
+        config_dir='./test_data/input_data/config/invalid_sources_config/missing_column')
+    with pytest.raises(DataException) as excinfo:
+        reader.read_subject_data()
+    assert 'Column \'tumor_type\' not found' in str(excinfo.value)
 
 
 def test_non_existing_file(tmp_path):
