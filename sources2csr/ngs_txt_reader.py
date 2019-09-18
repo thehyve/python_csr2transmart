@@ -1,7 +1,7 @@
 import os
 from typing import Optional, Sequence
 
-from csr.tsv_reader import TsvReader
+from csr.tabular_file_reader import TabularFileReader
 from sources2csr.ngs import NGS, LibraryStrategy
 from sources2csr.ngs_reader import NgsReader, ReaderException
 
@@ -20,7 +20,7 @@ class NgsTxtReader(NgsReader):
         :param filename: name of the input file
         :return: Sequence of NGS objects
         """
-        data = TsvReader(os.path.join(self.input_dir, filename)).read_data()
+        data = TabularFileReader(os.path.join(self.input_dir, filename)).read_data()
         biosource_biomaterial_dict = dict()
         if data:
             sample_id_col_num = 0

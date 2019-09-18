@@ -55,8 +55,9 @@ Data model
 
 The Central Subject Registry (CSR) data model contains individual,
 diagnosis, biosource and biomaterial entities. The data model is defined
-as a data class in `<csr/csr.py>`_
+as a data class in `csr/csr.py`_
 
+.. _`csr/csr.py`: https://github.com/thehyve/python_csr2transmart/blob/master/csr/csr.py
 
 Usage
 ------
@@ -125,7 +126,11 @@ a JSON file that contains two attributes:
 
 * ``codebooks``: a map from input file name to codebook file name, e.g., ``{"individual.tsv": "codebook.txt"}``.
 
-See `<test_data/input_data/config/sources_config.json>`_ for an example.
+* ``file_format``: a map from input file name to file format configuration,
+  which allows to configure the delimiter character (default: ``\t``).
+  E.g., ``{"individual.tsv": {"delimiter": ","}}``.
+
+See `test_data/input_data/config/sources_config.json`_ for an example.
 
 Content of the codebook files has to match the following format:
 
@@ -140,6 +145,7 @@ Content of the codebook files has to match the following format:
 See `<test_data/input_data/codebooks/valid_codebook.txt>`_ for a codebook file example.
 
 .. _`date formats supported by Pydantic`: https://pydantic-docs.helpmanual.io/#datetime-types
+.. _`test_data/input_data/config/sources_config.json`: https://github.com/thehyve/python_csr2transmart/blob/master/test_data/input_data/config/sources_config.json
 
 
 ``csr2transmart``
@@ -157,7 +163,9 @@ The tool writes the output in ``transmart-copy`` format to ``<output_dir>``.
 The output directory ``<output_dir>`` needs to be either empty or not yet existing.
 
 The ontology configuration will be read from ``<config_dir>/ontology_config.json``.
-See `<test_data/input_data/config/ontology_config.json>`_ for an example.
+See `test_data/input_data/config/ontology_config.json`_ for an example.
+
+.. _`test_data/input_data/config/ontology_config.json`: https://github.com/thehyve/python_csr2transmart/blob/master/test_data/input_data/config/ontology_config.json
 
 
 ``csr2cbioportal``
@@ -198,7 +206,9 @@ Package management and dependencies
 
 This project uses `pip` for installing dependencies and package management.
 
-* Dependencies should be added to `<requirements.txt>`_.
+* Dependencies should be added to `requirements.txt`_.
+
+.. _`requirements.txt`: https://github.com/thehyve/python_csr2transmart/blob/master/requirements.txt
 
 Testing and code coverage
 -------------------------
@@ -225,4 +235,6 @@ License
 
 Copyright (c) 2019 The Hyve B.V.
 
-The CSR to TranSMART loader is licensed under the MIT License. See the file `<LICENSE>`_.
+The CSR to TranSMART loader is licensed under the MIT License. See the file LICENSE_.
+
+.. _LICENSE: https://github.com/thehyve/python_csr2transmart/blob/master/LICENSE

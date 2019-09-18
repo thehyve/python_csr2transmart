@@ -1,6 +1,6 @@
 from typing import Dict, Sequence
 
-from transmart_loader.transmart import Concept, TreeNode, ValueType, ConceptNode, TreeNodeMetadata, Value, TextValue
+from transmart_loader.transmart import Concept, TreeNode, ValueType, ConceptNode, TreeNodeMetadata, Value
 
 from csr.csr import SubjectEntity, StudyEntity
 from csr2transmart.ontology_config import TreeNode as OntologyConfigTreeNode, \

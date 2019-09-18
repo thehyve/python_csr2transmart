@@ -5,11 +5,10 @@ from math import isnan
 from os import path
 from typing import Any, Tuple, Dict, Union, Sequence
 from csr.csr import CentralSubjectRegistry, StudyRegistry, SubjectEntity, StudyEntity
-from csr.tsv_reader import TsvReader
+from csr.tabular_file_reader import TabularFileReader
 from sources2csr.codebook_mapper import CodeBookMapper
 from csr.exceptions import DataException
-from sources2csr.sources_config import SourcesConfig
-
+from sources2csr.sources_config import SourcesConfig, Entity
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +57,13 @@ class SourcesReader:
         self.sources_config = read_configuration(config_dir)
 
     def read_source_file_data(self, source_file) -> Sequence[Dict[str, Any]]:
-        source_file_data = TsvReader(path.join(self.input_dir, source_file)).read_data()
+        file_format = self.sources_config.file_format.get(source_file, None)\
+            if self.sources_config.file_format else None
+        if file_format is not None:
+            reader = TabularFileReader(path.join(self.input_dir, source_file), file_format.delimiter)
+        else:
+            reader = TabularFileReader(path.join(self.input_dir, source_file))
+        source_file_data = reader.read_data()
         if self.sources_config.codebooks is not None:
             codebook_filename = self.sources_config.codebooks.get(source_file, None)
             if codebook_filename is not None:
@@ -66,17 +71,7 @@ class SourcesReader:
                 source_file_data = codebook_mapper.apply(source_file_data)
         return source_file_data
 
-    def read_entity_data(self, entity_type) -> Sequence:
-        """
-        Reads data for an entity type from the source files that are specified
-        in the sources config file.
-
-        :param entity_type: the entity type, e.g., Individual.
-        :return: A sequence of entities.
-        """
-        logger.info(f'* Reading {entity_type.__name__} data ...')
-        if entity_type.__name__ not in self.sources_config.entities:
-            raise DataException(f'No source configuration found for the {entity_type.__name__} entity')
+    def get_id_property(self, entity_type) -> str:
         entity_sources_config = self.sources_config.entities[entity_type.__name__]
         source_columns = list([attribute.name for attribute in entity_sources_config.attributes])
         logger.debug(f'Source columns: {source_columns}')
@@ -89,45 +84,81 @@ class SourcesReader:
         id_column = list([name for (name, prop) in schema['properties'].items()
                           if 'identity' in prop and prop['identity'] is True])[0]
         logger.debug(f'Id column: {id_column}')
+        return id_column
 
+    def get_source_files(self, entity_sources_config: Entity, id_property: str):
         source_files = set([source.file
                             for attribute in entity_sources_config.attributes
                             for source in attribute.sources])
         source_file_id_mapping = dict([(source.file, source.column if source.column is not None else attribute.name)
                                        for attribute in entity_sources_config.attributes
                                        for source in attribute.sources
-                                       if attribute.name == id_column])
+                                       if attribute.name == id_property])
         logger.debug(f'Source files: {source_files}')
         logger.debug(f'Source file id mapping: {source_file_id_mapping}')
-
         source_files_without_id_column = source_files - set(source_file_id_mapping.keys())
         if source_files_without_id_column:
             raise DataException(f'Id column missing in source files: {source_files_without_id_column}')
+        return source_files, source_file_id_mapping
 
+    def read_entity_data(self, entity_type) -> Sequence:
+        """
+        Reads data for an entity type from the source files that are specified
+        in the sources config file.
+
+        :param entity_type: the entity type, e.g., Individual.
+        :return: A sequence of entities.
+        """
+        logger.info(f'* Reading {entity_type.__name__} data ...')
+        if entity_type.__name__ not in self.sources_config.entities:
+            raise DataException(f'No source configuration found for the {entity_type.__name__} entity')
+
+        id_property = self.get_id_property(entity_type)
+
+        entity_sources_config = self.sources_config.entities[entity_type.__name__]
+
+        source_files, source_file_id_mapping = self.get_source_files(entity_sources_config, id_property)
+
+        # Read data from source files
         source_data = {}
         entity_data = {}
         for source_file in source_files:
             source_file_data = self.read_source_file_data(source_file)
+            if len(source_file_data) == 0:
+                raise DataException(f'No records in {source_file}')
             source_id_column = source_file_id_mapping[source_file]
             record_number = 0
+            item_ids = set()
             for item in source_file_data:
                 record_number += 1
-                item_id = item[source_id_column]
+                if source_id_column not in item.keys():
+                    raise DataException(f'Identifier column \'{source_id_column}\' not found in file {source_file}. '
+                                        f'Is the delimiter configured correctly in the sources config?')
+                item_id = item.get(source_id_column, None)
                 if item_id is None or item_id == '':
                     raise DataException(f'Empty identifier in {source_file} record number {record_number}')
+                if item_id in item_ids:
+                    raise DataException(f'Duplicate identifier in {source_file} record number {record_number}')
+                item_ids.add(item_id)
                 if item_id not in entity_data:
-                    entity_data[item_id] = {id_column: item_id}
+                    entity_data[item_id] = {id_property: item_id}
             source_data[source_file] = source_file_data
 
         logger.debug(f'{entity_type.__name__} entity data: {entity_data}')
 
+        # Merge data from different sources files
         for attribute in entity_sources_config.attributes:
-            if not attribute.name == id_column:
+            if not attribute.name == id_property:
                 # add data to entities for attribute
                 logger.debug(f'Adding data for attribute {attribute.name}')
                 for source in attribute.sources:
                     # default column name is the attribute name
                     source_column = source.column if source.column is not None else attribute.name
+                    # check if column is in the source data
+                    first_record = source_data[source.file][0]
+                    if source_column not in first_record.keys():
+                        raise DataException(f'Column \'{source_column}\' not found in file {source.file}. '
+                                            f'Is the delimiter configured correctly in the sources config?')
                     # add data from source to attribute
                     logger.debug(
                         f'Adding data for attribute {attribute.name} from source {source.file}:{source_column}')
