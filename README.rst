@@ -126,7 +126,9 @@ a JSON file that contains two attributes:
 
 * ``codebooks``: a map from input file name to codebook file name, e.g., ``{"individual.tsv": "codebook.txt"}``.
 
-* ``file_format``: a map from input file name to file format options, e.g., ``{"individual.tsv": {"delimiter": ","}}``.
+* ``file_format``: a map from input file name to file format configuration,
+  which allows to configure the delimiter character (default: ``\t``).
+  E.g., ``{"individual.tsv": {"delimiter": ","}}``.
 
 See `test_data/input_data/config/sources_config.json`_ for an example.
 
