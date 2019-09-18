@@ -1,4 +1,3 @@
-import datetime
 from typing import Dict, Sequence, List
 
 from transmart_loader.transmart import DataCollection, Study, TrialVisit, Patient, DimensionType, ValueType, Modifier, \
