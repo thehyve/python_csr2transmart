@@ -135,10 +135,10 @@ See `test_data/input_data/config/sources_config.json`_ for an example.
 Content of the codebook files has to match the following format:
 
 *   First a header line with a number and column names the codes apply to. 
-    The first field has a number, the second field a space separated list of column names. i.e. 1\tSEX GENDER
+    The first field has a number, the second field a space separated list of column names, e.g., ``1\tSEX GENDER``.
 *   The lines following the header start with an empty field. 
-    Then the lines follow the format of code\tvalue until the end of the line. 
-    i.e. ''\t1\tMale\t2\tFemale
+    Then the lines follow the format of ``code\tvalue`` until the end of the line, 
+    e.g., ``\t1\tMale\t2\tFemale``.
 *   The start of a new header, which is detected by the first field not being empty 
     starts the process over again.
 
