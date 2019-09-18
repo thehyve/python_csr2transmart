@@ -56,33 +56,27 @@ def test_transformation(tmp_path):
     assert bs1['tumor_percentage'] == '5'
 
 
-def test_empty_identifier(tmp_path):
-    target_path = tmp_path.as_posix()
+def test_empty_identifier():
     reader = SourcesReader(
         input_dir='./test_data/input_data/CLINICAL',
-        output_dir=target_path,
         config_dir='./test_data/input_data/config/invalid_sources_config/empty_identifier')
     with pytest.raises(DataException) as excinfo:
         reader.read_subject_data()
     assert 'Empty identifier' in str(excinfo.value)
 
 
-def test_duplicate_identifier(tmp_path):
-    target_path = tmp_path.as_posix()
+def test_duplicate_identifier():
     reader = SourcesReader(
         input_dir='./test_data/input_data/CLINICAL',
-        output_dir=target_path,
         config_dir='./test_data/input_data/config/invalid_sources_config/duplicate_identifier')
     with pytest.raises(DataException) as excinfo:
         reader.read_subject_data()
     assert 'Duplicate identifier' in str(excinfo.value)
 
 
-def test_wrong_file_format(tmp_path):
-    target_path = tmp_path.as_posix()
+def test_wrong_file_format():
     reader = SourcesReader(
         input_dir='./test_data/input_data/CLINICAL',
-        output_dir=target_path,
         config_dir='./test_data/input_data/config/invalid_sources_config/wrong_file_format')
     with pytest.raises(DataException) as excinfo:
         reader.read_subject_data()
@@ -91,22 +85,18 @@ def test_wrong_file_format(tmp_path):
     assert 'Identifier column \'biosource_id\' not found' in str(excinfo.value)
 
 
-def test_missing_column(tmp_path):
-    target_path = tmp_path.as_posix()
+def test_missing_column():
     reader = SourcesReader(
         input_dir='./test_data/input_data/CLINICAL',
-        output_dir=target_path,
         config_dir='./test_data/input_data/config/invalid_sources_config/missing_column')
     with pytest.raises(DataException) as excinfo:
         reader.read_subject_data()
     assert 'Column \'tumor_type\' not found' in str(excinfo.value)
 
 
-def test_non_existing_file(tmp_path):
-    target_path = tmp_path.as_posix()
+def test_non_existing_file():
     reader = SourcesReader(
         input_dir='./test_data/input_data/CLINICAL',
-        output_dir=target_path,
         config_dir='./test_data/input_data/config/invalid_sources_config/non_existing_file')
     with pytest.raises(ReaderException) as excinfo:
         reader.read_subject_data()
