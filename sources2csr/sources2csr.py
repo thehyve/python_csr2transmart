@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 def sources2csr(input_dir, output_dir, config_dir):
     try:
-        reader = SourcesReader(input_dir=input_dir, output_dir=output_dir, config_dir=config_dir)
+        reader = SourcesReader(input_dir=input_dir, config_dir=config_dir)
         subject_registry = reader.read_subject_data()
         add_derived_values(subject_registry)
         add_ngs_data(subject_registry, input_dir)

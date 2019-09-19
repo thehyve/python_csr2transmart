@@ -51,9 +51,8 @@ def read_configuration(config_dir) -> SourcesConfig:
 
 class SourcesReader:
 
-    def __init__(self, input_dir, output_dir, config_dir):
+    def __init__(self, input_dir, config_dir):
         self.input_dir = input_dir
-        self.output_dir = output_dir
         self.sources_config = read_configuration(config_dir)
 
     def read_source_file_data(self, source_file) -> Sequence[Dict[str, Any]]:
