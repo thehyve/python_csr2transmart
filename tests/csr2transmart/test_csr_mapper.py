@@ -76,6 +76,8 @@ def test_dimensions_mapping(mapped_data_collection):
 def test_ontology_mapping(mapped_data_collection):
     ontology = mapped_data_collection.ontology
     assert len(ontology) == 1
+    date = datetime.datetime.now().strftime('%d-%m-%Y')
+    assert ontology[0].metadata.values['Load date'] == date
     assert len(ontology[0].children) == 5
     assert list(map(lambda t: t.name, ontology[0].children)) == ['01. Patient information',
                                                                  '02. Diagnosis information',
