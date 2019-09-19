@@ -1,6 +1,7 @@
+import datetime
 from typing import Dict, Sequence
 
-from transmart_loader.transmart import Concept, TreeNode, ValueType, ConceptNode, TreeNodeMetadata, Value
+from transmart_loader.transmart import Concept, TreeNode, ValueType, ConceptNode, TreeNodeMetadata
 
 from csr.csr import SubjectEntity, StudyEntity
 from csr2transmart.ontology_config import TreeNode as OntologyConfigTreeNode, \
@@ -53,7 +54,7 @@ class OntologyMapper:
         concept = Concept(node.concept_code, node.name, concept_path, concept_type)
         self.concept_code_to_concept[node.concept_code] = concept
 
-        metadata_value: Dict[str, Value] = {
+        metadata_value: Dict[str, str] = {
             'subject_dimension': self.entity_name_to_subject_dimension_value(entity_name)}
         concept_node = ConceptNode(concept)
         concept_node.metadata = TreeNodeMetadata(metadata_value)
@@ -78,6 +79,8 @@ class OntologyMapper:
                 parent_node.add_child(intermediate_node)
 
     def map(self, src_nodes: Sequence[OntologyConfigTreeNode]) -> Sequence[TreeNode]:
-        top_node = TreeNode(self.top_tree_node)
+        date = datetime.datetime.now().strftime('%d-%m-%Y')
+        metadata = TreeNodeMetadata({'Load date': date})
+        top_node = TreeNode(self.top_tree_node, metadata)
         self.map_nodes(src_nodes, top_node)
         return [top_node]
