@@ -15,6 +15,7 @@ from typing import List, Set
 
 import click
 import pandas as pd
+from csr.logging import setup_logging
 
 from csr.csr import CentralSubjectRegistry
 from csr.exceptions import DataException
@@ -317,10 +318,11 @@ def get_complete_header(paths_to_process):
 
 
 def csr2cbioportal(input_dir: str, ngs_dir: str, output_dir: str):
+    logger.info('csr2cbioportal')
     try:
         create_cbioportal_study(input_dir, ngs_dir, output_dir)
     except Exception as e:
-        logger.error(f'Error: {e}')
+        logger.error(e)
         sys.exit(1)
 
 
@@ -328,8 +330,10 @@ def csr2cbioportal(input_dir: str, ngs_dir: str, output_dir: str):
 @click.argument('input_dir', type=click.Path(file_okay=False, exists=True, readable=True))
 @click.argument('ngs_dir', type=click.Path(file_okay=False, exists=True, readable=True))
 @click.argument('output_dir', type=click.Path(file_okay=False, writable=True))
+@click.option('--debug', is_flag=True, help='Print more verbose messages')
 @click.version_option()
-def run(input_dir, ngs_dir, output_dir):
+def run(input_dir, ngs_dir, output_dir, debug: bool):
+    setup_logging(debug)
     csr2cbioportal(input_dir, ngs_dir, output_dir)
 
 

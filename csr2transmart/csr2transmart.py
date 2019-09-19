@@ -4,6 +4,7 @@ import sys
 from os import path
 
 import click
+from csr.logging import setup_logging
 from transmart_loader.copy_writer import TransmartCopyWriter
 from transmart_loader.transmart import DataCollection
 
@@ -33,7 +34,7 @@ def csr2transmart(input_dir: str,
                   config_dir: str,
                   study_id: str,
                   top_tree_node: str):
-
+    logger.info('csr2transmart')
     try:
         logger.info('Reading configuration data...')
         ontology_config = read_configuration(config_dir)
@@ -55,7 +56,7 @@ def csr2transmart(input_dir: str,
         logger.info('Done.')
 
     except Exception as e:
-        print(e)
+        logger.error(e)
         sys.exit(1)
 
 
@@ -63,8 +64,10 @@ def csr2transmart(input_dir: str,
 @click.argument('input_dir', type=click.Path(file_okay=False, exists=True, readable=True))
 @click.argument('output_dir', type=click.Path(file_okay=False, writable=True))
 @click.argument('config_dir', type=click.Path(file_okay=False, exists=True, readable=True))
+@click.option('--debug', is_flag=True, help='Print more verbose messages')
 @click.version_option()
-def run(input_dir, output_dir, config_dir):
+def run(input_dir, output_dir, config_dir, debug: bool):
+    setup_logging(debug)
     csr2transmart(
         input_dir,
         output_dir,
