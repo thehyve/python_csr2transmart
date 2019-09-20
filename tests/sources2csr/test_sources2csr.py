@@ -109,3 +109,22 @@ def test_invalid_json():
             input_dir='./test_data/input_data/CLINICAL',
             config_dir='./test_data/input_data/config/invalid_sources_config/invalid_json')
     assert 'Error parsing source config file' in str(excinfo.value)
+
+
+def test_invalid_number():
+    reader = SourcesReader(
+        input_dir='./test_data/input_data/CLINICAL',
+        config_dir='./test_data/input_data/config/invalid_sources_config/invalid_number')
+    with pytest.raises(DataException) as excinfo:
+        reader.read_subject_data()
+    assert 'Invalid data for Biosource with id BS6' in str(excinfo.value)
+
+
+def test_invalid_date():
+    reader = SourcesReader(
+        input_dir='./test_data/input_data/CLINICAL',
+        config_dir='./test_data/input_data/config/invalid_sources_config/invalid_date')
+    with pytest.raises(DataException) as excinfo:
+        reader.read_subject_data()
+    assert 'Error parsing biomaterial_date from source biomaterial_with_invalid_date.tsv:biomaterial_date with id BM15'\
+           in str(excinfo.value)

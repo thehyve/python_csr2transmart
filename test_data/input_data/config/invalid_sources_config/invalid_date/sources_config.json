@@ -1,0 +1,395 @@
+{
+  "entities": {
+    "Individual": {
+      "attributes": [
+        {
+          "name": "individual_id",
+          "sources": [
+            {
+              "file": "individual.tsv",
+              "column": "individual_id"
+            },
+            {
+              "file": "ic_withdrawal.tsv",
+              "column": "person_id"
+            }
+          ]
+        },
+        {
+          "name": "taxonomy",
+          "sources": [
+            {
+              "file": "individual.tsv"
+            }
+          ]
+        },
+        {
+          "name": "birth_date",
+          "sources": [
+            {
+              "file": "individual.tsv",
+              "date_format": "%d-%m-%Y"
+            }
+          ]
+        },
+        {
+          "name": "gender",
+          "sources": [
+            {
+              "file": "individual.tsv"
+            }
+          ]
+        },
+        {
+          "name": "death_date",
+          "sources": [
+            {
+              "file": "individual.tsv",
+              "date_format": "%d-%m-%Y"
+            }
+          ]
+        },
+        {
+          "name": "ic_type",
+          "sources": [
+            {
+              "file": "individual.tsv",
+              "column": "IC_type"
+            }
+          ]
+        },
+        {
+          "name": "ic_given_date",
+          "sources": [
+            {
+              "file": "individual.tsv",
+              "column": "IC_given_date",
+              "date_format": "%d-%m-%Y"
+            }
+          ]
+        },
+        {
+          "name": "ic_withdrawn_date",
+          "sources": [
+            {
+              "file": "individual.tsv",
+              "column": "IC_withdrawn_date",
+              "date_format": "%d-%m-%Y"
+            },
+            {
+              "file": "ic_withdrawal.tsv",
+              "column": "ic_withdrawn_at"
+            }
+          ]
+        },
+        {
+          "name": "ic_material",
+          "sources": [
+            {
+              "file": "individual.tsv",
+              "column": "IC_material"
+            }
+          ]
+        },
+        {
+          "name": "ic_data",
+          "sources": [
+            {
+              "file": "individual.tsv",
+              "column": "IC_data"
+            }
+          ]
+        },
+        {
+          "name": "ic_linking_ext",
+          "sources": [
+            {
+              "file": "individual.tsv",
+              "column": "IC_linking_ext"
+            }
+          ]
+        },
+        {
+          "name": "report_her_susc",
+          "sources": [
+            {
+              "file": "individual.tsv"
+            }
+          ]
+        },
+        {
+          "name": "report_inc_findings",
+          "sources": [
+            {
+              "file": "individual.tsv",
+              "column": "report_inc_finding"
+            }
+          ]
+        }
+      ]
+    },
+    "Diagnosis": {
+      "attributes": [
+        {
+          "name": "individual_id",
+          "sources": [
+            {
+              "file": "diagnosis.tsv"
+            }
+          ]
+        },
+        {
+          "name": "diagnosis_id",
+          "sources": [
+            {
+              "file": "diagnosis.tsv"
+            }
+          ]
+        },
+        {
+          "name": "tumor_type",
+          "sources": [
+            {
+              "file": "diagnosis.tsv"
+            }
+          ]
+        },
+        {
+          "name": "topography",
+          "sources": [
+            {
+              "file": "diagnosis.tsv"
+            }
+          ]
+        },
+        {
+          "name": "treatment_protocol",
+          "sources": [
+            {
+              "file": "diagnosis.tsv"
+            }
+          ]
+        },
+        {
+          "name": "tumor_stage",
+          "sources": [
+            {
+              "file": "diagnosis.tsv"
+            }
+          ]
+        },
+        {
+          "name": "diagnosis_date",
+          "sources": [
+            {
+              "file": "diagnosis.tsv",
+              "date_format": "%d-%m-%Y"
+            }
+          ]
+        },
+        {
+          "name": "center_treatment",
+          "sources": [
+            {
+              "file": "diagnosis.tsv"
+            }
+          ]
+        }
+      ]
+    },
+    "Biosource": {
+      "attributes": [
+        {
+          "name": "biosource_id",
+          "sources": [
+            {
+              "file": "biosource.csv"
+            }
+          ]
+        },
+        {
+          "name": "individual_id",
+          "sources": [
+            {
+              "file": "biosource.csv"
+            }
+          ]
+        },
+        {
+          "name": "diagnosis_id",
+          "sources": [
+            {
+              "file": "biosource.csv"
+            }
+          ]
+        },
+        {
+          "name": "src_biosource_id",
+          "sources": [
+            {
+              "file": "biosource.csv"
+            }
+          ]
+        },
+        {
+          "name": "biosource_dedicated",
+          "sources": [
+            {
+              "file": "biosource.csv"
+            }
+          ]
+        },
+        {
+          "name": "tissue",
+          "sources": [
+            {
+              "file": "biosource.csv"
+            }
+          ]
+        },
+        {
+          "name": "biosource_date",
+          "sources": [
+            {
+              "file": "biosource.csv",
+              "date_format": "%d-%m-%Y"
+            }
+          ]
+        },
+        {
+          "name": "disease_status",
+          "sources": [
+            {
+              "file": "biosource.csv"
+            }
+          ]
+        },
+        {
+          "name": "tumor_percentage",
+          "sources": [
+            {
+              "file": "biosource.csv"
+            }
+          ]
+        }
+      ]
+    },
+    "Biomaterial": {
+      "attributes": [
+        {
+          "name": "biomaterial_id",
+          "sources": [
+            {
+              "file": "biomaterial_with_invalid_date.tsv"
+            }
+          ]
+        },
+        {
+          "name": "src_biosource_id",
+          "sources": [
+            {
+              "file": "biomaterial_with_invalid_date.tsv"
+            }
+          ]
+        },
+        {
+          "name": "src_biomaterial_id",
+          "sources": [
+            {
+              "file": "biomaterial_with_invalid_date.tsv"
+            }
+          ]
+        },
+        {
+          "name": "biomaterial_date",
+          "sources": [
+            {
+              "file": "biomaterial_with_invalid_date.tsv",
+              "date_format": "%d-%m-%Y"
+            }
+          ]
+        },
+        {
+          "name": "type",
+          "sources": [
+            {
+              "file": "biomaterial_with_invalid_date.tsv"
+            }
+          ]
+        }
+      ]
+    },
+    "Study": {
+      "attributes": [
+        {
+          "name": "study_id",
+          "sources": [
+            {
+              "file": "study.tsv"
+            }
+          ]
+        },
+        {
+          "name": "acronym",
+          "sources": [
+            {
+              "file": "study.tsv"
+            }
+          ]
+        },
+        {
+          "name": "title",
+          "sources": [
+            {
+              "file": "study.tsv"
+            }
+          ]
+        },
+        {
+          "name": "datadictionary",
+          "sources": [
+            {
+              "file": "study.tsv"
+            }
+          ]
+        }
+      ]
+    },
+    "IndividualStudy": {
+      "attributes": [
+        {
+          "name": "individual_study_id",
+          "sources": [
+            {
+              "file": "individual_study.tsv"
+            }
+          ]
+        },
+        {
+          "name": "individual_id",
+          "sources": [
+            {
+              "file": "individual_study.tsv"
+            }
+          ]
+        },
+        {
+          "name": "study_id",
+          "sources": [
+            {
+              "file": "individual_study.tsv"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "codebooks": {
+    "individual.tsv": "codebook.txt"
+  },
+  "file_format": {
+    "biosource.csv": {
+      "delimiter": ","
+    }
+  }
+}
