@@ -32,7 +32,7 @@ def read_codebook(codebook_filename: str) -> CodeBook:
                         column_mappings[column] = column_value_mapping
                 # Start new column mapping
                 tokens = line.split('\t')
-                if len(tokens) != 2:
+                if len(tokens) < 2:
                     raise DataException(
                         f'Invalid header in codebook {codebook_filename} on line {line_number}')
                 current_columns = [column_name.lower() for column_name in tokens[1].split(' ')]
