@@ -27,14 +27,31 @@ def format_value(schema: Dict, column: str, value: Any):
     return value
 
 
+def get_id_property(schema: Dict) -> str:
+    id_property = list([name for (name, prop) in schema['properties'].items()
+                        if 'identity' in prop and prop['identity'] is True])[0]
+    logger.debug(f'Id property: {id_property}')
+    return id_property
+
+
 def transform_entity(values: Dict[Any, Any], schema: Dict) -> Dict:
     return {format_column(k): format_value(schema, format_column(k), v)
             for k, v in values.items()}
 
 
 def transform_entities(entities: Any, schema: Dict, constructor: Any):
+    id_property = get_id_property(schema)
     entities = [transform_entity(entity, schema) for entity in entities]
-    return [constructor(entity) for entity in entities]
+    result = []
+    for entity in entities:
+        try:
+            result.append(constructor(entity))
+        except Exception as e:
+            logger.error(e)
+            entity_name = schema['title']
+            id = entity[id_property]
+            raise DataException(f'Invalid data for {entity_name} with id {id}')
+    return result
 
 
 def read_configuration(config_dir) -> SourcesConfig:
@@ -52,6 +69,22 @@ def read_configuration(config_dir) -> SourcesConfig:
             logger.error(e)
             raise DataException(f'Error parsing source config file: {sources_config_path}')
         return SourcesConfig(**config_data)
+
+
+def get_source_files(entity_sources_config: Entity, id_property: str):
+    source_files = set([source.file
+                        for attribute in entity_sources_config.attributes
+                        for source in attribute.sources])
+    source_file_id_mapping = dict([(source.file, source.column if source.column is not None else attribute.name)
+                                   for attribute in entity_sources_config.attributes
+                                   for source in attribute.sources
+                                   if attribute.name == id_property])
+    logger.debug(f'Source files: {source_files}')
+    logger.debug(f'Source file id mapping: {source_file_id_mapping}')
+    source_files_without_id_column = source_files - set(source_file_id_mapping.keys())
+    if source_files_without_id_column:
+        raise DataException(f'Id column missing in source files: {source_files_without_id_column}')
+    return source_files, source_file_id_mapping
 
 
 class SourcesReader:
@@ -75,7 +108,7 @@ class SourcesReader:
                 source_file_data = codebook_mapper.apply(source_file_data)
         return source_file_data
 
-    def get_id_property(self, entity_type) -> str:
+    def read_id_property(self, entity_type) -> str:
         entity_sources_config = self.sources_config.entities[entity_type.__name__]
         source_columns = list([attribute.name for attribute in entity_sources_config.attributes])
         logger.debug(f'Source columns: {source_columns}')
@@ -85,25 +118,7 @@ class SourcesReader:
         invalid_columns = set(source_columns) - set(schema_columns)
         if invalid_columns:
             raise DataException(f'Unknown columns in source configuration: {invalid_columns}')
-        id_column = list([name for (name, prop) in schema['properties'].items()
-                          if 'identity' in prop and prop['identity'] is True])[0]
-        logger.debug(f'Id column: {id_column}')
-        return id_column
-
-    def get_source_files(self, entity_sources_config: Entity, id_property: str):
-        source_files = set([source.file
-                            for attribute in entity_sources_config.attributes
-                            for source in attribute.sources])
-        source_file_id_mapping = dict([(source.file, source.column if source.column is not None else attribute.name)
-                                       for attribute in entity_sources_config.attributes
-                                       for source in attribute.sources
-                                       if attribute.name == id_property])
-        logger.debug(f'Source files: {source_files}')
-        logger.debug(f'Source file id mapping: {source_file_id_mapping}')
-        source_files_without_id_column = source_files - set(source_file_id_mapping.keys())
-        if source_files_without_id_column:
-            raise DataException(f'Id column missing in source files: {source_files_without_id_column}')
-        return source_files, source_file_id_mapping
+        return get_id_property(schema)
 
     def read_entity_data(self, entity_type) -> Sequence:
         """
@@ -117,11 +132,11 @@ class SourcesReader:
         if entity_type.__name__ not in self.sources_config.entities:
             raise DataException(f'No source configuration found for the {entity_type.__name__} entity')
 
-        id_property = self.get_id_property(entity_type)
+        id_property = self.read_id_property(entity_type)
 
         entity_sources_config = self.sources_config.entities[entity_type.__name__]
 
-        source_files, source_file_id_mapping = self.get_source_files(entity_sources_config, id_property)
+        source_files, source_file_id_mapping = get_source_files(entity_sources_config, id_property)
 
         # Read data from source files
         source_data = {}
@@ -179,16 +194,26 @@ class SourcesReader:
                                 if value == '':
                                     value = None
                                 if value is not None and source.date_format is not None:
-                                    value = datetime.strptime(value, source.date_format)
-                                entity[attribute.name] = value
+                                    try:
+                                        value = datetime.strptime(value, source.date_format)
+                                    except Exception as e:
+                                        logger.error(e)
+                                        raise DataException(
+                                            f'Error parsing {attribute.name} from'
+                                            f' source {source.file}:{source_column} with id {entity_id}')
+                            entity[attribute.name] = value
 
         logger.debug(f'{entity_type.__name__} entity data: {entity_data}')
 
-        return transform_entities(
-            entity_data.values(),
-            entity_type.schema(),
-            lambda e: entity_type(**e)
-        )
+        try:
+            return transform_entities(
+                entity_data.values(),
+                entity_type.schema(),
+                lambda e: entity_type(**e)
+            )
+        except DataException as e:
+            logger.error(f'Please check source files: {", ".join(source_files)}')
+            raise e
 
     def read_subject_data(self) -> CentralSubjectRegistry:
         logger.info('Reading subject registry data ...')
