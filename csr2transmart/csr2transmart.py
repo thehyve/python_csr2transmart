@@ -4,6 +4,8 @@ import sys
 from os import path
 
 import click
+
+from csr.exceptions import DataException
 from csr.logging import setup_logging
 from transmart_loader.copy_writer import TransmartCopyWriter
 from transmart_loader.transmart import DataCollection
@@ -26,7 +28,12 @@ def read_configuration(config_dir) -> OntologyConfig:
     if not path.exists(ontology_config_path) or not path.isfile(ontology_config_path):
         raise FileNotFoundError(f'Cannot find {ontology_config_path}')
     with open(ontology_config_path, 'r') as ontology_config_file:
-        return OntologyConfig(**json.load(ontology_config_file))
+        try:
+            config_data = json.load(ontology_config_file)
+        except Exception as e:
+            logger.error(e)
+            raise DataException(f'Error parsing ontology config file: {ontology_config_path}')
+        return OntologyConfig(**config_data)
 
 
 def csr2transmart(input_dir: str,

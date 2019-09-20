@@ -46,7 +46,12 @@ def read_configuration(config_dir) -> SourcesConfig:
     if not path.exists(sources_config_path) or not path.isfile(sources_config_path):
         raise DataException(f'Cannot find {sources_config_path}')
     with open(sources_config_path, 'r') as sources_config_file:
-        return SourcesConfig(**json.load(sources_config_file))
+        try:
+            config_data = json.load(sources_config_file)
+        except Exception as e:
+            logger.error(e)
+            raise DataException(f'Error parsing source config file: {sources_config_path}')
+        return SourcesConfig(**config_data)
 
 
 class SourcesReader:

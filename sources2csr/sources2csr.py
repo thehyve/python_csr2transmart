@@ -29,7 +29,7 @@ def sources2csr(input_dir, output_dir, config_dir):
         study_registry_writer = StudyRegistryWriter(output_dir)
         study_registry_writer.write(study_registry)
     except Exception as e:
-        logger.error(f'Error: {e}')
+        logger.error(e)
         sys.exit(1)
 
 
