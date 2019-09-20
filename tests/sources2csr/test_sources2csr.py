@@ -101,3 +101,11 @@ def test_non_existing_file():
     with pytest.raises(ReaderException) as excinfo:
         reader.read_subject_data()
     assert 'File not found' in str(excinfo.value)
+
+
+def test_invalid_json():
+    with pytest.raises(DataException) as excinfo:
+        SourcesReader(
+            input_dir='./test_data/input_data/CLINICAL',
+            config_dir='./test_data/input_data/config/invalid_sources_config/invalid_json')
+    assert 'Error parsing source config file' in str(excinfo.value)

@@ -1,5 +1,6 @@
 import pytest
 
+from csr.exceptions import DataException
 from csr2transmart.csr2transmart import read_configuration
 from csr2transmart.mappers.ontology_mapper import OntologyMapper
 from csr2transmart.ontology_config import OntologyConfigValidationException
@@ -40,3 +41,9 @@ def test_ontology_config_invalid_concept_code():
         OntologyMapper('test').map(ontology_config.nodes)
     assert 'Invalid concept code format: gender. Concept code has to have format: ' \
            '`<entity_name>.<entity_field>`' in str(excinfo.value)
+
+
+def test_invalid_json():
+    with pytest.raises(DataException) as excinfo:
+        read_configuration('./test_data/input_data/config/invalid_ontology_config/invalid_json')
+    assert 'Error parsing ontology config file' in str(excinfo.value)
