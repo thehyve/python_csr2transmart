@@ -186,6 +186,8 @@ class SourcesReader:
                         if attribute.name not in entity or entity[attribute.name] is None:
                             source_records = list([record for record in source_data[source.file]
                                                    if record[source_id_column] == entity_id])
+                            if not source_records:
+                                continue
                             if len(source_records) > 1:
                                 raise DataException(f'Multiple records for {entity_type.__name__}'
                                                     f' with id {entity_id} in file {source.file}')
