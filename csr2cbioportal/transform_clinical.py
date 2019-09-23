@@ -51,14 +51,14 @@ def create_clinical_header(df):
     header_data = pd.DataFrame(header_data)
     header_data.columns = df.columns
 
-    # Adding hash # to the first column
-    header_data.iloc[:, 0] = '#' + header_data.iloc[:, 0].astype(str)
-
     # TODO: Major - Check FORCE_STRING_LIST assumption --> make configurable?
     # Set datatype of specific columns before after header
     for string_column_name in FORCE_STRING_LIST:
         if string_column_name in header_data.columns:
             header_data.loc[2, string_column_name] = 'STRING'
+
+    # Adding hash # to the first column
+    header_data.iloc[:, 0] = '#' + header_data.iloc[:, 0].astype(str)
 
     return header_data
 
