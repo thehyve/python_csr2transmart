@@ -1,0 +1,4 @@
+1	GENDER
+	m	male	f	female	u	unknown
+2	CONSENT
+	1	Yes	2	No	3	Withdrawn	2	DUPLICATE

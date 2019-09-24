@@ -36,6 +36,10 @@ def read_codebook(codebook_filename: str) -> CodeBook:
                     raise DataException(
                         f'Invalid header in codebook {codebook_filename} on line {line_number}')
                 current_columns = [column_name.lower() for column_name in tokens[1].split(' ')]
+                duplicate_columns = set(current_columns).intersection(column_mappings.keys())
+                if duplicate_columns:
+                    raise DataException(
+                        f'Duplicate columns in codebook on line {line_number}: {", ".join(duplicate_columns)}')
                 current_value_mapping = {}
             else:
                 # Add values to current value mapping
@@ -47,6 +51,8 @@ def read_codebook(codebook_filename: str) -> CodeBook:
                 for code, value in zip(it, it):
                     if code != '' and value != '':
                         value = value.replace('"', '')
+                        if code in current_value_mapping:
+                            raise DataException(f'Duplicate code in codebook on line {line_number}: {code}')
                         current_value_mapping[code] = value
         # Save last column mapping
         if current_columns is not None:
