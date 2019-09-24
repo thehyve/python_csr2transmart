@@ -10,7 +10,7 @@ class OntologyConfigValidationException(Exception):
 
 class TreeNode(BaseModel):
     """
-    Ontology node
+    Concept node
     """
     name: constr(min_length=1)
     concept_code: Optional[str]
