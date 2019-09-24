@@ -22,7 +22,7 @@ class Individual(BaseModel):
     ic_linking_ext: Optional[str]
     report_her_susc: Optional[str]
     report_inc_findings: Optional[str]
-    diagnosis_count: Optional[int]
+    diagnosis_count: Optional[int] = Schema(None, derived=True)
     age_first_diagnosis: Optional[int] = Schema(None, derived=True)
 
 
