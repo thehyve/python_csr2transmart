@@ -4,8 +4,7 @@ from typing import Dict, Sequence
 from transmart_loader.transmart import Concept, TreeNode, ValueType, ConceptNode, TreeNodeMetadata
 
 from csr.csr import SubjectEntity, StudyEntity
-from csr2transmart.ontology_config import TreeNode as OntologyConfigTreeNode, \
-    ConceptNode as OntologyConfigConceptNode
+from csr2transmart.ontology_config import TreeNode as OntologyConfigTreeNode, OntologyConfigValidationException
 
 
 class OntologyMapper:
@@ -33,11 +32,8 @@ class OntologyMapper:
             return entity_name
 
     @staticmethod
-    def is_concept_node(node):
-        if isinstance(node, dict):
-            return node.get('concept_code') is not None
-        else:
-            return isinstance(node, OntologyConfigConceptNode) and node.concept_code is not None
+    def is_concept_node(node: OntologyConfigTreeNode) -> bool:
+        return node.concept_code is not None
 
     def get_concept_type(self, entity_name: str, entity_field_name: str) -> ValueType:
         entity_types = list(SubjectEntity.__args__)
@@ -46,11 +42,10 @@ class OntologyMapper:
         field_type = entity_type.schema()['properties'][entity_field_name]['type']
         return self.type_to_value_type(field_type)
 
-    def map_concept_node(self, node: OntologyConfigConceptNode) -> ConceptNode:
+    def map_concept_node(self, node: OntologyConfigTreeNode) -> ConceptNode:
         entity_name, entity_field_name = node.concept_code.split('.')
         concept_path = '\\\\CSR\\\\' + node.concept_code
         concept_type = self.get_concept_type(entity_name, entity_field_name)
-
         concept = Concept(node.concept_code, node.name, concept_path, concept_type)
         self.concept_code_to_concept[node.concept_code] = concept
 
@@ -60,22 +55,18 @@ class OntologyMapper:
         concept_node.metadata = TreeNodeMetadata(metadata_value)
         return concept_node
 
-    #  TODO: - fix mapping of ontology nodes so all of them instance of OntologyConfigTreeNode class, not dict
     def map_nodes(self, nodes: Sequence[OntologyConfigTreeNode], parent_node: TreeNode):
         for node in nodes:
+            if isinstance(node, dict):
+                node = OntologyConfigTreeNode(**node)
+            elif not isinstance(node, OntologyConfigTreeNode):
+                raise OntologyConfigValidationException(f'Invalid ontology node: {node}')
+
             if self.is_concept_node(node):
-                if isinstance(node, dict):
-                    node = OntologyConfigConceptNode(**node)
                 parent_node.add_child(self.map_concept_node(node))
             else:
-                if isinstance(node, dict):
-                    name = node.get('name')
-                    children = node.get('children')
-                else:
-                    name = node.name
-                    children = node.children
-                intermediate_node = TreeNode(name)
-                self.map_nodes(children, intermediate_node)
+                intermediate_node = TreeNode(node.name)
+                self.map_nodes(node.children, intermediate_node)
                 parent_node.add_child(intermediate_node)
 
     def map(self, src_nodes: Sequence[OntologyConfigTreeNode]) -> Sequence[TreeNode]:

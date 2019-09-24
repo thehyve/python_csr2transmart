@@ -1,7 +1,7 @@
 from typing import Sequence, Optional
 
 from csr.csr import SubjectEntity, StudyEntity
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, validator, constr
 
 
 class OntologyConfigValidationException(Exception):
@@ -10,17 +10,19 @@ class OntologyConfigValidationException(Exception):
 
 class TreeNode(BaseModel):
     """
-    Ontology node
+    Concept node
     """
-    name: str
+    name: constr(min_length=1)
+    concept_code: Optional[str]
     children: Optional[Sequence['TreeNode']]
 
-
-class ConceptNode(TreeNode):
-    """
-    Concept ontology node
-    """
-    concept_code: str
+    @validator('children', always=True)
+    def check_consistency(cls, v, values):
+        if v is not None and values['concept_code'] is not None:
+            raise OntologyConfigValidationException(f'Node cannot have both concept_code and children: {values}')
+        if v is None and values['concept_code'] is None:
+            raise OntologyConfigValidationException(f'Node must have either concept_code or children: {values}')
+        return v
 
     @validator('concept_code')
     def check_valid_in_csr(cls, concept_code):
