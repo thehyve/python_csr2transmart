@@ -1,4 +1,3 @@
-import json
 from collections import Counter
 
 import pandas as pd
@@ -37,10 +36,10 @@ def test_sample_clinical_data(sample_clinical_data):
     assert len(sample_clinical_data) == 4
     assert list(sample_clinical_data.get('SAMPLE_ID')) == ['PMCBS000AAA_PMCBM000AAA', 'PMCBS000AAB_PMCBM000AAB',
                                                            'PMCBS000AAC_PMCBM000AAC', 'PMCBS000AAD_PMCBM000AAD']
-    assert Counter(list(sample_clinical_data)) == Counter(['ANALYSIS_TYPE', 'BIOMATERIAL_DATE', 'BIOMATERIAL_ID',
+    assert Counter(list(sample_clinical_data)) == Counter(['BIOMATERIAL_DATE', 'BIOMATERIAL_ID',
                                                            'BIOSOURCE_DATE', 'BIOSOURCE_DEDICATED', 'BIOSOURCE_ID',
                                                            'CENTER_TREATMENT', 'DIAGNOSIS_DATE', 'DIAGNOSIS_ID',
-                                                           'DISEASE_STATUS', 'PATIENT_ID', 'LIBRARY_STRATEGY',
+                                                           'DISEASE_STATUS', 'PATIENT_ID',
                                                            'SAMPLE_ID', 'SRC_BIOMATERIAL_ID', 'TISSUE', 'TOPOGRAPHY',
                                                            'TREATMENT_PROTOCOL', 'TUMOR_PERCENTAGE', 'TUMOR_STAGE',
                                                            'TUMOR_TYPE', 'TYPE', 'SRC_BIOSOURCE_ID'])
