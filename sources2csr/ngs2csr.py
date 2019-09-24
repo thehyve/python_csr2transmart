@@ -53,6 +53,8 @@ def add_ngs_data(subject_registry: CentralSubjectRegistry, input_dir: str) -> Ce
     ngs_data = read_ngs_data(input_dir)
     if subject_registry.biomaterials and ngs_data:
         for biomaterial in subject_registry.biomaterials:
+            biomaterial.analysis_type = []
+            biomaterial.library_strategy = []
             for ngs in ngs_data:
                 if biomaterial.biomaterial_id == ngs.biomaterial_id and \
                    biomaterial.src_biosource_id == ngs.biosource_id:
