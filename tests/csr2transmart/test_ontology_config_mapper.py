@@ -43,6 +43,22 @@ def test_ontology_config_invalid_concept_code():
            '`<entity_name>.<entity_field>`' in str(excinfo.value)
 
 
+def test_ontology_config_mutually_exclusive_properties():
+    with pytest.raises(OntologyConfigValidationException) as excinfo:
+        ontology_config = read_configuration(
+            './test_data/input_data/config/invalid_ontology_config/mutually_exclusive_properties')
+        OntologyMapper('test').map(ontology_config.nodes)
+    assert 'Node cannot have both concept_code and children' in str(excinfo.value)
+
+
+def test_ontology_config_neither_children_nor_concept_code():
+    with pytest.raises(OntologyConfigValidationException) as excinfo:
+        ontology_config = read_configuration(
+            './test_data/input_data/config/invalid_ontology_config/neither_children_nor_concept_code')
+        OntologyMapper('test').map(ontology_config.nodes)
+    assert 'Node must have either concept_code or children' in str(excinfo.value)
+
+
 def test_invalid_json():
     with pytest.raises(DataException) as excinfo:
         read_configuration('./test_data/input_data/config/invalid_ontology_config/invalid_json')
