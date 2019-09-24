@@ -7,6 +7,8 @@ import pytest
 from click.testing import CliRunner
 from os import path
 
+from pydantic import ValidationError
+
 from csr.exceptions import DataException, ReaderException
 from csr.tabular_file_reader import TabularFileReader
 
@@ -137,4 +139,13 @@ def test_derived_values_in_sources():
     with pytest.raises(DataException) as excinfo:
         reader.read_subject_data()
     assert 'Derived value fields not allowed in source files' \
+           in str(excinfo.value)
+
+
+def test_duplicate_attributes():
+    with pytest.raises(ValidationError) as excinfo:
+        SourcesReader(
+            input_dir='./test_data/input_data/CLINICAL',
+            config_dir='./test_data/input_data/config/invalid_sources_config/duplicate_attributes')
+    assert 'Duplicate attributes: taxonomy, ic_type' \
            in str(excinfo.value)

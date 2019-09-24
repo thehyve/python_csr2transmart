@@ -95,7 +95,7 @@ def validate_derived_values_not_in_source_config(entity_type: BaseModel, entity_
                               if 'derived' in prop and prop['derived'] is True])
     attribute_names = set([attr.name for attr in entity_source_config.attributes])
     intersection = derived_properties.intersection(attribute_names)
-    if len(intersection) > 0:
+    if intersection:
         raise DataException(f'Derived value fields not allowed in source files: {", ".join(intersection)}')
 
 

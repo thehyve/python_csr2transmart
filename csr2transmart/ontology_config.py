@@ -1,10 +1,11 @@
+from collections import Counter
 from typing import Sequence, Optional
 
 from csr.csr import SubjectEntity, StudyEntity
 from pydantic import BaseModel, validator, constr
 
 
-class OntologyConfigValidationException(Exception):
+class OntologyConfigValidationException(ValueError):
     pass
 
 
@@ -18,9 +19,9 @@ class TreeNode(BaseModel):
 
     @validator('children', always=True)
     def check_consistency(cls, v, values):
-        if v is not None and values['concept_code'] is not None:
+        if v is not None and values.get('concept_code') is not None:
             raise OntologyConfigValidationException(f'Node cannot have both concept_code and children: {values}')
-        if v is None and values['concept_code'] is None:
+        if v is None and values.get('concept_code') is None:
             raise OntologyConfigValidationException(f'Node must have either concept_code or children: {values}')
         return v
 
@@ -45,9 +46,32 @@ class TreeNode(BaseModel):
                                                     f'is not a valid field of {entity_name_field_pair[0]} entity.')
         return concept_code
 
+    @validator('children', whole=True)
+    def validate_child_names(cls, nodes: Optional[Sequence['TreeNode']]):
+        if nodes is None:
+            return nodes
+        node_name_counts = Counter([node.name for node in nodes])
+        duplicates = [k for k, v in node_name_counts.items() if v > 1]
+        if duplicates:
+            raise OntologyConfigValidationException(
+                f'Duplicate child names: {", ".join(duplicates)}')
+        return nodes
+
+
+TreeNode.update_forward_refs()
+
 
 class OntologyConfig(BaseModel):
     """
     Ontology tree configuration
     """
     nodes: Sequence[TreeNode]
+
+    @validator('nodes', whole=True)
+    def validate_node_names(cls, nodes: Sequence[TreeNode]):
+        node_name_counts = Counter([node.name for node in nodes])
+        duplicates = [k for k, v in node_name_counts.items() if v > 1]
+        if duplicates:
+            raise OntologyConfigValidationException(
+                f'Duplicate node names: {", ".join(duplicates)}')
+        return nodes
