@@ -20,7 +20,7 @@ class TreeNode(BaseModel):
     def check_consistency(cls, v, values):
         if v is not None and values['concept_code'] is not None:
             raise OntologyConfigValidationException(f'Node cannot have both concept_code and children: {values}')
-        if v is None and values.get('concept_code') is None:
+        if v is None and values['concept_code'] is None:
             raise OntologyConfigValidationException(f'Node must have either concept_code or children: {values}')
         return v
 
