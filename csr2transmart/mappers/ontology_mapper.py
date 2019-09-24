@@ -32,11 +32,8 @@ class OntologyMapper:
             return entity_name
 
     @staticmethod
-    def is_concept_node(node) -> bool:
-        if isinstance(node, dict):
-            return node.get('concept_code') is not None
-        else:
-            return isinstance(node, OntologyConfigTreeNode) and node.concept_code is not None
+    def is_concept_node(node: OntologyConfigTreeNode) -> bool:
+        return node.concept_code is not None
 
     def get_concept_type(self, entity_name: str, entity_field_name: str) -> ValueType:
         entity_types = list(SubjectEntity.__args__)
@@ -60,15 +57,14 @@ class OntologyMapper:
 
     def map_nodes(self, nodes: Sequence[OntologyConfigTreeNode], parent_node: TreeNode):
         for node in nodes:
+            if isinstance(node, dict):
+                node = OntologyConfigTreeNode(**node)
+            elif not isinstance(node, OntologyConfigTreeNode):
+                raise OntologyConfigValidationException(f'Invalid ontology node: {node}')
+
             if self.is_concept_node(node):
-                if isinstance(node, dict):
-                    node = OntologyConfigTreeNode(**node)
                 parent_node.add_child(self.map_concept_node(node))
             else:
-                if isinstance(node, dict):
-                    node = OntologyConfigTreeNode(**node)
-                elif not isinstance(node, OntologyConfigTreeNode):
-                    raise OntologyConfigValidationException(f'Invalid ontology node: {node}')
                 intermediate_node = TreeNode(node.name)
                 self.map_nodes(node.children, intermediate_node)
                 parent_node.add_child(intermediate_node)
