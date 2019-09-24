@@ -19,9 +19,9 @@ class TreeNode(BaseModel):
     @validator('children', always=True)
     def check_consistency(cls, v, values):
         if v is not None and values['concept_code'] is not None:
-            raise OntologyConfigValidationException('Node cannot have both concept_code and children')
+            raise OntologyConfigValidationException(f'Node cannot have both concept_code and children: {values}')
         if v is None and values.get('concept_code') is None:
-            raise OntologyConfigValidationException('Node must have either concept_code or children')
+            raise OntologyConfigValidationException(f'Node must have either concept_code or children: {values}')
         return v
 
     @validator('concept_code')
