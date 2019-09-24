@@ -1,0 +1,16 @@
+{
+  "nodes": [
+    {
+      "name": "01. Patient information",
+      "concept_code": "Individual.gender"
+    },
+    {
+      "name": "02. Other information",
+      "concept_code": "Individual.gender"
+    },
+    {
+      "name": "01. Patient information",
+      "concept_code": "Individual.gender"
+    }
+  ]
+}

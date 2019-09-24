@@ -1,6 +1,11 @@
+from collections import Counter
 from typing import Dict, Sequence, Optional
 
-from pydantic import BaseModel, Schema
+from pydantic import BaseModel, Schema, validator
+
+
+class SourcesConfigValidationException(ValueError):
+    pass
 
 
 class Source(BaseModel):
@@ -21,6 +26,15 @@ class Attribute(BaseModel):
 
 class Entity(BaseModel):
     attributes: Sequence[Attribute]
+
+    @validator('attributes', whole=True)
+    def validate_attribute_names(cls, attrs: Sequence[Attribute]):
+        attribute_name_counts = Counter([attr.name for attr in attrs])
+        duplicates = [k for k, v in attribute_name_counts.items() if v > 1]
+        if duplicates:
+            raise SourcesConfigValidationException(
+                f'Duplicate attributes: {", ".join(duplicates)}')
+        return attrs
 
 
 class FileFormat(BaseModel):
