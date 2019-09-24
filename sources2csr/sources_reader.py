@@ -181,43 +181,43 @@ class SourcesReader:
 
         # Merge data from different sources files
         for attribute in entity_sources_config.attributes:
-            if not attribute.name == id_property:
-                # add data to entities for attribute
-                logger.debug(f'Adding data for attribute {attribute.name}')
-                for source in attribute.sources:
-                    # default column name is the attribute name
-                    source_column = source.column if source.column is not None else attribute.name
-                    # check if column is in the source data
-                    first_record = source_data[source.file][0]
-                    if source_column not in first_record.keys():
-                        raise DataException(f'Column \'{source_column}\' not found in file {source.file}. '
-                                            f'Is the delimiter configured correctly in the sources config?')
-                    # add data from source to attribute
-                    logger.debug(
-                        f'Adding data for attribute {attribute.name} from source {source.file}:{source_column}')
-                    source_id_column = source_file_id_mapping[source.file]
-                    for entity_id, entity in entity_data.items():
-                        if attribute.name not in entity or entity[attribute.name] is None:
-                            source_records = list([record for record in source_data[source.file]
-                                                   if record[source_id_column] == entity_id])
-                            if not source_records:
-                                continue
-                            if len(source_records) > 1:
-                                raise DataException(f'Multiple records for {entity_type.__name__}'
-                                                    f' with id {entity_id} in file {source.file}')
-                            if len(source_records) == 1:
-                                value = source_records[0][source_column]
-                                if value == '':
-                                    value = None
-                                if value is not None and source.date_format is not None:
-                                    try:
-                                        value = datetime.strptime(value, source.date_format)
-                                    except Exception as e:
-                                        logger.error(e)
-                                        raise DataException(
-                                            f'Error parsing {attribute.name} from'
-                                            f' source {source.file}:{source_column} with id {entity_id}')
-                            entity[attribute.name] = value
+            if attribute.name == id_property:
+                continue
+            # add data to entities for attribute
+            logger.debug(f'Adding data for attribute {attribute.name}')
+            for source in attribute.sources:
+                # default column name is the attribute name
+                source_column = source.column if source.column is not None else attribute.name
+                # check if column is in the source data
+                first_record = source_data[source.file][0]
+                if source_column not in first_record.keys():
+                    raise DataException(f'Column \'{source_column}\' not found in file {source.file}. '
+                                        f'Is the delimiter configured correctly in the sources config?')
+                # add data from source to attribute
+                logger.debug(
+                    f'Adding data for attribute {attribute.name} from source {source.file}:{source_column}')
+                source_id_column = source_file_id_mapping[source.file]
+                for entity_id, entity in entity_data.items():
+                    if entity.get(attribute.name) is not None:
+                        continue
+                    source_records = list([record for record in source_data[source.file]
+                                           if record[source_id_column] == entity_id])
+                    if not source_records:
+                        continue
+                    if len(source_records) > 1:
+                        raise DataException(f'Multiple records for {entity_type.__name__}'
+                                            f' with id {entity_id} in file {source.file}')
+                    value = source_records[0][source_column]
+                    if value == '':
+                        value = None
+                    if value is not None and source.date_format is not None:
+                        try:
+                            value = datetime.strptime(value, source.date_format)
+                        except Exception as e:
+                            logger.error(e)
+                            raise DataException(f'Error parsing {attribute.name} from'
+                                                f' source {source.file}:{source_column} with id {entity_id}')
+                    entity[attribute.name] = value
 
         logger.debug(f'{entity_type.__name__} entity data: {entity_data}')
 
