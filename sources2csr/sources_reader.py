@@ -4,6 +4,9 @@ from datetime import datetime
 from math import isnan
 from os import path
 from typing import Any, Tuple, Dict, Union, Sequence
+
+from pydantic import BaseModel
+
 from csr.csr import CentralSubjectRegistry, StudyRegistry, SubjectEntity, StudyEntity
 from csr.tabular_file_reader import TabularFileReader
 from sources2csr.codebook_mapper import CodeBookMapper
@@ -41,7 +44,7 @@ def transform_entity(values: Dict[Any, Any], schema: Dict) -> Dict:
 
 def transform_entities(entities: Any, schema: Dict, constructor: Any):
     id_property = get_id_property(schema)
-    entities = [transform_entity(entity, schema) for entity in entities]
+    entities = [transform_entity(entity_data, schema) for entity_data in entities]
     result = []
     for entity in entities:
         try:
@@ -85,6 +88,15 @@ def get_source_files(entity_sources_config: Entity, id_property: str):
     if source_files_without_id_column:
         raise DataException(f'Id column missing in source files: {source_files_without_id_column}')
     return source_files, source_file_id_mapping
+
+
+def validate_derived_values_not_in_source_config(entity_type: BaseModel, entity_source_config: Entity):
+    derived_properties = set([name for (name, prop) in entity_type.schema()['properties'].items()
+                              if 'derived' in prop and prop['derived'] is True])
+    attribute_names = set([attr.name for attr in entity_source_config.attributes])
+    intersection = derived_properties.intersection(attribute_names)
+    if intersection:
+        raise DataException(f'Derived value fields not allowed in source files: {", ".join(intersection)}')
 
 
 class SourcesReader:
@@ -135,6 +147,8 @@ class SourcesReader:
         id_property = self.read_id_property(entity_type)
 
         entity_sources_config = self.sources_config.entities[entity_type.__name__]
+
+        validate_derived_values_not_in_source_config(entity_type, entity_sources_config)
 
         source_files, source_file_id_mapping = get_source_files(entity_sources_config, id_property)
 

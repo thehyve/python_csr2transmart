@@ -1,9 +1,9 @@
 import pytest
+from pydantic import ValidationError
 
 from csr.exceptions import DataException
 from csr2transmart.csr2transmart import read_configuration
 from csr2transmart.mappers.ontology_mapper import OntologyMapper
-from csr2transmart.ontology_config import OntologyConfigValidationException
 
 """Tests for the ontology config mapper.
 """
@@ -17,7 +17,7 @@ def test_valid_ontology_config():
 
 
 def test_ontology_config_invalid_entity_field():
-    with pytest.raises(OntologyConfigValidationException) as excinfo:
+    with pytest.raises(ValidationError) as excinfo:
         ontology_config = read_configuration(
             './test_data/input_data/config/invalid_ontology_config/ontology_config_invalid_entity_field')
         OntologyMapper('test').map(ontology_config.nodes)
@@ -26,7 +26,7 @@ def test_ontology_config_invalid_entity_field():
 
 
 def test_ontology_config_invalid_entity_name():
-    with pytest.raises(OntologyConfigValidationException) as excinfo:
+    with pytest.raises(ValidationError) as excinfo:
         ontology_config = read_configuration(
             './test_data/input_data/config/invalid_ontology_config/ontology_config_invalid_entity_name')
         OntologyMapper('test').map(ontology_config.nodes)
@@ -35,7 +35,7 @@ def test_ontology_config_invalid_entity_name():
 
 
 def test_ontology_config_invalid_concept_code():
-    with pytest.raises(OntologyConfigValidationException) as excinfo:
+    with pytest.raises(ValidationError) as excinfo:
         ontology_config = read_configuration(
             './test_data/input_data/config/invalid_ontology_config/ontology_config_invalid_concept_code')
         OntologyMapper('test').map(ontology_config.nodes)
@@ -44,7 +44,7 @@ def test_ontology_config_invalid_concept_code():
 
 
 def test_ontology_config_mutually_exclusive_properties():
-    with pytest.raises(OntologyConfigValidationException) as excinfo:
+    with pytest.raises(ValidationError) as excinfo:
         ontology_config = read_configuration(
             './test_data/input_data/config/invalid_ontology_config/mutually_exclusive_properties')
         OntologyMapper('test').map(ontology_config.nodes)
@@ -52,11 +52,27 @@ def test_ontology_config_mutually_exclusive_properties():
 
 
 def test_ontology_config_neither_children_nor_concept_code():
-    with pytest.raises(OntologyConfigValidationException) as excinfo:
+    with pytest.raises(ValidationError) as excinfo:
         ontology_config = read_configuration(
             './test_data/input_data/config/invalid_ontology_config/neither_children_nor_concept_code')
         OntologyMapper('test').map(ontology_config.nodes)
     assert 'Node must have either concept_code or children' in str(excinfo.value)
+
+
+def test_duplicate_child_names_rejected():
+    with pytest.raises(ValidationError) as excinfo:
+        ontology_config = read_configuration(
+            './test_data/input_data/config/invalid_ontology_config/duplicate_children')
+        OntologyMapper('test').map(ontology_config.nodes)
+    assert 'Duplicate child names: 01. Date of birth' in str(excinfo.value)
+
+
+def test_duplicate_top_node_names_rejected():
+    with pytest.raises(ValidationError) as excinfo:
+        ontology_config = read_configuration(
+            './test_data/input_data/config/invalid_ontology_config/duplicate_nodes')
+        OntologyMapper('test').map(ontology_config.nodes)
+    assert 'Duplicate node names: 01. Patient information' in str(excinfo.value)
 
 
 def test_invalid_json():
