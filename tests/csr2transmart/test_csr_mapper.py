@@ -126,15 +126,15 @@ def test_observations_mapping(mapped_data_collection):
         'D2', 'D2', 'D2', 'D2', 'D2', 'D2',
         'D3', 'D3', 'D3', 'D3', 'D3', 'D3'])
 
-    assert len(biosource_observations) == 21
+    assert len(biosource_observations) == 19
     assert Counter([bso.value.value for bso in biosource_observations]) == Counter([
-        'Yes', 'BS1', 'medula', datetime.date(2017, 3, 12), 'ST1', 5,  # BS1
-        'BS2', 'cortex', datetime.date(2017, 4, 1), 'ST2', 3,   # BS2
+        'Yes', 'medula', datetime.date(2017, 3, 12), 'ST1', 5,  # BS1
+        'cortex', datetime.date(2017, 4, 1), 'ST2', 3,   # BS2
         'BS2', 'cortex', datetime.date(2017, 5, 14), 'ST1', 2,  # BS3
         'No', 'medula', datetime.date(2017, 6, 21), 'ST2', 1])  # BS4
     assert Counter([bso.metadata.values[biosource_modifier].value for bso in biosource_observations]) == Counter([
-        'BS1', 'BS1', 'BS1', 'BS1', 'BS1', 'BS1',
-        'BS2', 'BS2', 'BS2', 'BS2', 'BS2',
+        'BS1', 'BS1', 'BS1', 'BS1', 'BS1',
+        'BS2', 'BS2', 'BS2', 'BS2',
         'BS3', 'BS3', 'BS3', 'BS3', 'BS3',
         'BS4', 'BS4', 'BS4', 'BS4', 'BS4'])
 

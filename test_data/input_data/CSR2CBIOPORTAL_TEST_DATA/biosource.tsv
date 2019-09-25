@@ -1,5 +1,5 @@
 biosource_id	biosource_dedicated	individual_id	diagnosis_id	src_biosource_id	tissue	biosource_date	disease_status	tumor_percentage
-PMCBS000AAA	Yes	PMCBS000BCA	D1	PMCBS000AAA	medula	2017-03-12	ST1	5
-PMCBS000AAB		PMCBM000BAB	D2	PMCBS000AAB	cortex	2017-04-01	ST2	3
+PMCBS000AAA	Yes	PMCBS000BCA	D1		medula	2017-03-12	ST1	5
+PMCBS000AAB		PMCBM000BAB	D2		cortex	2017-04-01	ST2	3
 PMCBS000AAC		PMCBM000BAB		PMCBS000AAB	cortex	2017-05-14	ST1	2
 PMCBS000AAD	No	PMCBM000BAB	D3		medula	2017-06-21	ST2	1
