@@ -28,6 +28,18 @@ def test_invalid_header():
     assert 'Invalid header in codebook' in str(excinfo.value)
 
 
+def test_duplicate_columns():
+    with pytest.raises(DataException) as excinfo:
+        read_codebook('./test_data/input_data/codebooks/duplicate_columns.txt')
+    assert 'Duplicate columns in codebook on line 3: gender' in str(excinfo.value)
+
+
+def test_duplicate_codes():
+    with pytest.raises(DataException) as excinfo:
+        read_codebook('./test_data/input_data/codebooks/duplicate_codes.txt')
+    assert 'Duplicate code in codebook on line 4: 2' in str(excinfo.value)
+
+
 def test_apply_codebook():
     codebook_mapper = CodeBookMapper('./test_data/input_data/codebooks/valid_codebook.txt')
     result = codebook_mapper.apply([
