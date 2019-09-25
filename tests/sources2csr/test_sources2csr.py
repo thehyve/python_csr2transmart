@@ -6,12 +6,10 @@
 import pytest
 from click.testing import CliRunner
 from os import path
-
 from pydantic import ValidationError
 
 from csr.exceptions import DataException, ReaderException
 from csr.tabular_file_reader import TabularFileReader
-
 from sources2csr import sources2csr
 from sources2csr.sources_reader import SourcesReader
 
@@ -149,3 +147,21 @@ def test_duplicate_attributes():
             config_dir='./test_data/input_data/config/invalid_sources_config/duplicate_attributes')
     assert 'Duplicate attributes: taxonomy, ic_type' \
            in str(excinfo.value)
+
+
+def test_biosource_cannot_be_derived_from_self():
+    reader = SourcesReader(
+            input_dir='./test_data/input_data/CLINICAL',
+            config_dir='./test_data/input_data/config/invalid_sources_config/biosource_derived_from_self')
+    with pytest.raises(DataException) as excinfo:
+        reader.read_subject_data()
+    assert 'Invalid data for Biosource with id BS1' in str(excinfo.value)
+
+
+def test_biomaterial_cannot_be_derived_from_self():
+    reader = SourcesReader(
+            input_dir='./test_data/input_data/CLINICAL',
+            config_dir='./test_data/input_data/config/invalid_sources_config/biomaterial_derived_from_self')
+    with pytest.raises(DataException) as excinfo:
+        reader.read_subject_data()
+    assert 'Invalid data for Biomaterial with id BM6' in str(excinfo.value)

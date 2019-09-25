@@ -1,7 +1,9 @@
 from datetime import date
 from typing import Sequence, Optional, Union, Dict, List
 
-from pydantic import BaseModel, Schema
+from pydantic import BaseModel, Schema, validator
+
+from csr.exceptions import DataException
 
 
 class Individual(BaseModel):
@@ -54,6 +56,12 @@ class Biosource(BaseModel):
     disease_status: Optional[str]
     tumor_percentage: Optional[int]
 
+    @validator('src_biosource_id')
+    def check_self_reference(cls, src_biosource_id, values):
+        if src_biosource_id == values['biosource_id']:
+            raise DataException(f'Biosource cannot be derived from itself')
+        return src_biosource_id
+
 
 class Biomaterial(BaseModel):
     """
@@ -66,6 +74,12 @@ class Biomaterial(BaseModel):
     type: Optional[str]
     library_strategy: Optional[List[str]] = Schema(None, derived=True)
     analysis_type: Optional[List[str]] = Schema(None, derived=True)
+
+    @validator('src_biomaterial_id')
+    def check_self_reference(cls, src_biomaterial_id, values):
+        if src_biomaterial_id == values['biomaterial_id']:
+            raise DataException(f'Biomaterial cannot be derived from itself')
+        return src_biomaterial_id
 
 
 class Study(BaseModel):
