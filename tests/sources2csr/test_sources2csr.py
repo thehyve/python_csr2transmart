@@ -165,3 +165,18 @@ def test_biomaterial_cannot_be_derived_from_self():
     with pytest.raises(DataException) as excinfo:
         reader.read_subject_data()
     assert 'Invalid data for Biomaterial with id BM6' in str(excinfo.value)
+
+
+@pytest.mark.skip(reason="specific validation not yet implemented")
+def test_diagnosis_biosource_patient_mismatch():
+    """
+    Individual contains P1 and P2.
+    Diagnosis contains D1 linked to P2.
+    Biosource contains BS1 linked to P1 and D1.
+    """
+    reader = SourcesReader(
+            input_dir='./test_data/input_data/ind_bios_diag_mismatch_data/source_data',
+            config_dir='./test_data/input_data/ind_bios_diag_mismatch_data/config')
+    with pytest.raises(DataException) as excinfo:
+        reader.read_subject_data()
+    assert '' in str(excinfo.value)
