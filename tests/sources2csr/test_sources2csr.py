@@ -167,7 +167,7 @@ def test_biomaterial_cannot_be_derived_from_self():
     assert 'Invalid data for Biomaterial with id BM6' in str(excinfo.value)
 
 
-@pytest.mark.skip(reason="specific validation not yet implemented")
+@pytest.mark.skip(reason="specific validation not yet implemented (TMT-1024)")
 def test_diagnosis_biosource_patient_mismatch():
     """
     Individual contains P1 and P2.
@@ -177,6 +177,20 @@ def test_diagnosis_biosource_patient_mismatch():
     reader = SourcesReader(
             input_dir='./test_data/input_data/ind_bios_diag_mismatch_data/source_data',
             config_dir='./test_data/input_data/ind_bios_diag_mismatch_data/config')
+    with pytest.raises(DataException) as excinfo:
+        reader.read_subject_data()
+    assert '' in str(excinfo.value)
+
+
+@pytest.mark.skip(reason="specific validation not yet implemented (TMT-1025)")
+def test_biomaterial_biosource_mismatch():
+    """
+    Biomaterial BM2 is derived form BM1,
+    but originates from a different biosource.
+    """
+    reader = SourcesReader(
+            input_dir='./test_data/input_data/bios_biom_mismatch_data/source_data',
+            config_dir='./test_data/input_data/bios_biom_mismatch_data/config')
     with pytest.raises(DataException) as excinfo:
         reader.read_subject_data()
     assert '' in str(excinfo.value)
