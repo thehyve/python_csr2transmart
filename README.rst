@@ -59,6 +59,8 @@ as a data class in `csr/csr.py`_
 
 .. _`csr/csr.py`: https://github.com/thehyve/python_csr2transmart/blob/master/csr/csr.py
 
+To learn how to add changes to the database model, see `<changing-data-model.rst>`_ document.
+
 Usage
 ------
 
