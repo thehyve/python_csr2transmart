@@ -19,7 +19,7 @@ CSR to TranSMART loader
    :target: LICENSE
 
 This package contains a script that transforms Central Subject Registry data to a format
-that can be loaded into TranSMART_ platform,
+that can be loaded into the TranSMART_ platform,
 an open source data sharing and analytics platform for translational biomedical research.
 
 The output of the transformation is a collection of tab-separated files that can be loaded into
@@ -78,7 +78,7 @@ This repository contains a number of command line tools:
   sources2csr <input_dir> <output_dir> <config_dir>
 
 The tool reads input files from ``<input_dir>`` and
-writes CSR files in tab delimited format (one file per entity type) to
+writes CSR files in tab-delimited format (one file per entity type) to
 ``<output_dir>``.
 The output directory ``<output_dir>`` needs to be either empty or not yet existing.
 
@@ -127,7 +127,7 @@ a JSON file that contains two attributes:
 * ``codebooks``: a map from input file name to codebook file name, e.g., ``{"individual.tsv": "codebook.txt"}``.
 
 * ``file_format``: a map from input file name to file format configuration,
-  which allows to configure the delimiter character (default: ``\t``).
+  which allows you to configure the delimiter character (default: ``\t``).
   E.g., ``{"individual.tsv": {"delimiter": ","}}``.
 
 See `test_data/input_data/config/sources_config.json`_ for an example.
@@ -186,13 +186,58 @@ writes the following data types to ``<output_dir>``:
 * CNA Continuous data
 * CNA Discrete data
 
-File structure, case lists and meta files will also be also added in the output folder.
+File structure, case lists and meta files will also be added to the output folder.
 See the  `cBioPortal file formats`_ documentation for further details.
 
 The output directory ``<output_dir>`` needs to be either empty or not yet existing.
 
 .. _`cBioPortal file formats`: https://docs.cbioportal.org/5.1-data-loading/data-loading/file-formats
 
+Source data assumptions and validation
+--------------------------------------
+
+General file characteristics
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* ``Delimiter`` The source data should be provided as delimited text files. The delimiter can be `configured`_ per 
+  data file. If not configured, a tab-delimited file is assumed.
+* ``Comments`` Comment lines may be present, indicated by a ``#`` as the first character. These lines will be ignored.
+* ``Header`` The first non-comment line is assumed to be the header. It should be exactly one line.
+* ``Field number`` The number of fields (columns) is determined by the header. Every other line in the file 
+  should have this same number of fields (no blank lines).
+* ``Whitespace`` Leading or trailing whitespace is not trimmed. If present, it will persist in the final observation.
+* ``Encoding`` All files are assumed to be utf-8 encoded.
+
+CSR entities
+~~~~~~~~~~~~
+
+All characteristics and relationships of the CSR data model are defined in `csr/csr.py`_. Any field present in the
+source that you would like to load to tranSMART, must be linked to a CSR field via the sources_config. Additional
+fields not present in the sources_config will be ignored.
+
+Regarding the source data, we can distinguish four types of validation:
+
+1. Value validation: Independent validation of a single field value. This comprises type
+  validation (e.g. string, integer or date), nullability (whether a field may be empty), and unique constraints.
+2. Record validation: Validation across different fields from the same record within the same entity. This validation
+  is relevant when the validity of a field value is dependent on the other fields of the same record (e.g. a
+  biosource record with src_biosource_id = BS1, is invalid when biosource_id = BS1).
+3. Entity validation: Concerns the integrity check of all records within a single entity (e.g. do all
+  src_biosource_id values also have corresponding biosource_id records within the biosource entity).
+4. Across-entity validation Checks the validity of relationships between records of different entities.
+
+The data validation of the current pipeline is implemented for type 1 and to a limited extent for type 2 and 4.
+Hence, the source data is assumed to be coherent regarding its relationships within the same entity and across
+different entities. While erroneous relationships across entities, in respect of missing entity records, will be
+detected (e.g. a biomaterial linked to a non-existing biosource), logically impossible relationships are not (e.g.
+biomaterial BM2 is derived from BM1, but from a different biosource).
+
+Any entity records that cannot be linked to an individual through its relationships, will not end up in tranSMART (e.g. 
+a study that is present in the Study entity, but not in individual_study). Additionally, any individual needs to have at
+least one observation to be included. This means that merely a collection of related ID values, without observations
+linked to any of those IDs, will not become available in tranSMART.
+
+.. _`configured`: test_data/input_data/config/sources_config.json#L390
 
 
 Python versions
