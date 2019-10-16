@@ -228,7 +228,7 @@ different entities. While most erroneous relationships across entities, in respe
 detected (e.g. a biomaterial linked to a non-existing biosource), logically impossible relationships are not (e.g.
 biomaterial BM2 is derived from BM1, but from a different biosource).
 
-Any entity records that cannot be linked to an individual through its relationships, will not end up in tranSMART (e.g. 
+Any entity records that cannot be linked to an individual through their relationships, will not end up in tranSMART (e.g. 
 a study that is present in the Study entity, but not in individual_study). Additionally, any individual needs to have at
 least one observation to be included. This means that merely a collection of related ID values, without observations
 linked to any of those IDs, will not become available in tranSMART.
