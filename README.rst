@@ -224,7 +224,7 @@ Regarding the source data, we can distinguish four types of validation:
 
 The data validation of the current pipeline is implemented for type 1 and to a limited extent for type 2 and 4.
 Hence, the source data is assumed to be coherent regarding its relationships within the same entity and across
-different entities. While erroneous relationships across entities, in respect of missing entity records, will be
+different entities. While most erroneous relationships across entities, in respect of missing entity records, will be
 detected (e.g. a biomaterial linked to a non-existing biosource), logically impossible relationships are not (e.g.
 biomaterial BM2 is derived from BM1, but from a different biosource).
 
