@@ -173,10 +173,10 @@ See `test_data/input_data/config/ontology_config.json`_ for an example.
 
 .. code-block:: console
 
-  csr2cbioportal <input_dir> <ngs_dir> <output_dir>
+  csr2cbioportal <input_dir> [--ngs-dir <ngs_dir>] <output_dir>
 
 The tool reads CSR files from ``<input_dir>`` (one file per entity type),
-and NGS data (genomics data) from ``<ngs_dir>``,
+and optionally NGS data (genomics data) from ``<ngs_dir>``,
 transforms the CSR data to the clinical data format for cBioPortal and
 writes the following data types to ``<output_dir>``:
 
