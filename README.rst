@@ -217,10 +217,10 @@ fields not present in the sources_config will be ignored.
 
 Regarding the source data, we can distinguish four types of validation:
 
-1. Value validation: Independent validation of a single field value. This comprises type validation (e.g. string, integer or date), nullability (whether a field may be empty), and unique constraints.
-2. Record validation: Validation across different fields from the same record within the same entity. This validation is relevant when the validity of a field value is dependent on the other fields of the same record (e.g. a biosource record with src_biosource_id = BS1, is invalid when biosource_id = BS1).
-3. Entity validation: Concerns the integrity check of all records within a single entity (e.g. do all src_biosource_id values also have corresponding biosource_id records within the biosource entity).
-4. Across-entity validation Checks the validity of relationships between records of different entities.
+1. ``Value validation`` Independent validation of a single field value. This comprises type validation (e.g. string, integer or date), nullability (whether a field may be empty), and unique constraints.
+2. ``Record validation`` Validation across different fields from the same record within the same entity. This validation is relevant when the validity of a field value is dependent on the other fields of the same record (e.g. a biosource record with src_biosource_id = BS1, is invalid when biosource_id = BS1).
+3. ``Entity validation`` Concerns the integrity check of all records within a single entity (e.g. do all src_biosource_id values also have corresponding biosource_id records within the biosource entity).
+4. ``Across-entity validation`` Checks the validity of relationships between records of different entities.
 
 The data validation of the current pipeline is implemented for type 1 and to a limited extent for type 2 and 4.
 Hence, the source data is assumed to be coherent regarding its relationships within the same entity and across
