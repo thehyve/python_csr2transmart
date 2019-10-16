@@ -11,7 +11,7 @@ import os
 import shutil
 import sys
 import time
-from typing import List, Set
+from typing import List, Set, Optional
 
 import click
 import pandas as pd
@@ -229,24 +229,25 @@ def process_cna_files(ngs_dir: str, output_dir: str, clinical_sample_ids: List[s
     return cna_samples
 
 
-def create_cbioportal_study(input_dir: str, ngs_dir: str, output_dir: str):
+def create_cbioportal_study(input_dir: str, ngs_dir: Optional[str], output_dir: str):
     prepare_output_directory(output_dir)
 
     logger.info('Reading clinical data: %s' % input_dir)
     clinical_sample_ids = process_clinical_data(input_dir, output_dir)
 
-    logger.info('Reading NGS data: %s' % ngs_dir)
-    mutation_samples = process_mutation_data(ngs_dir, output_dir, clinical_sample_ids)
-    cna_samples = process_cna_files(ngs_dir, output_dir, clinical_sample_ids)
+    if ngs_dir:
+        logger.info('Reading NGS data: %s' % ngs_dir)
+        mutation_samples = process_mutation_data(ngs_dir, output_dir, clinical_sample_ids)
+        cna_samples = process_cna_files(ngs_dir, output_dir, clinical_sample_ids)
 
-    # Create cnaseq case list
-    cnaseq_samples = list(mutation_samples.union(cna_samples))
-    if len(cnaseq_samples) > 0:
-        create_caselist(output_dir=output_dir, file_name='cases_cnaseq.txt', cancer_study_identifier=STUDY_ID,
-                        stable_id='%s_cnaseq' % STUDY_ID, case_list_name='Sequenced and CNA samples',
-                        case_list_description='All sequenced and CNA samples',
-                        case_list_category='all_cases_with_mutation_and_cna_data',
-                        case_list_ids="\t".join(cnaseq_samples))
+        # Create cnaseq case list
+        cnaseq_samples = list(mutation_samples.union(cna_samples))
+        if len(cnaseq_samples) > 0:
+            create_caselist(output_dir=output_dir, file_name='cases_cnaseq.txt', cancer_study_identifier=STUDY_ID,
+                            stable_id='%s_cnaseq' % STUDY_ID, case_list_name='Sequenced and CNA samples',
+                            case_list_description='All sequenced and CNA samples',
+                            case_list_category='all_cases_with_mutation_and_cna_data',
+                            case_list_ids="\t".join(cnaseq_samples))
 
     # Create meta study file
     meta_filename = os.path.join(output_dir, 'meta_study.txt')
@@ -317,7 +318,7 @@ def get_complete_header(paths_to_process):
     return fieldnames
 
 
-def csr2cbioportal(input_dir: str, ngs_dir: str, output_dir: str):
+def csr2cbioportal(input_dir: str, ngs_dir: Optional[str], output_dir: str):
     logger.info('csr2cbioportal')
     try:
         create_cbioportal_study(input_dir, ngs_dir, output_dir)
@@ -328,8 +329,8 @@ def csr2cbioportal(input_dir: str, ngs_dir: str, output_dir: str):
 
 @click.command()
 @click.argument('input_dir', type=click.Path(file_okay=False, exists=True, readable=True))
-@click.argument('ngs_dir', type=click.Path(file_okay=False, exists=True, readable=True))
 @click.argument('output_dir', type=click.Path(file_okay=False, writable=True))
+@click.option('--ngs-dir', type=click.Path(file_okay=False, exists=True, readable=True))
 @click.option('--debug', is_flag=True, help='Print more verbose messages')
 @click.version_option()
 def run(input_dir, ngs_dir, output_dir, debug: bool):
