@@ -35,7 +35,7 @@ def test_patient_clinical_data(patient_clinical_data):
 def test_sample_clinical_data(sample_clinical_data):
     assert len(sample_clinical_data) == 4
     assert list(sample_clinical_data.get('SAMPLE_ID')) == ['PMCBS000AAA_PMCBM000AAA', 'PMCBS000AAB_PMCBM000AAB',
-                                                           'PMCBS000AAC_PMCBM000AAC', 'PMCBS000AAD_PMCBM000AAD']
+                                                           'PMCBS000AAB_PMCBM000AAC', 'PMCBS000AAD_PMCBM000AAD']
     assert Counter(list(sample_clinical_data)) == Counter(['BIOMATERIAL_DATE', 'BIOMATERIAL_ID',
                                                            'BIOSOURCE_DATE', 'BIOSOURCE_DEDICATED', 'BIOSOURCE_ID',
                                                            'CENTER_TREATMENT', 'DIAGNOSIS_DATE', 'DIAGNOSIS_ID',

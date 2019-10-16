@@ -81,7 +81,7 @@ def to_sample_data(biosource_data, biomaterial_data, diagnosis_data) -> pd.DataF
         y_ = sample_data['PATIENT_ID_y']
         sample_data['PATIENT_ID'] = x_.combine_first(y_)
         sample_data = sample_data.drop(columns=['PATIENT_ID_x', 'PATIENT_ID_y'])
-    sample_data['SAMPLE_ID'] = diagnosis_biosource_data['BIOSOURCE_ID'] + "_" + biomaterial_data['BIOMATERIAL_ID']
+    sample_data['SAMPLE_ID'] = sample_data['BIOSOURCE_ID'] + "_" + sample_data['BIOMATERIAL_ID']
     return sample_data
 
 
