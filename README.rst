@@ -212,7 +212,7 @@ CSR entities
 ~~~~~~~~~~~~
 
 All characteristics and relationships of the CSR data model are defined in `csr/csr.py`_. Any field present in the
-source that you would like to load to tranSMART, must be linked to a CSR field via the sources_config. Additional
+source data that you would like to load to tranSMART, must be linked to a CSR field via the sources_config. Additional
 fields not present in the sources_config will be ignored.
 
 Regarding the source data, we can distinguish four types of validation:
