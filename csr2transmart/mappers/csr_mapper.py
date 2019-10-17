@@ -62,11 +62,13 @@ class CsrMapper:
         ontology_mapper = OntologyMapper(self.top_tree_node)
         ontology = ontology_mapper.map(src_ontology)
 
-        observation_mapper = ObservationMapper(default_trial_visit,
+        observation_mapper = ObservationMapper(subject_registry,
+                                               study_registry,
+                                               default_trial_visit,
                                                self.individual_id_to_patient,
                                                ontology_mapper.concept_code_to_concept,
                                                self.modifier_key_to_modifier)
-        observation_mapper.map_observations(subject_registry, study_registry)
+        observation_mapper.map_observations()
 
         return DataCollection(ontology_mapper.concept_code_to_concept.values(),
                               self.modifier_key_to_modifier.values(),

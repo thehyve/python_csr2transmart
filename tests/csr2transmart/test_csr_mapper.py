@@ -5,8 +5,11 @@ from typing import List
 from transmart_loader.transmart import ValueType, DimensionType, Observation, Modifier
 
 
-def get_observations_for_modifier(observations: List[Observation], modifier: Modifier) -> List[Observation]:
-    return [o for o in observations if o.metadata is not None and o.metadata.values.get(modifier) is not None]
+def get_observations_for_modifier(observations: List[Observation],
+                                  modifier: Modifier,
+                                  exclude_modifier: Modifier = None) -> List[Observation]:
+    return [o for o in observations if o.metadata is not None and o.metadata.values.get(modifier) is not None
+            and (exclude_modifier is None or exclude_modifier not in o.metadata.values)]
 
 
 def test_studies_mapping(mapped_data_collection):
@@ -104,8 +107,8 @@ def test_observations_mapping(mapped_data_collection):
     biosource_modifier = modifiers[1]
     biomaterial_modifier = modifiers[2]
     patient_observations = [o for o in observations if o.metadata is None]
-    diagnosis_observations = get_observations_for_modifier(observations, diagnosis_modifier)
-    biosource_observations = get_observations_for_modifier(observations, biosource_modifier)
+    diagnosis_observations = get_observations_for_modifier(observations, diagnosis_modifier, biosource_modifier)
+    biosource_observations = get_observations_for_modifier(observations, biosource_modifier, biomaterial_modifier)
     biomaterial_observations = get_observations_for_modifier(observations, biomaterial_modifier)
 
     assert len(patient_observations) == 17 + 8  # individual + individual studies
