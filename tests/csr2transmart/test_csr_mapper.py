@@ -140,6 +140,12 @@ def test_observations_mapping(mapped_data_collection):
         'BS2', 'BS2', 'BS2', 'BS2',
         'BS3', 'BS3', 'BS3', 'BS3', 'BS3',
         'BS4', 'BS4', 'BS4', 'BS4', 'BS4'])
+    assert Counter([bso.metadata.values[diagnosis_modifier].value
+                    for bso in biosource_observations
+                    if diagnosis_modifier in bso.metadata.values]) == Counter(
+        ['D1', 'D1', 'D1', 'D1', 'D1',
+         'D2', 'D2', 'D2', 'D2',
+         'D3', 'D3', 'D3', 'D3', 'D3'])
 
     assert len(biomaterial_observations) == 9
     assert Counter([bmo.value.value for bmo in biomaterial_observations]) == Counter([
@@ -152,6 +158,19 @@ def test_observations_mapping(mapped_data_collection):
         'BM2', 'BM2',
         'BM3', 'BM3', 'BM3',
         'BM4', 'BM4'])
+    assert Counter([bmo.metadata.values[biosource_modifier].value
+                    for bmo in biomaterial_observations
+                    if biosource_modifier in bmo.metadata.values]) == Counter(
+        ['BS1', 'BS1',
+         'BS2', 'BS2',
+         'BS3', 'BS3', 'BS3',
+         'BS4', 'BS4'])
+    assert Counter([bmo.metadata.values[diagnosis_modifier].value
+                    for bmo in biomaterial_observations
+                    if diagnosis_modifier in bmo.metadata.values]) == Counter(
+        ['D1', 'D1',
+         'D2', 'D2',
+         'D3', 'D3'])
 
     assert len(observations) == len(patient_observations) + len(diagnosis_observations) + len(
         biosource_observations) + len(biomaterial_observations)
