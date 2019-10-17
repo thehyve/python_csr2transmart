@@ -1,8 +1,9 @@
 from datetime import date
-from typing import Sequence, Optional, Union, Dict, List
+from typing import Sequence, Optional, Union, Dict, List, Type, Any
 
 from pydantic import BaseModel, Schema, validator
 
+from csr.entity_validation import validate_entity_data
 from csr.exceptions import DataException
 
 
@@ -108,19 +109,12 @@ class CentralSubjectRegistry(BaseModel):
     """
     Central subject registry
     """
-    individuals: Sequence[Individual]
-    diagnoses: Optional[Sequence[Diagnosis]]
-    biosources: Optional[Sequence[Biosource]]
-    biomaterials: Optional[Sequence[Biomaterial]]
+    entity_data: Dict[str, Sequence[Any]]
 
     @staticmethod
-    def create(entity_data: Dict[str, Sequence[SubjectEntity]]):
-        return CentralSubjectRegistry(
-            individuals=entity_data['Individual'],
-            diagnoses=entity_data['Diagnosis'],
-            biosources=entity_data['Biosource'],
-            biomaterials=entity_data['Biomaterial']
-        )
+    def create(entity_data: Dict[str, Sequence[Any]]):
+        validate_entity_data(entity_data, list(SubjectEntity.__args__))
+        return CentralSubjectRegistry(entity_data=entity_data)
 
 
 StudyEntity = Union[Study, IndividualStudy]
@@ -130,12 +124,9 @@ class StudyRegistry(BaseModel):
     """
     Study registry
     """
-    studies: Optional[Sequence[Study]]
-    individual_studies: Optional[Sequence[IndividualStudy]]
+    entity_data: Dict[str, Sequence[Any]]
 
     @staticmethod
-    def create(entity_data: Dict[str, Sequence[StudyEntity]]):
-        return StudyRegistry(
-            studies=entity_data['Study'],
-            individual_studies=entity_data['IndividualStudy']
-        )
+    def create(entity_data: Dict[str, Sequence[Any]]):
+        validate_entity_data(entity_data, list(StudyEntity.__args__))
+        return StudyRegistry(entity_data=entity_data)

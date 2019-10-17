@@ -1,5 +1,6 @@
-from csr.csr import StudyRegistry, Study, IndividualStudy
+from csr.csr import StudyRegistry, StudyEntity
 from csr.entity_writer import EntityWriter
+from csr.snake_case import camel_case_to_snake_case
 
 
 class StudyRegistryWriter(EntityWriter):
@@ -10,7 +11,8 @@ class StudyRegistryWriter(EntityWriter):
         EntityWriter.__init__(self, output_dir)
 
     def write(self, study_registry: StudyRegistry):
-        # Write studies
-        self.write_entities('study.tsv', Study.schema(), study_registry.studies)
-        # Write individual-study links
-        self.write_entities('individual_study.tsv', IndividualStudy.schema(), study_registry.individual_studies)
+        for entity_type in list(StudyEntity.__args__):
+            schema = entity_type.schema()
+            name = schema['title']
+            filename = f'{camel_case_to_snake_case(name)}.tsv'
+            self.write_entities(filename, schema, study_registry.entity_data[name])

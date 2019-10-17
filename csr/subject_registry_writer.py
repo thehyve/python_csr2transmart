@@ -1,5 +1,6 @@
-from csr.csr import CentralSubjectRegistry, Individual, Diagnosis, Biosource, Biomaterial
+from csr.csr import CentralSubjectRegistry, SubjectEntity
 from csr.entity_writer import EntityWriter
+from csr.snake_case import camel_case_to_snake_case
 
 
 class SubjectRegistryWriter(EntityWriter):
@@ -10,7 +11,8 @@ class SubjectRegistryWriter(EntityWriter):
         EntityWriter.__init__(self, output_dir)
 
     def write(self, subject_registry: CentralSubjectRegistry):
-        self.write_entities('individual.tsv', Individual.schema(), subject_registry.individuals)
-        self.write_entities('diagnosis.tsv', Diagnosis.schema(), subject_registry.diagnoses)
-        self.write_entities('biosource.tsv', Biosource.schema(), subject_registry.biosources)
-        self.write_entities('biomaterial.tsv', Biomaterial.schema(), subject_registry.biomaterials)
+        for entity_type in list(SubjectEntity.__args__):
+            schema = entity_type.schema()
+            name = schema['title']
+            filename = f'{camel_case_to_snake_case(name)}.tsv'
+            self.write_entities(filename, schema, subject_registry.entity_data[name])

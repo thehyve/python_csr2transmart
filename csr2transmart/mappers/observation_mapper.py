@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from transmart_loader.transmart import TrialVisit, Patient, Concept, Modifier, Observation, ObservationMetadata, \
     Value, CategoricalValue, ValueType, NumericalValue, DateValue, TextValue
 
-from csr.csr import CentralSubjectRegistry, StudyRegistry, Individual, SubjectEntity
+from csr.csr import CentralSubjectRegistry, StudyRegistry, Individual, SubjectEntity, Diagnosis, Biosource, Biomaterial
 
 from csr.exceptions import MappingException
 
@@ -180,8 +180,8 @@ class ObservationMapper:
         :param study_registry: Study registry
         :return:
         """
-        for ind_study in study_registry.individual_studies:
-            study = next((s for s in study_registry.studies if s.study_id == ind_study.study_id), None)
+        for ind_study in study_registry.entity_data['IndividualStudy']:
+            study = next((s for s in study_registry.entity_data['Study'] if s.study_id == ind_study.study_id), None)
             if study is None:
                 raise MappingException('No study with identifier: {}. '
                                        'Failed to create observation for individual study with id: {}.'
@@ -214,8 +214,9 @@ class ObservationMapper:
         :param study_registry: Study registry
         :return:
         """
-        self.map_subject_registry_observations(subject_registry.individuals)
-        self.map_subject_registry_observations(subject_registry.diagnoses)
-        self.map_subject_registry_observations(subject_registry.biosources)
-        self.map_subject_registry_observations(subject_registry.biomaterials, subject_registry.biosources)
+        self.map_subject_registry_observations(subject_registry.entity_data['Individual'])
+        self.map_subject_registry_observations(subject_registry.entity_data['Diagnosis'])
+        self.map_subject_registry_observations(subject_registry.entity_data['Biosource'])
+        self.map_subject_registry_observations(subject_registry.entity_data['Biomaterial'],
+                                               subject_registry.entity_data['Biosource'])
         self.map_study_registry_observations(study_registry)

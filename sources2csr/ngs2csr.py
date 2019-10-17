@@ -51,8 +51,8 @@ def add_ngs_data(subject_registry: CentralSubjectRegistry, input_dir: str) -> Ce
     :return: updated Central Subject Registry
     """
     ngs_data = read_ngs_data(input_dir)
-    if subject_registry.biomaterials and ngs_data:
-        for biomaterial in subject_registry.biomaterials:
+    if subject_registry.entity_data['Biomaterial'] and ngs_data:
+        for biomaterial in subject_registry.entity_data['Biomaterial']:
             biomaterial.analysis_type = []
             biomaterial.library_strategy = []
             for ngs in ngs_data:
