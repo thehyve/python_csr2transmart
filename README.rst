@@ -83,7 +83,7 @@ writes CSR files in tab-delimited format (one file per entity type) to
 The output directory ``<output_dir>`` needs to be either empty or not yet existing.
 
 The sources configuration will be read from ``<config_dir>/sources_config.json``,
-a JSON file that contains two attributes:
+a JSON file that contains the following attributes:
 
 * ``entities``: a map from entity type name to a description of the sources for that entity type. E.g.,
 
