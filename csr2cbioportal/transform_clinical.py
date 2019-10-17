@@ -86,9 +86,9 @@ def to_sample_data(biosource_data, biomaterial_data, diagnosis_data) -> pd.DataF
 
 
 def subject_registry_to_sample_data_df(subject_registry: CentralSubjectRegistry) -> pd.DataFrame:
-    diagnosis_data = pd.DataFrame.from_records([s.__dict__ for s in subject_registry.diagnoses])
-    biosource_data = pd.DataFrame.from_records([s.__dict__ for s in subject_registry.biosources])
-    biomaterial_data = pd.DataFrame.from_records([s.__dict__ for s in subject_registry.biomaterials])
+    diagnosis_data = pd.DataFrame.from_records([s.__dict__ for s in subject_registry.entity_data['Diagnosis']])
+    biosource_data = pd.DataFrame.from_records([s.__dict__ for s in subject_registry.entity_data['Biosource']])
+    biomaterial_data = pd.DataFrame.from_records([s.__dict__ for s in subject_registry.entity_data['Biomaterial']])
 
     diagnosis_data.columns = [x.upper() for x in diagnosis_data.columns]
     biosource_data.columns = [x.upper() for x in biosource_data.columns]
@@ -101,7 +101,7 @@ def subject_registry_to_sample_data_df(subject_registry: CentralSubjectRegistry)
 
 
 def subject_registry_to_patient_data_df(subject_registry: CentralSubjectRegistry) -> pd.DataFrame:
-    patient_data = pd.DataFrame.from_records([s.__dict__ for s in subject_registry.individuals])
+    patient_data = pd.DataFrame.from_records([s.__dict__ for s in subject_registry.entity_data['Individual']])
 
     patient_data.columns = [x.upper() for x in patient_data.columns]
     patient_data.rename(columns=RENAME_CLINICAL_DATA_HEADER, inplace=True)

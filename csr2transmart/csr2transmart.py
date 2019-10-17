@@ -50,7 +50,7 @@ def csr2transmart(input_dir: str,
         subject_registry_reader = SubjectRegistryReader(input_dir)
         subject_registry: CentralSubjectRegistry = subject_registry_reader.read_subject_registry()
         study_registry_reader = StudyRegistryReader(input_dir)
-        study_registry: StudyRegistry = study_registry_reader.read_subject_registry()
+        study_registry: StudyRegistry = study_registry_reader.read_study_registry()
 
         logger.info('Mapping CSR to Data Collection...')
         mapper = CsrMapper(study_id, top_tree_node)

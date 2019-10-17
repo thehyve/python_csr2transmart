@@ -77,18 +77,20 @@ def registry_with_biosources_and_biomaterials() -> CentralSubjectRegistry:
         Biomaterial(biomaterial_id='PMCBM000AAB', src_biosource_id='PMCBS000AAB')
     ]
 
-    return CentralSubjectRegistry(individuals=individuals, diagnoses=diagnoses, biosources=biosources,
-                                  biomaterials=biomaterials)
+    return CentralSubjectRegistry.create({'Individual': individuals,
+                                          'Diagnosis': diagnoses,
+                                          'Biosource': biosources,
+                                          'Biomaterial': biomaterials})
 
 
 def test_biomaterial_library_strategy_and_analysis_type(registry_with_biosources_and_biomaterials):
     subject_registry = add_ngs_data(registry_with_biosources_and_biomaterials, './test_data/input_data/CLINICAL')
 
-    assert len(subject_registry.biomaterials) == 2
-    assert Counter(subject_registry.biomaterials[0].library_strategy) == Counter({'CNV': 2, 'SNV': 1})
-    assert set(subject_registry.biomaterials[1].library_strategy) == {'CNV', 'SNV'}
-    assert subject_registry.biomaterials[0].analysis_type == ['WGS']
-    assert subject_registry.biomaterials[1].analysis_type == []
+    assert len(subject_registry.entity_data['Biomaterial']) == 2
+    assert Counter(subject_registry.entity_data['Biomaterial'][0].library_strategy) == Counter({'CNV': 2, 'SNV': 1})
+    assert set(subject_registry.entity_data['Biomaterial'][1].library_strategy) == {'CNV', 'SNV'}
+    assert subject_registry.entity_data['Biomaterial'][0].analysis_type == ['WGS']
+    assert subject_registry.entity_data['Biomaterial'][1].analysis_type == []
 
 
 def test_serialising_and_deserialising_biomaterials(registry_with_biosources_and_biomaterials, tmp_path):
@@ -99,5 +101,5 @@ def test_serialising_and_deserialising_biomaterials(registry_with_biosources_and
     reader = SubjectRegistryReader(tmp_path.as_posix())
     subject_registry = reader.read_subject_registry()
 
-    assert len(subject_registry.biomaterials) == 2
-    assert Counter(subject_registry.biomaterials[0].library_strategy) == Counter({'CNV': 2, 'SNV': 1})
+    assert len(subject_registry.entity_data['Biomaterial']) == 2
+    assert Counter(subject_registry.entity_data['Biomaterial'][0].library_strategy) == Counter({'CNV': 2, 'SNV': 1})

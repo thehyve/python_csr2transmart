@@ -1,10 +1,17 @@
 import logging
 from os import path
+from typing import Type
 
-from csr.csr import CentralSubjectRegistry, Individual, Diagnosis, Biosource, Biomaterial
+from csr.csr import CentralSubjectRegistry, SubjectEntity
 from csr.entity_reader import EntityReader
+from csr.snake_case import camel_case_to_snake_case
 
 logger = logging.getLogger(__name__)
+
+
+def entity_filename(entity_type: Type[SubjectEntity]):
+    title = entity_type.schema()['title']
+    return f'{camel_case_to_snake_case(title)}.tsv'
 
 
 class SubjectRegistryReader(EntityReader):
@@ -16,13 +23,9 @@ class SubjectRegistryReader(EntityReader):
 
     def read_subject_registry(self) -> CentralSubjectRegistry:
         try:
-            individuals = self.read_entities(path.join(self.input_dir, 'individual.tsv'), Individual)
-            diagnoses = self.read_entities(path.join(self.input_dir, 'diagnosis.tsv'), Diagnosis)
-            biosources = self.read_entities(path.join(self.input_dir, 'biosource.tsv'), Biosource)
-            biomaterials = self.read_entities(path.join(self.input_dir, 'biomaterial.tsv'), Biomaterial)
-            return CentralSubjectRegistry(individuals=individuals,
-                                          diagnoses=diagnoses,
-                                          biosources=biosources,
-                                          biomaterials=biomaterials)
+            entity_data = {entity_type.schema()['title']:
+                           self.read_entities(path.join(self.input_dir, entity_filename(entity_type)), entity_type)
+                           for entity_type in list(SubjectEntity.__args__)}
+            return CentralSubjectRegistry(entity_data=entity_data)
         except FileNotFoundError as fnfe:
             raise FileNotFoundError('File not found. {}'.format(fnfe))
