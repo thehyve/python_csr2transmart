@@ -155,7 +155,6 @@ class ObservationMapper:
         :return:
         """
         entity_fields = entity.fields.keys()
-        print("Entity fields: " + str(entity_fields))
         entity_name = entity.schema()['title']
         individual_id = entity_type_to_id.pop('Individual', None)
         patient = self.individual_id_to_patient.get(individual_id, None)
@@ -213,7 +212,6 @@ class ObservationMapper:
                                        'Failed to create observation for individual study with id: {}.'
                                        .format(ind_study.study_id, ind_study.individual_id))
             entity_type_to_id = {'Individual': ind_study.individual_id}
-            print("Entity type 2 id: " + str(entity_type_to_id.keys()) + ": " + str(entity_type_to_id.values()))
             self.map_observation(study, study.study_id, entity_type_to_id)
 
     def map_subject_registry_observations(self, entity_type: Type[BaseModel]):
