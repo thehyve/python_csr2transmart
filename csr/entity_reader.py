@@ -45,4 +45,4 @@ class EntityReader:
                     row[field] = datetime.strptime(value, '%Y-%m-%d')
                 elif field in array_fields:
                     row[field] = json.loads(value)
-        return list(data)
+        return [entity_type(**d) for d in list(data)]

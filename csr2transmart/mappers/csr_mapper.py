@@ -54,7 +54,7 @@ class CsrMapper:
             subject_registry: CentralSubjectRegistry,
             study_registry: StudyRegistry,
             src_ontology: Sequence[TreeNode]) -> DataCollection:
-        self.map_patients(subject_registry.individuals)
+        self.map_patients(subject_registry.entity_data['Individual'])
         study = self.map_study()
         default_trial_visit = self.map_default_trial_visit(study)
         self.map_dimensions_and_modifiers()

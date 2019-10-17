@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import List, Dict
+from typing import List, Dict, Sequence
 from dateutil.relativedelta import relativedelta
 
 from csr.csr import CentralSubjectRegistry, Diagnosis
@@ -13,7 +13,8 @@ def add_derived_values(subject_registry: CentralSubjectRegistry) -> CentralSubje
 
     # Collect relevant diagnosis aggregates per individual
     diagnoses_per_individual: Dict[str, List[Diagnosis]] = defaultdict(list)
-    for diagnosis in subject_registry.diagnoses:
+    diagnosis_data: Sequence[Diagnosis] = subject_registry.entity_data['Diagnosis']
+    for diagnosis in diagnosis_data:
         diagnoses_per_individual[diagnosis.individual_id].append(diagnosis)
     diagnosis_count_per_individual = {}
     first_diagnosis_date_per_individual = {}
@@ -25,7 +26,7 @@ def add_derived_values(subject_registry: CentralSubjectRegistry) -> CentralSubje
             first_diagnosis_date_per_individual[individual_id] = first_diagnosis_date
 
     # Add diagnosis aggregates to individuals
-    for individual in subject_registry.individuals:
+    for individual in subject_registry.entity_data['Individual']:
         # Add diagnosis count
         individual.diagnosis_count = diagnosis_count_per_individual.get(individual.individual_id, None)
         # Add age at first diagnosis

@@ -18,7 +18,7 @@ def csr_individuals() -> Sequence[Individual]:
 
 @pytest.fixture
 def csr_subject_registry(csr_individuals) -> CentralSubjectRegistry:
-    return CentralSubjectRegistry(csr_individuals, [], [], [])
+    return CentralSubjectRegistry.create({'Individual': csr_individuals})
 
 
 @pytest.fixture
@@ -36,7 +36,7 @@ def mapped_data_collection() -> DataCollection:
     subject_registry_reader = SubjectRegistryReader(input_dir)
     subject_registry: CentralSubjectRegistry = subject_registry_reader.read_subject_registry()
     study_registry_reader = StudyRegistryReader(input_dir)
-    study_registry: StudyRegistry = study_registry_reader.read_subject_registry()
+    study_registry: StudyRegistry = study_registry_reader.read_study_registry()
 
     mapper = CsrMapper(study_id, top_tree_node)
     return mapper.map(subject_registry, study_registry, ontology_config.nodes)
