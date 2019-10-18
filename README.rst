@@ -230,9 +230,12 @@ different entities. While most erroneous relationships across entities, in respe
 detected (e.g. a biomaterial linked to a non-existing biosource), logically impossible relationships are not (e.g.
 biomaterial BM2 is derived from BM1, but from a different biosource).
 
-Any entity records that cannot be linked to an individual through their relationships, will not end up in tranSMART (e.g. 
-a study that is present in the Study entity, but not in individual_study). Additionally, any individual needs to have at
-least one observation to be included. This means that merely a collection of related ID values, without observations
+All entities must have a link to an individual, either through their individual-referencing field
+or through a reference to an entity of other type that has an individual-referencing field.
+Otherwise an error will be thrown.
+
+Additionally, any individual needs to have at least one observation to be included.
+This means that merely a collection of related ID values, without observations
 linked to any of those IDs, will not become available in tranSMART.
 
 .. _`configured`: test_data/input_data/config/sources_config.json#L390
