@@ -126,7 +126,8 @@ a JSON file that contains the following attributes:
   is read in that order, i.e., only if the first file has no data for an attribute
   for a specific entity, data for that attribute for that entity is read from the next file, etc.
 
-* ``codebooks``: a map from input file name to codebook file name, e.g., ``{"individual.tsv": "codebook.txt"}``.
+* ``codebooks``: a map from input file name to codebook file name, e.g., ``{"individual.tsv": "codebook.txt"}``. 
+  Naming convention: <fileName>_codebook.txt
 
 * ``file_format``: a map from input file name to file format configuration,
   which allows you to configure the delimiter character (default: ``\t``).
@@ -159,7 +160,7 @@ See `<test_data/input_data/codebooks/valid_codebook.txt>`_ for a codebook file e
 
 The tool reads CSR files from ``<input_dir>`` (one file per entity type),
 transforms the CSR data to the TranSMART data model. 
-In addition, if there is an ``NGS`` folder inside ``<input_dir>``, 
+In addition, if there is ``--ngs-dir`` specified,
 the tool will read the NGS files inside to determine values of additional CSR biomaterial variables.
 The tool writes the output in ``transmart-copy`` format to ``<output_dir>``.
 The output directory ``<output_dir>`` needs to be either empty or not yet existing.
@@ -240,6 +241,24 @@ linked to any of those IDs, will not become available in tranSMART.
 
 .. _`configured`: test_data/input_data/config/sources_config.json#L390
 
+
+NGS data
+~~~~~~~~
+
+All NGS data should follow reference genome HG38.
+The sample ID is structured as <BiosourceID>_<BiomaterialID>,
+based on the IDs of biosources and biomaterials from clinical data, e.g. PMCBS000AAA_PMCBM000AAA.
+
+The naming convention for other NGS input data:
+
+- mutation data (Small nucleotide variants): <fileName>.maf.gz
+- Segment data: <fileName>.seg
+- Continuous CNA per gene: <fileName>_all_data_by_genes.txt
+- Discrete CNA per gene: <fileName>_all_thresholded.by_genes.txt
+
+See the `NGS test data`_ for an example.
+
+.. _`NGS test data`: test_data/input_data/CSR2CBIOPORTAL_TEST_DATA/NGS
 
 Python versions
 ---------------

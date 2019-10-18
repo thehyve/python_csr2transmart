@@ -16,31 +16,15 @@ In order to add a new entity, a new class has to be defined.
 Classes are defined using `pydantic` - library to validate JSON documents and convert them into Python objects, 
 based on Python Type Annotations.
 
-All new entities have to have a non-nullable `identity` defined. They also have to be a part of `SubjectEntity` union 
-and `CentralSubjectRegistry` class defined in `csr.py`.
-If there is a relation between the new entity and other entities, it has to be specified as a value of `references` key 
-in Schema dictionary.
+All new entities have to have a non-nullable `identity` defined. They also have to be a part of `SubjectEntity` union
+defined in `csr.py`. If there is a relation between the new entity and other entities,
+it has to be specified as a value of `references` key in Schema dictionary.
 
 For more details see `official pydantic documentation`_.
 
 .. _`official pydantic documentation`: https://pydantic-docs.helpmanual.io/
 
 New entities has to be added to `<csr/subject_registry_writer.py>`_ and `<csr/subject_registry_reader.py>`_.
-
-Changes in `csr2transmart` package:
------------------------------------
-
-In order to include observations for the new entity when mapping input data to the TranSMART data model, 
-`<csr2transmart/mappers/observation_mapper.py>`_ needs to be extended as follows:
-
-.. code-block:: python
-
-    def map_observations(self, subject_registry: CentralSubjectRegistry, study_registry: StudyRegistry):
-        ...
-        self.map_subject_registry_observations(subject_registry.biomaterials, subject_registry.biosources)
-    (+) self.map_subject_registry_observations(subject_registry.new_entity_name)
-        self.map_study_registry_observations(study_registry)
-..
 
 Changes in `sources2csr` package:
 ---------------------------------
@@ -61,7 +45,7 @@ All new test data sets should be added to `<test_data>`_ folder.
 Remember to update the section about data model in `<README.rst>`_.
 
 Adding entity fields
-********************************
+********************
 
 When adding fields to one of the existing entities, there is a change required 
 in the entity class in `<csr/csr.py>`_.

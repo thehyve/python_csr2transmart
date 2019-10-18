@@ -147,12 +147,12 @@ class ObservationMapper:
     def get_observation_for_value(self, row_value, concept: Concept, metadata: ObservationMetadata,
                                   patient: Patient) -> Observation:
         """
-        Get trasmart-loader Observation
+        Get transmart-loader Observation
         :param row_value: value of the observation
-        :param concept: trasmart-loader Concept object
-        :param metadata: trasmart-loader ObservationMetadata object
-        :param patient: trasmart-loader Patient object
-        :return: trasmart-loader Observation object
+        :param concept: transmart-loader Concept object
+        :param metadata: transmart-loader ObservationMetadata object
+        :param patient: transmart-loader Patient object
+        :return: transmart-loader Observation object
         """
         value = self.row_value_to_value(row_value, concept.value_type)
         return Observation(patient, concept, None, self.default_trial_visit, None, None, value, metadata)
@@ -162,7 +162,7 @@ class ObservationMapper:
                         entity_id: str,
                         entity_type_to_id: Dict[str, str]):
         """
-        Map entity to trasmart-loader Observation
+        Map entity to transmart-loader Observation
         :param entity: CSR entity
         :param entity_id: id of the entity
         :param entity_type_to_id: dictionary from entity type to id of the entity
