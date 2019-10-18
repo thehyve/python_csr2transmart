@@ -74,6 +74,7 @@ def test_ontology_mapping(mapped_data_collection):
     assert len(ontology) == 1
     date = datetime.datetime.now().strftime('%d-%m-%Y')
     assert ontology[0].metadata.values['Load date'] == date
+    assert ontology[0].name == 'Central Subject Registry'
     assert len(ontology[0].children) == 5
     assert [t.name for t in ontology[0].children] == ['01. Patient information',
                                                       '02. Diagnosis information',

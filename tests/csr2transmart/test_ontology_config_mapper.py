@@ -16,6 +16,18 @@ def test_valid_ontology_config():
     assert len(tree_nodes[0].children) == 5
 
 
+def test_non_root_top_node():
+    ontology_config = read_configuration('./test_data/input_data/config')
+    tree_nodes = OntologyMapper('\\Root node\\Second level\\Top node\\').map(ontology_config.nodes)
+    assert len(tree_nodes) == 1
+    assert tree_nodes[0].name == 'Root node'
+    assert len(tree_nodes[0].children) == 1
+    assert tree_nodes[0].children[0].name == 'Second level'
+    assert len(tree_nodes[0].children[0].children) == 1
+    assert tree_nodes[0].children[0].children[0].name == 'Top node'
+    assert len(tree_nodes[0].children[0].children[0].children) == 5
+
+
 def test_ontology_config_invalid_entity_field():
     with pytest.raises(ValidationError) as excinfo:
         ontology_config = read_configuration(

@@ -1,5 +1,5 @@
 import datetime
-from typing import Dict, Sequence
+from typing import Dict, Sequence, Optional
 
 from transmart_loader.transmart import Concept, TreeNode, ValueType, ConceptNode, TreeNodeMetadata
 
@@ -44,7 +44,7 @@ class OntologyMapper:
 
     def map_concept_node(self, node: OntologyConfigTreeNode) -> ConceptNode:
         entity_name, entity_field_name = node.concept_code.split('.')
-        concept_path = '\\\\CSR\\\\' + node.concept_code
+        concept_path = '\\CSR\\' + node.concept_code
         concept_type = self.get_concept_type(entity_name, entity_field_name)
         concept = Concept(node.concept_code, node.name, concept_path, concept_type)
         self.concept_code_to_concept[node.concept_code] = concept
@@ -70,8 +70,22 @@ class OntologyMapper:
                 parent_node.add_child(intermediate_node)
 
     def map(self, src_nodes: Sequence[OntologyConfigTreeNode]) -> Sequence[TreeNode]:
+        root_node: Optional[TreeNode] = None
+        top_node: Optional[TreeNode] = None
+        path = self.top_tree_node.split('\\')
+        for node in path:
+            if not node:
+                # Skip empty path elements
+                continue
+            current_node = TreeNode(node)
+            if top_node:
+                top_node.add_child(current_node)
+            else:
+                root_node = current_node
+            top_node = current_node
+        if not top_node:
+            raise OntologyConfigValidationException(f'Invalid top tree node: {self.top_tree_node}')
         date = datetime.datetime.now().strftime('%d-%m-%Y')
-        metadata = TreeNodeMetadata({'Load date': date})
-        top_node = TreeNode(self.top_tree_node, metadata)
+        top_node.metadata = TreeNodeMetadata({'Load date': date})
         self.map_nodes(src_nodes, top_node)
-        return [top_node]
+        return [root_node]
