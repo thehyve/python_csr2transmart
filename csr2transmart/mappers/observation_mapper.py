@@ -48,16 +48,22 @@ class ObservationMapper:
 
     @staticmethod
     def skip_reference(entity_type: Type[BaseModel], ref_type: str) -> bool:
+        """
+        Check if entity reference should be skipped. True for self-reference.
+        :param entity_type: type of the entity
+        :param ref_type: name of the reference entity type
+        :return: True if reference should be skipped, False otherwise.
+        """
         return ref_type == entity_type.schema()['title']
 
     @staticmethod
     def get_field_properties_by_keyword(entity_type: Type[BaseModel], key: str) -> Dict[str, Any]:
         """
-        Get name of the entities by the schema metadata
-        :param entity_type: type of the CSR entity
-        :param key: schema keyword key
-        :param value: schema keyword value
-        :return:
+        For a specific type of entity get a list of field names (with schema keyword value)
+        that have a key property defined in their schema metadata
+        :param entity_type: type of the entity
+        :param key: schema keyword
+        :return: dictionary from field name to value of the schema property that matches the keyword
         """
         return {name: prop[key] for (name, prop) in entity_type.schema()['properties'].items() if key in prop}
 
@@ -68,7 +74,7 @@ class ObservationMapper:
         :param entity_type: type of the CSR entity
         :param key: schema keyword key
         :param value: schema keyword value
-        :return:
+        :return: list of field names
         """
         return list([name for (name, prop) in entity_type.schema()['properties'].items()
                      if key in prop and prop[key] is value])
@@ -77,7 +83,7 @@ class ObservationMapper:
         """
         Get identifying field name of a CSR entity type by 'identity' schema keyword
         :param entity_type: type of the CSR entity
-        :return:
+        :return: name of the identifying field
         """
         return self.get_field_names_by_key_and_value(entity_type, 'identity', True)[0]
 
@@ -87,9 +93,9 @@ class ObservationMapper:
         """
         Get a dictionary with name of reference entities to value of the referencing field,
         being id of the referencing entity
-        :param entity:
-        :param ref_entity_type_to_ref_field_name_dict:
-        :return:
+        :param entity: CSR entity
+        :param entity_type: type of the entity
+        :return: dictionary from reference entity name to value of reference field
         """
         entity_ref_to_ref_id = dict()
         id_attribute = self.get_id_field_name(entity_type)
@@ -126,8 +132,8 @@ class ObservationMapper:
 
     def map_observation_metadata(self, entity_type_to_id: Dict[str, str]) -> Optional[ObservationMetadata]:
         """
-        Get observation modifier
-        :param entity_type_to_id: observation modifier key to value of the modifier observation
+        Get observation metadata based on the observation modifier key to value of the modifier observation
+        :param entity_type_to_id: dictionary from entity type to id of the entity
         :return: transmart-loader metadata if any
         """
         mod_metadata: Dict[Modifier, Value] = dict()
@@ -140,6 +146,14 @@ class ObservationMapper:
 
     def get_observation_for_value(self, row_value, concept: Concept, metadata: ObservationMetadata,
                                   patient: Patient) -> Observation:
+        """
+        Get transmart-loader Observation
+        :param row_value: value of the observation
+        :param concept: transmart-loader Concept object
+        :param metadata: transmart-loader ObservationMetadata object
+        :param patient: transmart-loader Patient object
+        :return: transmart-loader Observation object
+        """
         value = self.row_value_to_value(row_value, concept.value_type)
         return Observation(patient, concept, None, self.default_trial_visit, None, None, value, metadata)
 
@@ -148,10 +162,10 @@ class ObservationMapper:
                         entity_id: str,
                         entity_type_to_id: Dict[str, str]):
         """
-        Map entity to trasmart-loader Observation
+        Map entity to transmart-loader Observation
         :param entity: CSR entity
         :param entity_id: id of the entity
-        :param entity_type_to_id:
+        :param entity_type_to_id: dictionary from entity type to id of the entity
         :return:
         """
         entity_fields = entity.fields.keys()
@@ -181,11 +195,10 @@ class ObservationMapper:
                         self.observations.append(
                             self.get_observation_for_value(entity_value, concept, metadata, patient))
 
-    def map_non_individual_linked_entity_observations(self, entity_type: Type[BaseModel]):
+    def map_subject_registry_observations(self, entity_type: Type[BaseModel]):
         """
-        Map observations for entities that do not have a direct link to individuals,
-        but have a reference linking to individuals.
-        :param entity_type: Central subject registry entity type
+        Map observations for for subject registry entities
+        :param entity_type: type of the subject registry entity
         :return:
         """
         entities = self.subject_registry.entity_data[entity_type.schema()['title']]
@@ -200,8 +213,7 @@ class ObservationMapper:
 
     def map_study_registry_observations(self):
         """
-        Map observations for Subject registry entities
-        :param study_registry: Study registry
+        Map observations for study registry entities
         :return:
         """
         for ind_study in self.study_registry.entity_data['IndividualStudy']:
@@ -214,23 +226,12 @@ class ObservationMapper:
             entity_type_to_id = {'Individual': ind_study.individual_id}
             self.map_observation(study, study.study_id, entity_type_to_id)
 
-    def map_subject_registry_observations(self, entity_type: Type[BaseModel]):
-        """
-        Map observations for Central subject registry entities
-        :param subject_registry: Central subject registry
-        :param entity_type:
-        :return:
-        """
-        self.map_non_individual_linked_entity_observations(entity_type)
-
     def map_observations(self):
         """
-        Map observations for each csr entity
-        :param subject_registry: Central subject registry
-        :param study_registry: Study registry
+        Map observations for study and subject registry entities
         :return:
         """
-        entities = list(SubjectEntity.__args__)
-        for entity_type in entities:
-            self.map_subject_registry_observations(entity_type)
+        subject_entities = list(SubjectEntity.__args__)
+        for subject_entity_type in subject_entities:
+            self.map_subject_registry_observations(subject_entity_type)
         self.map_study_registry_observations()
