@@ -37,18 +37,18 @@ Extending tests and documentation:
 ----------------------------------
 
 Changes added to the code should be well-covered by tests (test coverage should not be decreased).
-In order to test reading of the source data and mapping it to CSR, extend `<tests/csr2transmart/test_csr_mapper.py>`_.
-In order to test CSR to tranSMART mapping, extend `<tests/sources2csr/test_sources2csr.py>`_.
+In order to test reading of the source data and mapping it to CSR, extend `<tests/sources2csr/test_sources2csr.py>`_.
+In order to test CSR to tranSMART mapping, extend `<tests/csr2transmart/test_csr_mapper.py>`_.
 All new test data sets should be added to `<test_data>`_ folder.
 
 
 Remember to update the section about data model in `<README.rst>`_.
 
-Updating entity
-***************
+Adding entity fields
+********************************
 
-When updating one of the existing entities, there is a change required only in `<csr/csr.py>`_.
-In order to add new property, rename or change the type of a property for existing entity, just modify the entity class.
+When adding fields to one of the existing entities, there is a change required 
+in the entity class in `<csr/csr.py>`_.
 
 When changing `<csr/csr.py>`_, tests both for mapping from sources to CSR and from CSR to tranSMART has to be
 changed or extended - see "`Extending tests and documentation`" section above.
