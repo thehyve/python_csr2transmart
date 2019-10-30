@@ -83,33 +83,6 @@
           ]
         },
         {
-          "name": "ic_material",
-          "sources": [
-            {
-              "file": "individual_with_duplicate_identifier.tsv",
-              "column": "IC_material"
-            }
-          ]
-        },
-        {
-          "name": "ic_data",
-          "sources": [
-            {
-              "file": "individual_with_duplicate_identifier.tsv",
-              "column": "IC_data"
-            }
-          ]
-        },
-        {
-          "name": "ic_linking_ext",
-          "sources": [
-            {
-              "file": "individual_with_duplicate_identifier.tsv",
-              "column": "IC_linking_ext"
-            }
-          ]
-        },
-        {
           "name": "report_her_susc",
           "sources": [
             {
@@ -188,7 +161,7 @@
           ]
         },
         {
-          "name": "center_treatment",
+          "name": "diagnosis_center",
           "sources": [
             {
               "file": "diagnosis.tsv"

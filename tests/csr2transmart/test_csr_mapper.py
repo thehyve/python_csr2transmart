@@ -42,8 +42,8 @@ def test_patients_mapping(mapped_data_collection):
 
 def test_concepts_mapping(mapped_data_collection):
     concepts = mapped_data_collection.concepts
-    assert len(concepts) == 32
-    assert len([c for c in concepts if c.concept_code.startswith('Individual.')]) == 12
+    assert len(concepts) == 29
+    assert len([c for c in concepts if c.concept_code.startswith('Individual.')]) == 9
     assert len([c for c in concepts if c.concept_code.startswith('Diagnosis.')]) == 6
     assert len([c for c in concepts if c.concept_code.startswith('Biosource.')]) == 6
     assert len([c for c in concepts if c.concept_code.startswith('Biomaterial.')]) == 3
@@ -83,7 +83,7 @@ def test_ontology_mapping(mapped_data_collection):
                                                       '05. Study information']
     assert len(ontology[0].children[0].children) == 5  # individual node
     assert ontology[0].children[0].children[4].name == 'Informed_consent'
-    assert len(ontology[0].children[0].children[4].children) == 8  # individual.Informed_consent node
+    assert len(ontology[0].children[0].children[4].children) == 5  # individual.Informed_consent node
     assert len(ontology[0].children[1].children) == 6  # diagnosis node
     assert len(ontology[0].children[2].children) == 6  # biosource node
     assert len(ontology[0].children[3].children) == 3  # biomaterial node
@@ -112,11 +112,11 @@ def test_observations_mapping(mapped_data_collection):
     biosource_observations = get_observations_for_modifier(observations, biosource_modifier, biomaterial_modifier)
     biomaterial_observations = get_observations_for_modifier(observations, biomaterial_modifier)
 
-    assert len(patient_observations) == 17 + 8  # individual + individual studies
+    assert len(patient_observations) == 13 + 8  # individual + individual studies
     assert Counter([po.value.value for po in patient_observations]) == Counter([
-        'Human', 'f', datetime.date(1993, 2, 1), 'yes', datetime.date(2017, 3, 1), 'yes', 'yes', 'yes',  # P1
+        'Human', 'f', datetime.date(1993, 2, 1), 'yes', datetime.date(2017, 3, 1), 'yes',  # P1
         'Human', 'm', datetime.date(1994, 4, 3), 'yes', datetime.date(2017, 5, 11), datetime.date(2017, 10, 14),
-        'yes', 'not applicable', 'yes',  # P2
+        'yes',  # P2
         'STUDY1', 'STD1', 'Study 1', 'http://www.example.com',  # individual study 1
         'STUDY2', 'STD2', 'Study 2', 'http://www.example.com'])  # individual study 2
 

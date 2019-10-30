@@ -28,8 +28,8 @@ def test_patient_clinical_data(patient_clinical_data):
     assert list(patient_clinical_data.get('PATIENT_ID')) == ['PMCBS000BCA', 'PMCBM000BAB']
     assert Counter(list(patient_clinical_data)) == Counter(['PATIENT_ID', 'TAXONOMY', 'BIRTH_DATE', 'GENDER',
                                                             'IC_TYPE', 'IC_GIVEN_DATE',
-                                                            'IC_WITHDRAWN_DATE', 'IC_MATERIAL', 'IC_DATA',
-                                                            'IC_LINKING_EXT', 'REPORT_HER_SUSC', 'REPORT_INC_FINDINGS'])
+                                                            'IC_WITHDRAWN_DATE', 'REPORT_HER_SUSC',
+                                                            'REPORT_INC_FINDINGS'])
 
 
 def test_sample_clinical_data(sample_clinical_data):
@@ -38,7 +38,7 @@ def test_sample_clinical_data(sample_clinical_data):
                                                            'PMCBS000AAB_PMCBM000AAC', 'PMCBS000AAD_PMCBM000AAD']
     assert Counter(list(sample_clinical_data)) == Counter(['BIOMATERIAL_DATE', 'BIOMATERIAL_ID',
                                                            'BIOSOURCE_DATE', 'BIOSOURCE_DEDICATED', 'BIOSOURCE_ID',
-                                                           'CENTER_TREATMENT', 'DIAGNOSIS_DATE', 'DIAGNOSIS_ID',
+                                                           'DIAGNOSIS_CENTER', 'DIAGNOSIS_DATE', 'DIAGNOSIS_ID',
                                                            'DISEASE_STATUS', 'PATIENT_ID',
                                                            'SAMPLE_ID', 'SRC_BIOMATERIAL_ID', 'TISSUE', 'TOPOGRAPHY',
                                                            'TREATMENT_PROTOCOL', 'TUMOR_PERCENTAGE', 'TUMOR_STAGE',

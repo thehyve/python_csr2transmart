@@ -1,2 +1,2 @@
-diagnosis_id	individual_id	topography	treatment_protocol	tumor_type	tumor_stage	diagnosis_date	center_treatment
+diagnosis_id	individual_id	topography	treatment_protocol	tumor_type	tumor_stage	diagnosis_date	diagnosis_center
 D1	P2	liver	chemo	neuroblastoma	IV	01-05-2016	Center 1
