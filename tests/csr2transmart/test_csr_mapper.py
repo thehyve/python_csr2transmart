@@ -98,7 +98,7 @@ def test_ontology_mapping(mapped_data_collection):
     assert ontology[0].children[3].children[0].concept.concept_code == 'Biomaterial.src_biomaterial_id'
     assert ontology[0].children[3].children[0].metadata.values['subject_dimension'] == 'Biomaterial'
     assert ontology[0].children[4].children[0].concept.concept_code == 'Study.study_id'
-    assert ontology[0].children[4].children[0].metadata.values['subject_dimension'] == 'Study'
+    assert ontology[0].children[4].children[0].metadata is None
 
 
 def test_observations_mapping(mapped_data_collection):

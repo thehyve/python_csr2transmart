@@ -6,6 +6,8 @@ from transmart_loader.transmart import Concept, TreeNode, ValueType, ConceptNode
 from csr.csr import SubjectEntity, StudyEntity
 from csr2transmart.ontology_config import TreeNode as OntologyConfigTreeNode, OntologyConfigValidationException
 
+subject_entity_names = list(map(lambda se: se.schema()['title'], SubjectEntity.__args__))
+
 
 class OntologyMapper:
     """
@@ -25,11 +27,12 @@ class OntologyMapper:
             return ValueType.Categorical
 
     @staticmethod
-    def entity_name_to_subject_dimension_value(entity_name: str) -> str:
+    def get_metadata_for_entity(entity_name: str) -> Optional[TreeNodeMetadata]:
         if entity_name == 'Individual':
-            return 'patient'
-        else:
-            return entity_name
+            return TreeNodeMetadata({'subject_dimension': 'patient'})
+        elif entity_name in subject_entity_names:
+            return TreeNodeMetadata({'subject_dimension': entity_name})
+        return None
 
     @staticmethod
     def is_concept_node(node: OntologyConfigTreeNode) -> bool:
@@ -49,10 +52,8 @@ class OntologyMapper:
         concept = Concept(node.concept_code, node.name, concept_path, concept_type)
         self.concept_code_to_concept[node.concept_code] = concept
 
-        metadata_value: Dict[str, str] = {
-            'subject_dimension': self.entity_name_to_subject_dimension_value(entity_name)}
         concept_node = ConceptNode(concept)
-        concept_node.metadata = TreeNodeMetadata(metadata_value)
+        concept_node.metadata = self.get_metadata_for_entity(entity_name)
         return concept_node
 
     def map_nodes(self, nodes: Sequence[OntologyConfigTreeNode], parent_node: TreeNode):
