@@ -24,7 +24,6 @@ For more details see `official pydantic documentation`_.
 
 .. _`official pydantic documentation`: https://pydantic-docs.helpmanual.io/
 
-New entities has to be added to `<csr/subject_registry_writer.py>`_ and `<csr/subject_registry_reader.py>`_.
 
 Changes in `sources2csr` package:
 ---------------------------------
