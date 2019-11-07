@@ -1,3 +1,3 @@
-study_id	individual_id	individual_study_id
-STUDY1	PMCBS000BCA	1
-STUDY2	PMCBM000BAB	2
+study_id_individual_study_id	study_id	individual_id	individual_study_id
+STUDY1_1	STUDY1	PMCBS000BCA	1
+STUDY2_2	STUDY2	PMCBM000BAB	2

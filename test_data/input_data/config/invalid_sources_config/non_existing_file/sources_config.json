@@ -350,6 +350,14 @@
     "IndividualStudy": {
       "attributes": [
         {
+          "name": "study_id_individual_study_id",
+          "sources": [
+            {
+              "file": "individual_study.tsv"
+            }
+          ]
+        },
+        {
           "name": "individual_study_id",
           "sources": [
             {

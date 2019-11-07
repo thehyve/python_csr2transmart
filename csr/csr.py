@@ -97,7 +97,8 @@ class IndividualStudy(BaseModel):
     """
     Study to individual mapping
     """
-    individual_study_id: str = Schema(..., identity=True)
+    study_id_individual_study_id: str = Schema(..., identity=True)
+    individual_study_id: str
     individual_id: str = Schema(..., min_length=1, references='Individual')
     study_id: str = Schema(..., min_length=1, references='Study')
 
