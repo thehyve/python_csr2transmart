@@ -20,9 +20,6 @@ class Individual(BaseModel):
     ic_version: Optional[float]
     ic_given_date: Optional[date]
     ic_withdrawn_date: Optional[date]
-    ic_material: Optional[str]
-    ic_data: Optional[str]
-    ic_linking_ext: Optional[str]
     report_her_susc: Optional[str]
     report_inc_findings: Optional[str]
     diagnosis_count: Optional[int] = Schema(None, derived=True)
@@ -40,7 +37,7 @@ class Diagnosis(BaseModel):
     treatment_protocol: Optional[str]
     tumor_stage: Optional[str]
     diagnosis_date: Optional[date]
-    center_treatment: Optional[str]
+    diagnosis_center: Optional[str]
 
 
 class Biosource(BaseModel):

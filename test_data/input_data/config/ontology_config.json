@@ -39,19 +39,7 @@
               "concept_code": "Individual.ic_withdrawn_date"
             },
             {
-              "name": "04. Informed consent material",
-              "concept_code": "Individual.ic_material"
-            },
-            {
-              "name": "05. Informed consent data",
-              "concept_code": "Individual.ic_data"
-            },
-            {
-              "name": "06. Informed consent linking external database",
-              "concept_code": "Individual.ic_linking_ext"
-            },
-            {
-              "name": "07. Report hereditary susceptibility",
+              "name": "04. Report hereditary susceptibility",
               "concept_code": "Individual.report_her_susc"
             }
           ]
@@ -82,8 +70,8 @@
           "concept_code": "Diagnosis.diagnosis_date"
         },
         {
-          "name": "05. Center of treatment",
-          "concept_code": "Diagnosis.center_treatment"
+          "name": "05. Center of diagnosis",
+          "concept_code": "Diagnosis.diagnosis_center"
         }
       ]
     },

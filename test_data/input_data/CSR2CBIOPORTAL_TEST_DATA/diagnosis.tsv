@@ -1,4 +1,4 @@
-diagnosis_id	individual_id	topography	treatment_protocol	tumor_type	tumor_stage	diagnosis_date	center_treatment
+diagnosis_id	individual_id	topography	treatment_protocol	tumor_type	tumor_stage	diagnosis_date	diagnosis_center
 D1	PMCBS000BCA	liver	chemo	neuroblastoma	IV	2016-05-01	Center 1
 D2	PMCBM000BAB	kidney	surgery	nephroblastoma	III	2016-07-02	Center 2
 D3	PMCBM000BAB	bone marrow	Protocol 1	hepatoblastoma	IV	2016-11-03	Center 3
