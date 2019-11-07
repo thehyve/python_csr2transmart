@@ -1,5 +1,6 @@
 import pytest
 from pydantic import ValidationError
+from transmart_loader.transmart import ConceptNode, ValueType
 
 from csr.exceptions import DataException
 from csr2transmart.csr2transmart import read_configuration
@@ -14,6 +15,12 @@ def test_valid_ontology_config():
     tree_nodes = OntologyMapper('test').map(ontology_config.nodes)
     assert len(tree_nodes) == 1
     assert len(tree_nodes[0].children) == 5
+    # Test if the birth date concept node is present and has Date value type.
+    patient_information = [node for node in tree_nodes[0].children if node.name == '01. Patient information'][0]
+    birth_date_node: ConceptNode = [node for node in patient_information.children
+                                    if node.name == '01. Date of birth'][0]
+    assert birth_date_node.concept.concept_code == 'Individual.birth_date'
+    assert birth_date_node.concept.value_type == ValueType.Date
 
 
 def test_non_root_top_node():

@@ -41,7 +41,7 @@ class ObservationMapper:
             return CategoricalValue(row_value)
         elif value_type is ValueType.Numeric:
             return NumericalValue(row_value)
-        elif value_type is ValueType.DateValue:
+        elif value_type is ValueType.Date:
             return DateValue(row_value)
         else:
             return TextValue(row_value)

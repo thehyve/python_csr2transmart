@@ -18,10 +18,10 @@ class OntologyMapper:
         self.concept_code_to_concept: Dict[str, Concept] = {}
 
     @staticmethod
-    def type_to_value_type(field_type) -> ValueType:
-        if field_type in ['integer', 'number']:
+    def field_to_value_type(field: Dict) -> ValueType:
+        if field['type'] in ['integer', 'number']:
             return ValueType.Numeric
-        if field_type in ['date']:
+        if field['type'] == 'string' and field.get('format') == 'date':
             return ValueType.Date
         else:
             return ValueType.Categorical
@@ -42,8 +42,8 @@ class OntologyMapper:
         entity_types = list(SubjectEntity.__args__)
         entity_types.extend(list(StudyEntity.__args__))
         entity_type: SubjectEntity = list(filter(lambda x: x.schema()['title'] == entity_name, entity_types))[0]
-        field_type = entity_type.schema()['properties'][entity_field_name]['type']
-        return self.type_to_value_type(field_type)
+        field = entity_type.schema()['properties'][entity_field_name]
+        return self.field_to_value_type(field)
 
     def map_concept_node(self, node: OntologyConfigTreeNode) -> ConceptNode:
         entity_name, entity_field_name = node.concept_code.split('.')
