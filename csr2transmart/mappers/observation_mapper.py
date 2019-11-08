@@ -224,7 +224,8 @@ class ObservationMapper:
                                        'Failed to create observation for individual study with id: {}.'
                                        .format(ind_study.study_id, ind_study.individual_id))
             entity_type_to_id = {'Individual': ind_study.individual_id}
-            self.map_observation(study, study.study_id, entity_type_to_id)
+            self.map_observation(study, study.study_id, entity_type_to_id.copy())
+            self.map_observation(ind_study, ind_study.study_id_individual_study_id, entity_type_to_id.copy())
 
     def map_observations(self):
         """

@@ -112,13 +112,14 @@ def test_observations_mapping(mapped_data_collection):
     biosource_observations = get_observations_for_modifier(observations, biosource_modifier, biomaterial_modifier)
     biomaterial_observations = get_observations_for_modifier(observations, biomaterial_modifier)
 
-    assert len(patient_observations) == 13 + 8  # individual + individual studies
+    assert len(patient_observations) == 13 + 8 + 2  # individual + studies + individual studies
     assert Counter([po.value.value for po in patient_observations]) == Counter([
         'Human', 'f', datetime.date(1993, 2, 1), 'yes', datetime.date(2017, 3, 1), 'yes',  # P1
         'Human', 'm', datetime.date(1994, 4, 3), 'yes', datetime.date(2017, 5, 11), datetime.date(2017, 10, 14),
         'yes',  # P2
-        'STUDY1', 'STD1', 'Study 1', 'http://www.example.com',  # individual study 1
-        'STUDY2', 'STD2', 'Study 2', 'http://www.example.com'])  # individual study 2
+        'STUDY1', 'STD1', 'Study 1', 'http://www.example.com',   # study 1
+        'STUDY2', 'STD2', 'Study 2', 'http://www.example.com',   # study 2
+        '1', '2'])  # individual studies
 
     assert len(diagnosis_observations) == 18
     assert Counter([do.value.value for do in diagnosis_observations]) == Counter([
