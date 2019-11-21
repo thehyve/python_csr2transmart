@@ -15,7 +15,9 @@ class NgsTxtReader(NgsReader):
 
     def read_data(self, filename: str) -> Optional[Sequence[NGS]]:
         """ Reads .txt file.
-        Sample_id should be specified in the header. Assumes that the IDs will start with 'PMC'.
+        Sample_id should be specified in the header.
+        Assumes that all column names except Gene Symbol, Gene ID, Locus ID and Cytoband
+        are sample identifiers.
 
         :param filename: name of the input file
         :return: Sequence of NGS objects
@@ -25,7 +27,7 @@ class NgsTxtReader(NgsReader):
         if data:
             sample_id_col_num = 0
             for col_value in data[0]:
-                if col_value.startswith('PMC'):
+                if col_value not in ['Gene Symbol', 'Gene ID', 'Locus ID', 'Cytoband']:
                     sample_id_col_num += 1
                     biosource_biomaterial = self.biosource_biomaterial_from_sample_id(col_value, filename)
                     biosource_biomaterial_dict.setdefault(biosource_biomaterial[0], []).append(biosource_biomaterial[1])
