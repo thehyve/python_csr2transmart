@@ -3,7 +3,7 @@ from typing import Dict, Sequence, List
 from transmart_loader.transmart import DataCollection, Study, TrialVisit, Patient, DimensionType, ValueType, Modifier, \
     Dimension
 
-from csr.csr import CentralSubjectRegistry, StudyRegistry, Individual, SubjectEntity
+from csr.csr import CentralSubjectRegistry, StudyRegistry, Individual, SubjectEntity, Study as CsrStudy
 from csr2transmart.mappers.observation_mapper import ObservationMapper
 from csr2transmart.mappers.ontology_mapper import OntologyMapper
 from csr2transmart.ontology_config import TreeNode
@@ -36,6 +36,7 @@ class CsrMapper:
     def map_dimensions_and_modifiers(self):
         entities = list(SubjectEntity.__args__)
         entities.remove(Individual)
+        entities.append(CsrStudy)
         for index, entity_type in enumerate(entities):
             type_name = entity_type.schema()['title']
             modifier = Modifier(type_name,
@@ -44,9 +45,10 @@ class CsrMapper:
                                 ValueType.Categorical)
             self.modifier_key_to_modifier[type_name] = modifier
 
+            dimension_type = DimensionType.Attribute if entity_type is CsrStudy else DimensionType.Subject
             modifier_dimension = Dimension(type_name,
                                            modifier,
-                                           DimensionType.Subject,
+                                           dimension_type,
                                            index+2)
             self.dimensions.append(modifier_dimension)
 
