@@ -128,8 +128,12 @@ def process_cna_files(ngs_dir: str, output_dir: str, clinical_sample_ids: List[s
         if study_file.endswith('sha1'):
             continue
 
+        # TODO to be removed after upgrade to cBioPortal version that supports hg38 for segment data
+        # For now skipping upload of .seg files, see: https://github.com/thehyve/python_csr2transmart/issues/62
+        cbioportal_seg_hg38_support = False
+
         # CNA Segment data
-        if study_file.split('.')[-1] == 'seg':
+        if study_file.split('.')[-1] == 'seg' and cbioportal_seg_hg38_support:
             logger.debug('Transforming segment data: %s' % study_file)
 
             output_file = 'data_cna_segments.seg'
