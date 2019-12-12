@@ -249,16 +249,43 @@ All NGS data should follow reference genome HG38.
 The sample ID is structured as <BiosourceID>_<BiomaterialID>,
 based on the IDs of biosources and biomaterials from clinical data, e.g. PMCBS000AAA_PMCBM000AAA.
 
-The naming convention for other NGS input data:
+The naming conventions for NGS input data are as follows:
 
 - mutation data (Small nucleotide variants): <fileName>.maf.gz
 - Segment data: <fileName>.seg
 - Continuous CNA per gene: <fileName>_all_data_by_genes.txt
 - Discrete CNA per gene: <fileName>_all_thresholded.by_genes.txt
 
-See the `NGS test data`_ for an example.
+Multiple files per type are supported. Note that mutation files must be always compressed as ``maf.gz``. See the `NGS test data`_ for an example.
+
+Each of the NGS file names can contain the optional string '_WGS' or '_WSX' to indicate the NGS analysis type, e.g. <fileName>_WXS_all_data_by_genes.txt. If present, each sample in the NGS file will be associated with the corresponding value for the derived variable ``analysis_strategy``. String mapping rules are encoded in `ngs_reader.py`_.
+
+Additionally, the derived variable ``library_strategy`` is generated for each sample based on the NGS file extension. See specific NGS reader scripts in `sources2csr`_ for mapping rules between file type and and library strategy.
+
+Both derived variables are associated to the entity Biomaterial in TranSMART (see `ngs2csr.py`_); to have them appear in the TranSMART ontology tree after data loading, you need to include them in `ontology_config.json`_, e.g.:
+
+  .. code-block:: json
+
+        {
+      "name": "Biomaterial information",
+      "children": [
+        {
+          "name": "Library strategy",
+          "concept_code": "Biomaterial.library_strategy"
+        },
+        {
+          "name": "Analysis type",
+          "concept_code": "Biomaterial.analysis_type"
+        }
+      ]
+      }
 
 .. _`NGS test data`: test_data/input_data/CSR2CBIOPORTAL_TEST_DATA/NGS
+.. _`ngs_reader.py`: sources2csr/ngs_reader.py
+.. _`sources2csr`: sources2csr
+.. _`ngs2csr.py`: sources2csr/ngs2csr.py#L54
+.. _`ontology_config.json`: test_data/input_data/config/ontology_config.json
+
 
 Python versions
 ---------------
