@@ -61,6 +61,8 @@ as a data class in `csr/csr.py`_
 
 To learn how to add changes to the database model, see `<changing-data-model.rst>`_ document.
 
+.. _`changing-data-model.rst`: https://github.com/thehyve/python_csr2transmart/blob/master/changing-data-model.rst
+
 Usage
 ------
 
@@ -239,7 +241,7 @@ Additionally, any individual needs to have at least one observation to be includ
 This means that merely a collection of related ID values, without observations
 linked to any of those IDs, will not become available in tranSMART.
 
-.. _`configured`: test_data/input_data/config/sources_config.json#L390
+.. _`configured`: https://github.com/thehyve/python_csr2transmart/blob/master/test_data/input_data/config/sources_config.json#L390
 
 
 NGS data
@@ -280,11 +282,11 @@ Both derived variables are associated to the entity Biomaterial in TranSMART (se
       ]
       }
 
-.. _`NGS test data`: test_data/input_data/CSR2CBIOPORTAL_TEST_DATA/NGS
-.. _`ngs_reader.py`: sources2csr/ngs_reader.py
-.. _`sources2csr`: sources2csr
-.. _`ngs2csr.py`: sources2csr/ngs2csr.py#L54
-.. _`ontology_config.json`: test_data/input_data/config/ontology_config.json
+.. _`NGS test data`: https://github.com/thehyve/python_csr2transmart/blob/master/test_data/input_data/CSR2CBIOPORTAL_TEST_DATA/NGS
+.. _`ngs_reader.py`: https://github.com/thehyve/python_csr2transmart/blob/master/sources2csr/ngs_reader.py
+.. _`sources2csr`: https://github.com/thehyve/python_csr2transmart/blob/master/sources2csr
+.. _`ngs2csr.py`: https://github.com/thehyve/python_csr2transmart/blob/master/sources2csr/ngs2csr.py#L54
+.. _`ontology_config.json`: https://github.com/thehyve/python_csr2transmart/blob/master/test_data/input_data/config/ontology_config.json
 
 
 Python versions
