@@ -42,11 +42,11 @@ def test_patients_mapping(mapped_data_collection):
 
 def test_concepts_mapping(mapped_data_collection):
     concepts = mapped_data_collection.concepts
-    assert len(concepts) == 29
+    assert len(concepts) == 31
     assert len([c for c in concepts if c.concept_code.startswith('Individual.')]) == 9
     assert len([c for c in concepts if c.concept_code.startswith('Diagnosis.')]) == 6
     assert len([c for c in concepts if c.concept_code.startswith('Biosource.')]) == 6
-    assert len([c for c in concepts if c.concept_code.startswith('Biomaterial.')]) == 3
+    assert len([c for c in concepts if c.concept_code.startswith('Biomaterial.')]) == 5
     assert len([c for c in concepts if c.concept_code.startswith('Study.')]) == 4
     assert len([c for c in concepts if c.concept_code.startswith('IndividualStudy.')]) == 1
 
@@ -86,7 +86,7 @@ def test_ontology_mapping(mapped_data_collection):
     assert len(ontology[0].children[0].children[4].children) == 5  # individual.Informed_consent node
     assert len(ontology[0].children[1].children) == 6  # diagnosis node
     assert len(ontology[0].children[2].children) == 6  # biosource node
-    assert len(ontology[0].children[3].children) == 3  # biomaterial node
+    assert len(ontology[0].children[3].children) == 5  # biomaterial node
     assert len(ontology[0].children[4].children) == 5  # study node
 
     assert ontology[0].children[0].children[0].concept.concept_code == 'Individual.gender'
