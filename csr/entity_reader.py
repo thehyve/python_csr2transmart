@@ -17,15 +17,15 @@ class EntityReader:
     @staticmethod
     def get_date_fields(schema: Dict[str, Any]) -> List[str]:
         date_fields: List[str] = []
-        for field in schema['properties'].values():
+        for name, field in schema['properties'].items():
             if field.get('format') == 'date':
-                date_fields.append(field['title'].lower())
+                date_fields.append(name)
         return date_fields
 
     @staticmethod
     def get_array_fields(schema: Dict[str, Any]) -> List[str]:
-        return [field['title'].lower()
-                for field in schema['properties'].values()
+        return [name
+                for name, field in schema['properties'].items()
                 if field.get('type') == 'array']
 
     def read_entities(self, file_path: str, entity_type: Type[BaseModel]) -> List[Any]:

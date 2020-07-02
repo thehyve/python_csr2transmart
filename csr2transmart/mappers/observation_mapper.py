@@ -168,7 +168,7 @@ class ObservationMapper:
         :param entity_type_to_id: dictionary from entity type to id of the entity
         :return:
         """
-        entity_fields = entity.fields.keys()
+        entity_fields = entity.__fields__.keys()
         entity_name = entity.schema()['title']
         individual_id = entity_type_to_id.pop('Individual', None)
         patient = self.individual_id_to_patient.get(individual_id, None)
