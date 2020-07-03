@@ -59,9 +59,10 @@ as a data class in `csr/csr.py`_
 
 .. _`csr/csr.py`: https://github.com/thehyve/python_csr2transmart/blob/master/csr/csr.py
 
-To learn how to add changes to the database model, see `<changing-data-model.rst>`_ document.
+To learn how to add changes to the database model, see `changing-data-model.rst`_ document.
 
 .. _`changing-data-model.rst`: https://github.com/thehyve/python_csr2transmart/blob/master/changing-data-model.rst
+
 
 Usage
 ------
@@ -266,21 +267,21 @@ Additionally, the derived variable ``library_strategy`` is generated for each sa
 
 Both derived variables are associated to the entity Biomaterial in TranSMART (see `ngs2csr.py`_); to have them appear in the TranSMART ontology tree after data loading, you need to include them in `ontology_config.json`_, e.g.:
 
-  .. code-block:: json
+.. code-block:: json
 
-        {
-      "name": "Biomaterial information",
-      "children": [
-        {
-          "name": "Library strategy",
-          "concept_code": "Biomaterial.library_strategy"
-        },
-        {
-          "name": "Analysis type",
-          "concept_code": "Biomaterial.analysis_type"
-        }
-      ]
+  {
+    "name": "Biomaterial information",
+    "children": [
+      {
+        "name": "Library strategy",
+        "concept_code": "Biomaterial.library_strategy"
+      },
+      {
+        "name": "Analysis type",
+        "concept_code": "Biomaterial.analysis_type"
       }
+    ]
+  }
 
 .. _`NGS test data`: https://github.com/thehyve/python_csr2transmart/blob/master/test_data/input_data/CSR2CBIOPORTAL_TEST_DATA/NGS
 .. _`ngs_reader.py`: https://github.com/thehyve/python_csr2transmart/blob/master/sources2csr/ngs_reader.py
