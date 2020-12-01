@@ -30,7 +30,7 @@ def add_derived_values(subject_registry: CentralSubjectRegistry) -> CentralSubje
         # Add diagnosis count
         individual.diagnosis_count = diagnosis_count_per_individual.get(individual.individual_id, None)
         # Add age at first diagnosis
-        if individual.birth_date is not None:
+        if individual.birth_date is not None and individual.age_first_diagnosis is None:
             first_diagnosis_date = first_diagnosis_date_per_individual.get(individual.individual_id, None)
             if first_diagnosis_date is not None:
                 individual.age_first_diagnosis = relativedelta(first_diagnosis_date, individual.birth_date).years

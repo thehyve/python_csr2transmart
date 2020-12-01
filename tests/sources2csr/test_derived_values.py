@@ -13,20 +13,22 @@ from sources2csr.derived_values import add_derived_values
 def registry_with_diagnoses() -> CentralSubjectRegistry:
     individuals = [
         Individual(individual_id='P1', birth_date='1950-05-05'),
-        Individual(individual_id='P2', birth_date='2001-01-01')
+        Individual(individual_id='P2', birth_date='2001-01-01'),
+        Individual(individual_id='P3', birth_date='2001-01-01', age_first_diagnosis=5),
     ]
     diagnoses = [
         Diagnosis(diagnosis_id='D1.1', individual_id='P1', diagnosis_date='2010-03-31'),
         Diagnosis(diagnosis_id='D1.2', individual_id='P1', diagnosis_date='2012-05-05'),
-        Diagnosis(diagnosis_id='D2.1', individual_id='P2', diagnosis_date='2011-12-01')
+        Diagnosis(diagnosis_id='D2.1', individual_id='P2', diagnosis_date='2011-12-01'),
+        Diagnosis(diagnosis_id='D3.1', individual_id='P3', diagnosis_date='2011-12-01'),
     ]
     return CentralSubjectRegistry.create({'Individual': individuals, 'Diagnosis': diagnoses})
 
 
 def test_diagnosis_aggregates(registry_with_diagnoses):
     subject_registry = add_derived_values(registry_with_diagnoses)
-    expected_counts = {'P1': 2, 'P2': 1}
-    expected_age = {'P1': 59, 'P2': 10}
+    expected_counts = {'P1': 2, 'P2': 1, 'P3': 1}
+    expected_age = {'P1': 59, 'P2': 10, 'P3': 5}
     for individual in subject_registry.entity_data['Individual']:
         assert individual.age_first_diagnosis is not None
         assert individual.age_first_diagnosis == expected_age[individual.individual_id]
