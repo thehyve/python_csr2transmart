@@ -59,7 +59,10 @@ as a data class in `csr/csr.py`_
 
 .. _`csr/csr.py`: https://github.com/thehyve/python_csr2transmart/blob/master/csr/csr.py
 
-To learn how to add changes to the database model, see `<changing-data-model.rst>`_ document.
+To learn how to add changes to the database model, see `changing-data-model.rst`_ document.
+
+.. _`changing-data-model.rst`: https://github.com/thehyve/python_csr2transmart/blob/master/changing-data-model.rst
+
 
 Usage
 ------
@@ -239,7 +242,7 @@ Additionally, any individual needs to have at least one observation to be includ
 This means that merely a collection of related ID values, without observations
 linked to any of those IDs, will not become available in tranSMART.
 
-.. _`configured`: test_data/input_data/config/sources_config.json#L390
+.. _`configured`: https://github.com/thehyve/python_csr2transmart/blob/master/test_data/input_data/config/sources_config.json#L390
 
 
 NGS data
@@ -249,16 +252,43 @@ All NGS data should follow reference genome HG38.
 The sample ID is structured as <BiosourceID>_<BiomaterialID>,
 based on the IDs of biosources and biomaterials from clinical data, e.g. PMCBS000AAA_PMCBM000AAA.
 
-The naming convention for other NGS input data:
+The naming conventions for NGS input data are as follows:
 
 - mutation data (Small nucleotide variants): <fileName>.maf.gz
 - Segment data: <fileName>.seg
 - Continuous CNA per gene: <fileName>_all_data_by_genes.txt
 - Discrete CNA per gene: <fileName>_all_thresholded.by_genes.txt
 
-See the `NGS test data`_ for an example.
+Multiple files per type are supported. Note that mutation files must be always compressed as ``maf.gz``. See the `NGS test data`_ for an example.
 
-.. _`NGS test data`: test_data/input_data/CSR2CBIOPORTAL_TEST_DATA/NGS
+Each of the NGS file names can contain the optional string '_WGS' or '_WSX' to indicate the NGS analysis type, e.g. <fileName>_WXS_all_data_by_genes.txt. If present, each sample in the NGS file will be associated with the corresponding value for the derived variable ``analysis_strategy``. String mapping rules are encoded in `ngs_reader.py`_.
+
+Additionally, the derived variable ``library_strategy`` is generated for each sample based on the NGS file extension. See specific NGS reader scripts in `sources2csr`_ for mapping rules between file type and and library strategy.
+
+Both derived variables are associated to the entity Biomaterial in TranSMART (see `ngs2csr.py`_); to have them appear in the TranSMART ontology tree after data loading, you need to include them in `ontology_config.json`_, e.g.:
+
+.. code-block:: json
+
+  {
+    "name": "Biomaterial information",
+    "children": [
+      {
+        "name": "Library strategy",
+        "concept_code": "Biomaterial.library_strategy"
+      },
+      {
+        "name": "Analysis type",
+        "concept_code": "Biomaterial.analysis_type"
+      }
+    ]
+  }
+
+.. _`NGS test data`: https://github.com/thehyve/python_csr2transmart/blob/master/test_data/input_data/CSR2CBIOPORTAL_TEST_DATA/NGS
+.. _`ngs_reader.py`: https://github.com/thehyve/python_csr2transmart/blob/master/sources2csr/ngs_reader.py
+.. _`sources2csr`: https://github.com/thehyve/python_csr2transmart/blob/master/sources2csr
+.. _`ngs2csr.py`: https://github.com/thehyve/python_csr2transmart/blob/master/sources2csr/ngs2csr.py#L54
+.. _`ontology_config.json`: https://github.com/thehyve/python_csr2transmart/blob/master/test_data/input_data/config/ontology_config.json
+
 
 Python versions
 ---------------

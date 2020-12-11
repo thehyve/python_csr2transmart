@@ -1,7 +1,7 @@
 from datetime import date
 from typing import Sequence, Optional, Union, Dict, List, Any
 
-from pydantic import BaseModel, Schema, validator
+from pydantic import BaseModel, validator, Field
 
 from csr.entity_validation import validate_entity_data
 from csr.exceptions import DataException
@@ -11,7 +11,7 @@ class Individual(BaseModel):
     """
     Individual entity
     """
-    individual_id: str = Schema(..., min_length=1, identity=True)
+    individual_id: str = Field(..., min_length=1, identity=True)
     taxonomy: Optional[str]
     gender: Optional[str]
     birth_date: Optional[date]
@@ -22,16 +22,16 @@ class Individual(BaseModel):
     ic_withdrawn_date: Optional[date]
     report_her_susc: Optional[str]
     report_inc_findings: Optional[str]
-    diagnosis_count: Optional[int] = Schema(None, derived=True)
-    age_first_diagnosis: Optional[int] = Schema(None, derived=True)
+    diagnosis_count: Optional[int] = Field(None, derived=True)
+    age_first_diagnosis: Optional[int] = Field(None, derived=True)
 
 
 class Diagnosis(BaseModel):
     """
     Diagnosis entity
     """
-    diagnosis_id: str = Schema(..., min_length=1, identity=True)
-    individual_id: str = Schema(..., min_length=1, references='Individual')
+    diagnosis_id: str = Field(..., min_length=1, identity=True)
+    individual_id: str = Field(..., min_length=1, references='Individual')
     tumor_type: Optional[str]
     topography: Optional[str]
     treatment_protocol: Optional[str]
@@ -44,11 +44,11 @@ class Biosource(BaseModel):
     """
     Biosource entity
     """
-    biosource_id: str = Schema(..., min_length=1, identity=True)
+    biosource_id: str = Field(..., min_length=1, identity=True)
     biosource_dedicated: Optional[str]
-    individual_id: str = Schema(..., min_length=1, references='Individual')
-    diagnosis_id: Optional[str] = Schema(None, min_length=1, references='Diagnosis')
-    src_biosource_id: Optional[str] = Schema(None, min_length=1, references='Biosource')
+    individual_id: str = Field(..., min_length=1, references='Individual')
+    diagnosis_id: Optional[str] = Field(None, min_length=1, references='Diagnosis')
+    src_biosource_id: Optional[str] = Field(None, min_length=1, references='Biosource')
     tissue: Optional[str]
     biosource_date: Optional[date]
     disease_status: Optional[str]
@@ -65,13 +65,13 @@ class Biomaterial(BaseModel):
     """
     Biomaterial entity
     """
-    biomaterial_id: str = Schema(..., min_length=1, identity=True)
-    src_biosource_id: str = Schema(..., min_length=1, references='Biosource')
-    src_biomaterial_id: Optional[str] = Schema(None, min_length=1, references='Biomaterial')
+    biomaterial_id: str = Field(..., min_length=1, identity=True)
+    src_biosource_id: str = Field(..., min_length=1, references='Biosource')
+    src_biomaterial_id: Optional[str] = Field(None, min_length=1, references='Biomaterial')
     biomaterial_date: Optional[date]
     type: Optional[str]
-    library_strategy: Optional[List[str]] = Schema(None, derived=True)
-    analysis_type: Optional[List[str]] = Schema(None, derived=True)
+    library_strategy: Optional[List[str]] = Field(None, derived=True)
+    analysis_type: Optional[List[str]] = Field(None, derived=True)
 
     @validator('src_biomaterial_id')
     def check_self_reference(cls, src_biomaterial_id, values):
@@ -84,7 +84,7 @@ class Study(BaseModel):
     """
     Study
     """
-    study_id: str = Schema(..., min_length=1, identity=True)
+    study_id: str = Field(..., min_length=1, identity=True)
     acronym: Optional[str]
     title: Optional[str]
     datadictionary: Optional[str]
@@ -94,10 +94,10 @@ class IndividualStudy(BaseModel):
     """
     Study to individual mapping
     """
-    study_id_individual_study_id: str = Schema(..., min_length=1, identity=True)
+    study_id_individual_study_id: str = Field(..., min_length=1, identity=True)
     individual_study_id: str
-    individual_id: str = Schema(..., min_length=1, references='Individual')
-    study_id: str = Schema(..., min_length=1, references='Study')
+    individual_id: str = Field(..., min_length=1, references='Individual')
+    study_id: str = Field(..., min_length=1, references='Study')
 
 
 SubjectEntity = Union[Individual, Diagnosis, Biosource, Biomaterial]

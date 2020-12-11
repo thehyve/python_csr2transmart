@@ -118,6 +118,14 @@
         {
           "name": "03. Biomaterial type",
           "concept_code": "Biomaterial.type"
+        },
+        {
+          "name": "04. Library strategy",
+          "concept_code": "Biomaterial.library_strategy"
+        },
+        {
+          "name": "05. Analysis type",
+          "concept_code": "Biomaterial.analysis_type"
         }
       ]
     },
