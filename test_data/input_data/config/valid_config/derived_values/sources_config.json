@@ -106,7 +106,16 @@
               "file": "individual_with_derived_values.tsv"
             }
           ]
-        }      ]
+        },
+        {
+          "name": "diagnosis_count",
+          "sources": [
+            {
+              "file": "individual_with_derived_values.tsv"
+            }
+          ]
+        }
+      ]
     },
     "Diagnosis": {
       "attributes": [

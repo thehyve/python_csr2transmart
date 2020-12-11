@@ -5,7 +5,10 @@
 """
 import pytest
 from csr.csr import CentralSubjectRegistry, Individual, Diagnosis, Biosource, Biomaterial
-
+from click.testing import CliRunner
+from sources2csr import sources2csr
+from csr.tabular_file_reader import TabularFileReader
+from os import path
 from sources2csr.derived_values import add_derived_values
 
 
@@ -62,3 +65,29 @@ def test_diagnosis_aggregates_with_missing_data(registry_with_missing_diagnosis_
     for individual in subject_registry.entity_data['Individual']:
         assert individual.age_first_diagnosis == expected_age[individual.individual_id]
         assert individual.diagnosis_count == expected_counts[individual.individual_id]
+
+
+def test_transform_with_derived_data(tmp_path):
+    target_path = tmp_path.as_posix()
+    runner = CliRunner()
+    result = runner.invoke(sources2csr.run, [
+        './test_data/input_data/CLINICAL',
+        target_path,
+        './test_data/input_data/config/valid_config/derived_values'
+    ])
+
+    assert result.exit_code == 0, result.output
+
+    # test if codebook mapping has been applied
+    individual_data = TabularFileReader(path.join(target_path, 'individual.tsv')).read_data()
+    p1 = [ind for ind in individual_data if ind['individual_id'] == 'P1'][0]
+    assert p1['gender'] == 'female'
+
+    # test if values have been correctly inserted from the source
+    assert p1['diagnosis_count'] == '4'
+    assert p1['age_first_diagnosis'] == '50'
+
+    # check if missing the value, it is still correctly calculated
+    p2 = [ind for ind in individual_data if ind['individual_id'] == 'P2'][0]
+    assert p2['diagnosis_count'] == '1'
+    assert p2['age_first_diagnosis'] == '23'  # 01-05-2016 - 01-02-1993

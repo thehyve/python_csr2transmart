@@ -90,15 +90,6 @@ def get_source_files(entity_sources_config: Entity, id_property: str):
     return source_files, source_file_id_mapping
 
 
-def validate_derived_values_not_in_source_config(entity_type: BaseModel, entity_source_config: Entity):
-    derived_properties = set([name for (name, prop) in entity_type.schema()['properties'].items()
-                              if 'derived' in prop and prop['derived'] is True])
-    attribute_names = set([attr.name for attr in entity_source_config.attributes])
-    intersection = derived_properties.intersection(attribute_names)
-    if intersection:
-        raise DataException(f'Derived value fields not allowed in source files: {", ".join(intersection)}')
-
-
 class SourcesReader:
 
     def __init__(self, input_dir, config_dir):
@@ -147,8 +138,6 @@ class SourcesReader:
         id_property = self.read_id_property(entity_type)
 
         entity_sources_config = self.sources_config.entities[entity_type.__name__]
-
-        validate_derived_values_not_in_source_config(entity_type, entity_sources_config)
 
         source_files, source_file_id_mapping = get_source_files(entity_sources_config, id_property)
 
