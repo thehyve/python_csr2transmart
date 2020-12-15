@@ -22,8 +22,8 @@ class Individual(BaseModel):
     ic_withdrawn_date: Optional[date]
     report_her_susc: Optional[str]
     report_inc_findings: Optional[str]
-    diagnosis_count: Optional[int] = Field(None, derived=True)
-    age_first_diagnosis: Optional[int] = Field(None, derived=True)
+    diagnosis_count: Optional[int]
+    age_first_diagnosis: Optional[int]
 
 
 class Diagnosis(BaseModel):

@@ -36,9 +36,14 @@ def test_transformation(tmp_path):
     p1 = [ind for ind in individual_data if ind['individual_id'] == 'P1'][0]
     assert p1['gender'] == 'female'
 
-    # test if derived values have been added
+    # test if derived values have been calculated, if not read from the source
     assert p1['diagnosis_count'] == '2'
     assert p1['age_first_diagnosis'] == '23'  # 01-05-2016 - 01-02-1993
+
+    # test if aggregate values have been correctly inserted from the source
+    p2 = [ind for ind in individual_data if ind['individual_id'] == 'P2'][0]
+    assert p2['diagnosis_count'] == '4'
+    assert p2['age_first_diagnosis'] == '50'
 
     # check if data from second input file is included
     p2 = [ind for ind in individual_data if ind['individual_id'] == 'P2'][0]
@@ -133,7 +138,7 @@ def test_invalid_date():
 def test_derived_values_in_sources():
     reader = SourcesReader(
         input_dir='./test_data/input_data/CLINICAL',
-        config_dir='./test_data/input_data/config/invalid_sources_config/derived_values')
+        config_dir='./test_data/input_data/config/invalid_sources_config/derived_biomaterial_values')
     with pytest.raises(DataException) as excinfo:
         reader.read_subject_data()
     assert 'Derived value fields not allowed in source files' \
