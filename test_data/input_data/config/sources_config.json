@@ -98,6 +98,22 @@
               "column": "report_inc_finding"
             }
           ]
+        },
+        {
+          "name": "age_first_diagnosis",
+          "sources": [
+            {
+              "file": "individual.tsv"
+            }
+          ]
+        },
+        {
+          "name": "diagnosis_count",
+          "sources": [
+            {
+              "file": "individual.tsv"
+            }
+          ]
         }
       ]
     },
