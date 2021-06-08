@@ -1,5 +1,5 @@
 biomaterial_id	src_biosource_id	src_biomaterial_id	type	biomaterial_date	analysis_type
-BM1	BS1		RNA	12-10-2017	
+BM1	BS1		RNA	12-10-2017	WGS,WXS
 BM2	BS2		DNA	22-11-2017	
 BM3	BS3		RNA	12-12-2017	
 BM4	BS4		DNA	12-10-2017	

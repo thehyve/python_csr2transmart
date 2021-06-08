@@ -139,10 +139,13 @@ def test_derived_values_in_sources():
     reader = SourcesReader(
         input_dir='./test_data/input_data/CLINICAL',
         config_dir='./test_data/input_data/config/invalid_sources_config/derived_biomaterial_values')
-    with pytest.raises(DataException) as excinfo:
-        reader.read_subject_data()
-    assert 'Derived value fields not allowed in source files' \
-           in str(excinfo.value)
+    csr = reader.read_subject_data()
+    biomaterials = csr.entity_data.get('Biomaterial')
+    assert len(biomaterials) == 15
+    test_material1 = [biomaterial for biomaterial in biomaterials if biomaterial.biomaterial_id == 'BM1'][0]
+    assert test_material1.analysis_type == ['WGS', 'WXS']
+    test_material2 = [biomaterial for biomaterial in biomaterials if biomaterial.biomaterial_id == 'BM2'][0]
+    assert test_material2.analysis_type is None
 
 
 def test_duplicate_attributes():

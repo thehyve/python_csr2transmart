@@ -70,8 +70,8 @@ class Biomaterial(BaseModel):
     src_biomaterial_id: Optional[str] = Field(None, min_length=1, references='Biomaterial')
     biomaterial_date: Optional[date]
     type: Optional[str]
-    library_strategy: Optional[List[str]] = Field(None, derived=True)
-    analysis_type: Optional[List[str]] = Field(None, derived=True)
+    library_strategy: Optional[List[str]]
+    analysis_type: Optional[List[str]]
 
     @validator('src_biomaterial_id')
     def check_self_reference(cls, src_biomaterial_id, values):
