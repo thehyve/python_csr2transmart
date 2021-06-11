@@ -27,6 +27,9 @@ def format_value(schema: Dict, column: str, value: Any):
         return None
     if isinstance(value, float) and isnan(value):
         return None
+    if value is not None and isinstance(value, str):
+        if schema['properties'][column]['type'] == 'array':
+            return value.split(';')
     return value
 
 
