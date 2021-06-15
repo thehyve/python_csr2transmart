@@ -134,6 +134,7 @@ def test_invalid_date():
     assert 'Error parsing biomaterial_date from source biomaterial_with_invalid_date.tsv:biomaterial_date with id BM15'\
            in str(excinfo.value)
 
+
 def test_duplicate_attributes():
     with pytest.raises(ValidationError) as excinfo:
         SourcesReader(
@@ -145,8 +146,8 @@ def test_duplicate_attributes():
 
 def test_biosource_cannot_be_derived_from_self():
     reader = SourcesReader(
-            input_dir='./test_data/input_data/CLINICAL',
-            config_dir='./test_data/input_data/config/invalid_sources_config/biosource_derived_from_self')
+        input_dir='./test_data/input_data/CLINICAL',
+        config_dir='./test_data/input_data/config/invalid_sources_config/biosource_derived_from_self')
     with pytest.raises(DataException) as excinfo:
         reader.read_subject_data()
     assert 'Invalid data for Biosource with id BS1' in str(excinfo.value)
@@ -154,11 +155,20 @@ def test_biosource_cannot_be_derived_from_self():
 
 def test_biomaterial_cannot_be_derived_from_self():
     reader = SourcesReader(
-            input_dir='./test_data/input_data/CLINICAL',
-            config_dir='./test_data/input_data/config/invalid_sources_config/biomaterial_derived_from_self')
+        input_dir='./test_data/input_data/CLINICAL',
+        config_dir='./test_data/input_data/config/invalid_sources_config/biomaterial_derived_from_self')
     with pytest.raises(DataException) as excinfo:
         reader.read_subject_data()
     assert 'Invalid data for Biomaterial with id BM6' in str(excinfo.value)
+
+
+def test_biomaterial_type_libstrat_mismatch():
+    reader = SourcesReader(
+        input_dir='./test_data/input_data/CLINICAL',
+        config_dir='./test_data/input_data/config/invalid_sources_config/biomaterial_type_libstrat_mismatch')
+    with pytest.raises(DataException) as excinfo:
+        reader.read_subject_data()
+    assert 'Not allowed RNA-Seq library strategy for molecule type: DNA in line 2' in str(excinfo.value)
 
 
 @pytest.mark.skip(reason="specific validation not yet implemented (TMT-1024)")
@@ -169,8 +179,8 @@ def test_diagnosis_biosource_patient_mismatch():
     Biosource contains BS1 linked to P1 and D1.
     """
     reader = SourcesReader(
-            input_dir='./test_data/input_data/ind_bios_diag_mismatch_data/source_data',
-            config_dir='./test_data/input_data/ind_bios_diag_mismatch_data/config')
+        input_dir='./test_data/input_data/ind_bios_diag_mismatch_data/source_data',
+        config_dir='./test_data/input_data/ind_bios_diag_mismatch_data/config')
     with pytest.raises(DataException) as excinfo:
         reader.read_subject_data()
     assert '' in str(excinfo.value)
@@ -183,8 +193,8 @@ def test_biomaterial_biosource_mismatch():
     but originates from a different biosource.
     """
     reader = SourcesReader(
-            input_dir='./test_data/input_data/bios_biom_mismatch_data/source_data',
-            config_dir='./test_data/input_data/bios_biom_mismatch_data/config')
+        input_dir='./test_data/input_data/bios_biom_mismatch_data/source_data',
+        config_dir='./test_data/input_data/bios_biom_mismatch_data/config')
     with pytest.raises(DataException) as excinfo:
         reader.read_subject_data()
     assert '' in str(excinfo.value)
