@@ -21,7 +21,7 @@ def sources2csr(input_dir, output_dir, config_dir):
         reader = SourcesReader(input_dir=input_dir, config_dir=config_dir)
         subject_registry = reader.read_subject_data()
         add_derived_values(subject_registry)
-        add_ngs_data(subject_registry, input_dir)
+        # add_ngs_data(subject_registry, input_dir) Not used anymore, NGS data is present in source
         subject_registry_writer = SubjectRegistryWriter(output_dir)
         subject_registry_writer.write(subject_registry)
 
