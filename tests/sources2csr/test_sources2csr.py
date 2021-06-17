@@ -168,7 +168,18 @@ def test_biomaterial_type_libstrat_mismatch():
         config_dir='./test_data/input_data/config/invalid_sources_config/biomaterial_type_libstrat_mismatch')
     with pytest.raises(DataException) as excinfo:
         reader.read_subject_data()
-    assert 'Not allowed RNA-Seq library strategy for molecule type: DNA in line 2' in str(excinfo.value)
+    assert 'Invalid data for Biomaterial with id BM2' in str(excinfo.value)
+
+
+def test_biomaterial_semicolon_separator_splitting():
+    reader = SourcesReader(
+        input_dir='./test_data/input_data/CLINICAL',
+        config_dir='./test_data/input_data/config/invalid_sources_config'
+                   '/biomaterial_with_semicolon_separated_libstrat_analysistype')
+    subject_registry = reader.read_subject_data()
+    assert subject_registry.entity_data['Biomaterial'][1].library_strategy == ['WGS', 'WXS']
+    assert subject_registry.entity_data['Biomaterial'][1].analysis_type == ['WGS Germline SNV', 'WXS Germline SNV',
+                                                                            'WGS Somatic SNV', 'WXS Somatic SNV']
 
 
 @pytest.mark.skip(reason="specific validation not yet implemented (TMT-1024)")
