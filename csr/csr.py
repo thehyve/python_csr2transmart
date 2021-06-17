@@ -79,6 +79,19 @@ class Biomaterial(BaseModel):
             raise DataException(f'Biomaterial cannot be derived from itself')
         return src_biomaterial_id
 
+    @validator('library_strategy')
+    def validate_molecule_type_agrees_with_library_strategy(cls, library_strategy, values):
+        if 'type' in values and library_strategy is not None:
+            if values['type'] == 'DNA' and library_strategy.__contains__('RNA-Seq'):
+                raise DataException(f'Not allowed RNA-Seq library strategy for molecule type: DNA')
+            if values['type'] == 'RNA' and library_strategy.__contains__('WXS'):
+                raise DataException(f'Not allowed WXS library strategy for molecule type: RNA')
+            if values['type'] == 'RNA' and library_strategy.__contains__('WGS'):
+                raise DataException(f'Not allowed WGS library strategy for molecule type: RNA')
+            if values['type'] == 'RNA' and library_strategy.__contains__('DNA-meth_array'):
+                raise DataException(f'Not allowed DNA-meth_array library strategy for molecule type: RNA')
+        return library_strategy
+
 
 class Study(BaseModel):
     """

@@ -102,19 +102,6 @@ def validate_derived_values_not_in_source_config(entity_type: BaseModel, entity_
         raise DataException(f'Derived value fields not allowed in source files: {", ".join(intersection)}')
 
 
-def validate_molecule_type_agrees_with_library_strategy(item: dict, record_number: int):
-    if 'type' in item and 'library_strategy' in item:
-        if item['type'] == 'DNA' and item['library_strategy'].__contains__('RNA-Seq'):
-            raise DataException(f'Not allowed RNA-Seq library strategy for molecule type: DNA in line {record_number}')
-        if item['type'] == 'RNA' and item['library_strategy'].__contains__('WXS'):
-            raise DataException(f'Not allowed WXS library strategy for molecule type: RNA in line {record_number}')
-        if item['type'] == 'RNA' and item['library_strategy'].__contains__('WGS'):
-            raise DataException(f'Not allowed WGS library strategy for molecule type: RNA in line {record_number}')
-        if item['type'] == 'RNA' and item['library_strategy'].__contains__('DNA-meth_array'):
-            raise DataException(f'Not allowed DNA-meth_array library strategy for molecule type: RNA in line'
-                                f' {record_number}')
-
-
 class SourcesReader:
 
     def __init__(self, input_dir, config_dir):
@@ -180,7 +167,6 @@ class SourcesReader:
             item_ids = set()
             for item in source_file_data:
                 record_number += 1
-                validate_molecule_type_agrees_with_library_strategy(item, record_number)
                 if source_id_column not in item.keys():
                     raise DataException(f'Identifier column \'{source_id_column}\' not found in file {source_file}. '
                                         f'Is the delimiter configured correctly in the sources config?')
