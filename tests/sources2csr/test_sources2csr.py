@@ -135,16 +135,6 @@ def test_invalid_date():
            in str(excinfo.value)
 
 
-def test_derived_values_in_sources():
-    reader = SourcesReader(
-        input_dir='./test_data/input_data/CLINICAL',
-        config_dir='./test_data/input_data/config/invalid_sources_config/derived_biomaterial_values')
-    with pytest.raises(DataException) as excinfo:
-        reader.read_subject_data()
-    assert 'Derived value fields not allowed in source files' \
-           in str(excinfo.value)
-
-
 def test_duplicate_attributes():
     with pytest.raises(ValidationError) as excinfo:
         SourcesReader(
@@ -156,8 +146,8 @@ def test_duplicate_attributes():
 
 def test_biosource_cannot_be_derived_from_self():
     reader = SourcesReader(
-            input_dir='./test_data/input_data/CLINICAL',
-            config_dir='./test_data/input_data/config/invalid_sources_config/biosource_derived_from_self')
+        input_dir='./test_data/input_data/CLINICAL',
+        config_dir='./test_data/input_data/config/invalid_sources_config/biosource_derived_from_self')
     with pytest.raises(DataException) as excinfo:
         reader.read_subject_data()
     assert 'Invalid data for Biosource with id BS1' in str(excinfo.value)
@@ -165,11 +155,31 @@ def test_biosource_cannot_be_derived_from_self():
 
 def test_biomaterial_cannot_be_derived_from_self():
     reader = SourcesReader(
-            input_dir='./test_data/input_data/CLINICAL',
-            config_dir='./test_data/input_data/config/invalid_sources_config/biomaterial_derived_from_self')
+        input_dir='./test_data/input_data/CLINICAL',
+        config_dir='./test_data/input_data/config/invalid_sources_config/biomaterial_derived_from_self')
     with pytest.raises(DataException) as excinfo:
         reader.read_subject_data()
     assert 'Invalid data for Biomaterial with id BM6' in str(excinfo.value)
+
+
+def test_biomaterial_type_libstrat_mismatch():
+    reader = SourcesReader(
+        input_dir='./test_data/input_data/CLINICAL',
+        config_dir='./test_data/input_data/config/invalid_sources_config/biomaterial_type_libstrat_mismatch')
+    with pytest.raises(DataException) as excinfo:
+        reader.read_subject_data()
+    assert 'Invalid data for Biomaterial with id BM2' in str(excinfo.value)
+
+
+def test_biomaterial_semicolon_separator_splitting():
+    reader = SourcesReader(
+        input_dir='./test_data/input_data/CLINICAL',
+        config_dir='./test_data/input_data/config/invalid_sources_config'
+                   '/biomaterial_with_semicolon_separated_libstrat_analysistype')
+    subject_registry = reader.read_subject_data()
+    assert subject_registry.entity_data['Biomaterial'][1].library_strategy == ['WGS', 'WXS']
+    assert subject_registry.entity_data['Biomaterial'][1].analysis_type == ['WGS Germline SNV', 'WXS Germline SNV',
+                                                                            'WGS Somatic SNV', 'WXS Somatic SNV']
 
 
 @pytest.mark.skip(reason="specific validation not yet implemented (TMT-1024)")
@@ -180,8 +190,8 @@ def test_diagnosis_biosource_patient_mismatch():
     Biosource contains BS1 linked to P1 and D1.
     """
     reader = SourcesReader(
-            input_dir='./test_data/input_data/ind_bios_diag_mismatch_data/source_data',
-            config_dir='./test_data/input_data/ind_bios_diag_mismatch_data/config')
+        input_dir='./test_data/input_data/ind_bios_diag_mismatch_data/source_data',
+        config_dir='./test_data/input_data/ind_bios_diag_mismatch_data/config')
     with pytest.raises(DataException) as excinfo:
         reader.read_subject_data()
     assert '' in str(excinfo.value)
@@ -194,8 +204,8 @@ def test_biomaterial_biosource_mismatch():
     but originates from a different biosource.
     """
     reader = SourcesReader(
-            input_dir='./test_data/input_data/bios_biom_mismatch_data/source_data',
-            config_dir='./test_data/input_data/bios_biom_mismatch_data/config')
+        input_dir='./test_data/input_data/bios_biom_mismatch_data/source_data',
+        config_dir='./test_data/input_data/bios_biom_mismatch_data/config')
     with pytest.raises(DataException) as excinfo:
         reader.read_subject_data()
     assert '' in str(excinfo.value)
