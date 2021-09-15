@@ -120,9 +120,9 @@ class Radiology(BaseModel):
     radiology_id: str = Field(..., min_length=1, identity=True)
     examination_date: date
     image_type: str
-    field_strength: str
+    field_strength: Optional[str]
     individual_id: str = Field(..., min_length=1, references='Individual')
-    diagnosis_id: str = Field(..., min_length=1, references='Diagnosis')
+    diagnosis_id: Optional[str] = Field(..., min_length=1, references='Diagnosis')
     body_part: str
 
 
