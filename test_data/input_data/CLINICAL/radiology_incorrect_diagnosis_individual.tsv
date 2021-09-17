@@ -1,4 +1,0 @@
-radiology_id	examination_date	image_type	field_strength	individual_id	diagnosis_id	body_part
-R1	01-05-2016		20	P1	D1	torso
-R2_WRONG	02-07-2016	type_2	50	P1	D2	torso
-R3	03-11-201	type_1	20	P3		legs

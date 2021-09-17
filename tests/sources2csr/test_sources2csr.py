@@ -183,14 +183,13 @@ def test_biomaterial_semicolon_separator_splitting():
                                                                             'WGS Somatic SNV', 'WXS Somatic SNV']
 
 
-def test_radiology_linked_correct_diagnosis_individual():
+def test_radiology_missing_values():
     reader = SourcesReader(
         input_dir='./test_data/input_data/CLINICAL',
         config_dir='./test_data/input_data/config/invalid_sources_config'
-                   '/radiology_incorrect_diagnosis_individual.tsv')
-    with pytest.raises(Exception):
-        subject_registry = reader.read_subject_data()
-
+                   '/radiology_missing_values')
+    with pytest.raises(ReaderException, match=r"Unexpected line length 5\. Expected 7.*"):
+        reader.read_subject_data()
 
 
 @pytest.mark.skip(reason="specific validation not yet implemented (TMT-1024)")

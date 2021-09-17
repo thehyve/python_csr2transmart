@@ -382,7 +382,62 @@
     },
     "Radiology": {
       "attributes": [
-
+        {
+          "name": "radiology_id",
+          "sources": [
+            {
+              "file": "radiology_missing_values.tsv"
+            }
+          ]
+        },
+        {
+          "name": "examination_date",
+          "sources": [
+            {
+              "file": "radiology_missing_values.tsv"
+            }
+          ]
+        },
+        {
+          "name": "image_type",
+          "sources": [
+            {
+              "file": "radiology_missing_values.tsv"
+            }
+          ]
+        },
+        {
+          "name": "field_strength",
+          "sources": [
+            {
+              "file": "radiology_missing_values.tsv"
+            }
+          ]
+        },
+        {
+          "name": "individual_id",
+          "sources": [
+            {
+              "file": "radiology_missing_values.tsv"
+            }
+          ]
+        },
+        {
+          "name": "diagnosis_id",
+          "sources": [
+            {
+              "file": "radiology_missing_values.tsv"
+            }
+          ]
+        },
+        {
+          "name": "body_part",
+          "sources": [
+            {
+              "file": "radiology_missing_values.tsv"
+            }
+          ]
+        }
       ]
     }
   },

@@ -1,15 +1,18 @@
 import datetime
 from collections import Counter
-from typing import List
+from typing import List, Union
 
 from transmart_loader.transmart import ValueType, DimensionType, Observation, Modifier
 
 
 def get_observations_for_modifier(observations: List[Observation],
                                   modifier: Modifier,
-                                  exclude_modifier: Modifier = None) -> List[Observation]:
+                                  exclude_modifier: Union[Modifier, List[Modifier]] = None) -> List[Observation]:
+    if exclude_modifier is not None and isinstance(exclude_modifier, Modifier):
+        exclude_modifier = [exclude_modifier]
+
     return [o for o in observations if o.metadata is not None and o.metadata.values.get(modifier) is not None
-            and (exclude_modifier is None or exclude_modifier not in o.metadata.values)]
+            and (exclude_modifier is None or all([exclude not in o.metadata.values for exclude in exclude_modifier]))]
 
 
 def test_studies_mapping(mapped_data_collection):
@@ -42,31 +45,32 @@ def test_patients_mapping(mapped_data_collection):
 
 def test_concepts_mapping(mapped_data_collection):
     concepts = mapped_data_collection.concepts
-    assert len(concepts) == 31
+    assert len(concepts) == 38
     assert len([c for c in concepts if c.concept_code.startswith('Individual.')]) == 9
     assert len([c for c in concepts if c.concept_code.startswith('Diagnosis.')]) == 6
     assert len([c for c in concepts if c.concept_code.startswith('Biosource.')]) == 6
     assert len([c for c in concepts if c.concept_code.startswith('Biomaterial.')]) == 5
     assert len([c for c in concepts if c.concept_code.startswith('Study.')]) == 4
+    assert len([c for c in concepts if c.concept_code.startswith('Radiology.')]) == 7
     assert len([c for c in concepts if c.concept_code.startswith('IndividualStudy.')]) == 1
 
 
 def test_modifiers_mapping(mapped_data_collection):
     modifiers = mapped_data_collection.modifiers
-    assert len(modifiers) == 4
-    assert [m.modifier_code for m in modifiers] == ['Diagnosis', 'Biosource', 'Biomaterial', 'Study']
-    assert [m.name for m in modifiers] == ['Diagnosis', 'Biosource', 'Biomaterial', 'Study']
-    assert [m.modifier_path for m in modifiers] == ['Diagnosis', 'Biosource', 'Biomaterial', 'Study']
-    assert [m.value_type for m in modifiers] == [ValueType.Categorical] * 4
+    assert len(modifiers) == 5
+    assert [m.modifier_code for m in modifiers] == ['Diagnosis', 'Biosource', 'Biomaterial', 'Radiology', 'Study']
+    assert [m.name for m in modifiers] == ['Diagnosis', 'Biosource', 'Biomaterial', 'Radiology', 'Study']
+    assert [m.modifier_path for m in modifiers] == ['Diagnosis', 'Biosource', 'Biomaterial', 'Radiology', 'Study']
+    assert [m.value_type for m in modifiers] == [ValueType.Categorical] * 5
 
 
 def test_dimensions_mapping(mapped_data_collection):
     dimensions = mapped_data_collection.dimensions
-    assert len(dimensions) == 4
-    assert [d.name for d in dimensions] == ['Diagnosis', 'Biosource', 'Biomaterial', 'Study']
-    assert [d.modifier.name for d in dimensions] == ['Diagnosis', 'Biosource', 'Biomaterial', 'Study']
-    assert [d.dimension_type for d in dimensions] == [DimensionType.Subject] * 3 + [DimensionType.Attribute]
-    assert [d.sort_index for d in dimensions] == [2, 3, 4, 5]
+    assert len(dimensions) == 5
+    assert [d.name for d in dimensions] == ['Diagnosis', 'Biosource', 'Biomaterial', 'Radiology', 'Study']
+    assert [d.modifier.name for d in dimensions] == ['Diagnosis', 'Biosource', 'Biomaterial', 'Radiology', 'Study']
+    assert [d.dimension_type for d in dimensions] == [DimensionType.Subject] * 4 + [DimensionType.Attribute]
+    assert [d.sort_index for d in dimensions] == [2, 3, 4, 5, 6]
 
 
 def test_ontology_mapping(mapped_data_collection):
@@ -75,12 +79,13 @@ def test_ontology_mapping(mapped_data_collection):
     date = datetime.datetime.now().strftime('%d-%m-%Y')
     assert ontology[0].metadata.values['Load date'] == date
     assert ontology[0].name == 'Central Subject Registry'
-    assert len(ontology[0].children) == 5
+    assert len(ontology[0].children) == 6
     assert [t.name for t in ontology[0].children] == ['01. Patient information',
                                                       '02. Diagnosis information',
                                                       '03. Biosource information',
                                                       '04. Biomaterial information',
-                                                      '05. Study information']
+                                                      '05. Study information',
+                                                      '06. Radiology information']
     assert len(ontology[0].children[0].children) == 5  # individual node
     assert ontology[0].children[0].children[4].name == 'Informed_consent'
     assert len(ontology[0].children[0].children[4].children) == 5  # individual.Informed_consent node
@@ -88,6 +93,7 @@ def test_ontology_mapping(mapped_data_collection):
     assert len(ontology[0].children[2].children) == 6  # biosource node
     assert len(ontology[0].children[3].children) == 5  # biomaterial node
     assert len(ontology[0].children[4].children) == 5  # study node
+    assert len(ontology[0].children[5].children) == 7  # radiology node
 
     assert ontology[0].children[0].children[0].concept.concept_code == 'Individual.gender'
     assert ontology[0].children[0].children[0].metadata.values['subject_dimension'] == 'patient'
@@ -99,6 +105,7 @@ def test_ontology_mapping(mapped_data_collection):
     assert ontology[0].children[3].children[0].metadata.values['subject_dimension'] == 'Biomaterial'
     assert ontology[0].children[4].children[0].concept.concept_code == 'Study.study_id'
     assert ontology[0].children[4].children[0].metadata is None
+    assert ontology[0].children[5].children[0].concept.concept_code == 'Radiology.radiology_id'
 
 
 def test_observations_mapping(mapped_data_collection):
@@ -110,12 +117,16 @@ def test_observations_mapping(mapped_data_collection):
     assert biosource_modifier.name == 'Biosource'
     biomaterial_modifier: Modifier = modifiers[2]
     assert biomaterial_modifier.name == 'Biomaterial'
-    study_modifier: Modifier = modifiers[3]
+    radiology_modifier: Modifier = modifiers[3]
+    assert radiology_modifier.name == 'Radiology'
+    study_modifier: Modifier = modifiers[4]
     assert study_modifier.name == 'Study'
     patient_observations = [o for o in observations if o.metadata is None]
-    diagnosis_observations = get_observations_for_modifier(observations, diagnosis_modifier, biosource_modifier)
+    diagnosis_observations = get_observations_for_modifier(observations, diagnosis_modifier, [biosource_modifier,
+                                                                                              radiology_modifier])
     biosource_observations = get_observations_for_modifier(observations, biosource_modifier, biomaterial_modifier)
     biomaterial_observations = get_observations_for_modifier(observations, biomaterial_modifier)
+    radiology_observations = get_observations_for_modifier(observations, radiology_modifier)
     study_observations = get_observations_for_modifier(observations, study_modifier)
 
     assert len(patient_observations) == 13
@@ -131,15 +142,20 @@ def test_observations_mapping(mapped_data_collection):
         '1', '2'
     ])  # individual studies
 
+    assert len(radiology_observations) == 19
+    assert Counter([ro.value.value for ro in radiology_observations]) == Counter([
+        "R1", datetime.date(2016, 5, 1), "type_2", "P1", "D1", "torso",
+        "R2", datetime.date(2016, 7, 2), "type_2", "50", "P2", "D2", "torso",
+        "R3", datetime.date(2016, 11, 3), "type_1", "20", "P2", "legs"
+    ])
+
     assert len(diagnosis_observations) == 18
     assert Counter([do.value.value for do in diagnosis_observations]) == Counter([
-        'neuroblastoma', 'liver', 'chemo', 'IV', datetime.date(2016, 5, 1), 'Center 1',  # D1
-        'nephroblastoma', 'kidney', 'surgery', 'III', datetime.date(2016, 7, 2), 'Center 2',  # D2
-        'hepatoblastoma', 'bone marrow', 'Protocol 1', 'IV', datetime.date(2016, 11, 3), 'Center 3'])  # D3
-    assert Counter([do.metadata.values[diagnosis_modifier].value for do in diagnosis_observations]) == Counter([
-        'D1', 'D1', 'D1', 'D1', 'D1', 'D1',
-        'D2', 'D2', 'D2', 'D2', 'D2', 'D2',
-        'D3', 'D3', 'D3', 'D3', 'D3', 'D3'])
+        'neuroblastoma', 'liver', 'chemo', 'IV', datetime.date(2016, 5, 1), 'Center 1',                 # D1
+        'nephroblastoma', 'kidney', 'surgery', 'III', datetime.date(2016, 7, 2), 'Center 2',            # D2
+        'hepatoblastoma', 'bone marrow', 'Protocol 1', 'IV', datetime.date(2016, 11, 3), 'Center 3'])   # D3
+    assert Counter([do.metadata.values[diagnosis_modifier].value for do in diagnosis_observations]) == Counter(
+        ['D1'] * 6 + ['D2'] * 6 + ['D3'] * 6)
 
     assert len(biosource_observations) == 19
     assert Counter([bso.value.value for bso in biosource_observations]) == Counter([
@@ -185,4 +201,4 @@ def test_observations_mapping(mapped_data_collection):
          'D3', 'D3'])
 
     assert len(observations) == len(patient_observations) + len(diagnosis_observations) + len(
-        biosource_observations) + len(biomaterial_observations) + len(study_observations)
+        biosource_observations) + len(biomaterial_observations) + len(study_observations) + len(radiology_observations)
