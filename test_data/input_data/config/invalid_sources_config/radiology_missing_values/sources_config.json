@@ -6,7 +6,7 @@
           "name": "individual_id",
           "sources": [
             {
-              "file": "individual_with_empty_identifier.tsv",
+              "file": "individual.tsv",
               "column": "individual_id"
             },
             {
@@ -19,7 +19,7 @@
           "name": "taxonomy",
           "sources": [
             {
-              "file": "individual_with_empty_identifier.tsv"
+              "file": "individual.tsv"
             }
           ]
         },
@@ -27,7 +27,7 @@
           "name": "birth_date",
           "sources": [
             {
-              "file": "individual_with_empty_identifier.tsv",
+              "file": "individual.tsv",
               "date_format": "%d-%m-%Y"
             }
           ]
@@ -36,7 +36,7 @@
           "name": "gender",
           "sources": [
             {
-              "file": "individual_with_empty_identifier.tsv"
+              "file": "individual.tsv"
             }
           ]
         },
@@ -44,7 +44,7 @@
           "name": "death_date",
           "sources": [
             {
-              "file": "individual_with_empty_identifier.tsv",
+              "file": "individual.tsv",
               "date_format": "%d-%m-%Y"
             }
           ]
@@ -53,7 +53,7 @@
           "name": "ic_type",
           "sources": [
             {
-              "file": "individual_with_empty_identifier.tsv",
+              "file": "individual.tsv",
               "column": "IC_type"
             }
           ]
@@ -62,7 +62,7 @@
           "name": "ic_given_date",
           "sources": [
             {
-              "file": "individual_with_empty_identifier.tsv",
+              "file": "individual.tsv",
               "column": "IC_given_date",
               "date_format": "%d-%m-%Y"
             }
@@ -72,7 +72,7 @@
           "name": "ic_withdrawn_date",
           "sources": [
             {
-              "file": "individual_with_empty_identifier.tsv",
+              "file": "individual.tsv",
               "column": "IC_withdrawn_date",
               "date_format": "%d-%m-%Y"
             },
@@ -86,7 +86,7 @@
           "name": "report_her_susc",
           "sources": [
             {
-              "file": "individual_with_empty_identifier.tsv"
+              "file": "individual.tsv"
             }
           ]
         },
@@ -94,8 +94,24 @@
           "name": "report_inc_findings",
           "sources": [
             {
-              "file": "individual_with_empty_identifier.tsv",
+              "file": "individual.tsv",
               "column": "report_inc_finding"
+            }
+          ]
+        },
+        {
+          "name": "age_first_diagnosis",
+          "sources": [
+            {
+              "file": "individual.tsv"
+            }
+          ]
+        },
+        {
+          "name": "diagnosis_count",
+          "sources": [
+            {
+              "file": "individual.tsv"
             }
           ]
         }
@@ -370,7 +386,7 @@
           "name": "radiology_id",
           "sources": [
             {
-              "file": "radiology.tsv"
+              "file": "radiology_missing_values.tsv"
             }
           ]
         },
@@ -378,7 +394,7 @@
           "name": "examination_date",
           "sources": [
             {
-              "file": "radiology.tsv"
+              "file": "radiology_missing_values.tsv"
             }
           ]
         },
@@ -386,7 +402,7 @@
           "name": "image_type",
           "sources": [
             {
-              "file": "radiology.tsv"
+              "file": "radiology_missing_values.tsv"
             }
           ]
         },
@@ -394,7 +410,7 @@
           "name": "field_strength",
           "sources": [
             {
-              "file": "radiology.tsv"
+              "file": "radiology_missing_values.tsv"
             }
           ]
         },
@@ -402,7 +418,7 @@
           "name": "individual_id",
           "sources": [
             {
-              "file": "radiology.tsv"
+              "file": "radiology_missing_values.tsv"
             }
           ]
         },
@@ -410,7 +426,7 @@
           "name": "diagnosis_id",
           "sources": [
             {
-              "file": "radiology.tsv"
+              "file": "radiology_missing_values.tsv"
             }
           ]
         },
@@ -418,7 +434,7 @@
           "name": "body_part",
           "sources": [
             {
-              "file": "radiology.tsv"
+              "file": "radiology_missing_values.tsv"
             }
           ]
         }
@@ -426,7 +442,7 @@
     }
   },
   "codebooks": {
-    "individual_with_empty_identifier.tsv": "codebook.txt"
+    "individual.tsv": "codebook.txt"
   },
   "file_format": {
     "biosource.csv": {

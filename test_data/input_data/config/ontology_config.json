@@ -153,6 +153,39 @@
           "concept_code": "IndividualStudy.individual_study_id"
         }
       ]
+    },
+    {
+      "name": "06. Radiology information",
+      "children": [
+        {
+          "name": "00. Radiology ID",
+          "concept_code": "Radiology.radiology_id"
+        },
+        {
+          "name": "01. Examination Date",
+          "concept_code": "Radiology.examination_date"
+        },
+        {
+          "name": "02. Image Type",
+          "concept_code": "Radiology.image_type"
+        },
+        {
+          "name": "03. Field Strength",
+          "concept_code": "Radiology.field_strength"
+        },
+        {
+          "name": "04. Individual ID",
+          "concept_code": "Radiology.individual_id"
+        },
+        {
+          "name": "05. Diagnosis ID",
+          "concept_code": "Radiology.diagnosis_id"
+        },
+        {
+          "name": "06. Body Part",
+          "concept_code": "Radiology.body_part"
+        }
+      ]
     }
   ]
 }

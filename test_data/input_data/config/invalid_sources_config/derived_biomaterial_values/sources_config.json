@@ -372,6 +372,66 @@
           ]
         }
       ]
+    },
+    "Radiology": {
+      "attributes": [
+        {
+          "name": "radiology_id",
+          "sources": [
+            {
+              "file": "radiology.tsv"
+            }
+          ]
+        },
+        {
+          "name": "examination_date",
+          "sources": [
+            {
+              "file": "radiology.tsv"
+            }
+          ]
+        },
+        {
+          "name": "image_type",
+          "sources": [
+            {
+              "file": "radiology.tsv"
+            }
+          ]
+        },
+        {
+          "name": "field_strength",
+          "sources": [
+            {
+              "file": "radiology.tsv"
+            }
+          ]
+        },
+        {
+          "name": "individual_id",
+          "sources": [
+            {
+              "file": "radiology.tsv"
+            }
+          ]
+        },
+        {
+          "name": "diagnosis_id",
+          "sources": [
+            {
+              "file": "radiology.tsv"
+            }
+          ]
+        },
+        {
+          "name": "body_part",
+          "sources": [
+            {
+              "file": "radiology.tsv"
+            }
+          ]
+        }
+      ]
     }
   },
   "codebooks": {
