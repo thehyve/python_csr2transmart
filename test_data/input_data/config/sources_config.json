@@ -305,6 +305,22 @@
               "file": "biomaterial.tsv"
             }
           ]
+        },
+        {
+          "name": "library_strategy",
+          "sources": [
+            {
+              "file": "biomaterial.tsv"
+            }
+          ]
+        },
+        {
+          "name": "analysis_type",
+          "sources": [
+            {
+              "file": "biomaterial.tsv"
+            }
+          ]
         }
       ]
     },
