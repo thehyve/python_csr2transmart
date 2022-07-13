@@ -38,6 +38,7 @@ class Diagnosis(BaseModel):
     tumor_stage: Optional[str]
     diagnosis_date: Optional[date]
     diagnosis_center: Optional[str]
+    age_at_diagnosis: Optional[int]
 
 
 class Biosource(BaseModel):
