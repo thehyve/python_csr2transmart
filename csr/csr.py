@@ -114,7 +114,20 @@ class IndividualStudy(BaseModel):
     study_id: str = Field(..., min_length=1, references='Study')
 
 
-SubjectEntity = Union[Individual, Diagnosis, Biosource, Biomaterial]
+class Radiology(BaseModel):
+    """
+    Radiology entity: contains metadata about the radiology images
+    """
+    radiology_id: str = Field(..., min_length=1, identity=True)
+    examination_date: date
+    image_type: str
+    field_strength: Optional[str]
+    individual_id: str = Field(..., min_length=1, references='Individual')
+    diagnosis_id: Optional[str] = Field(..., min_length=1, references='Diagnosis')
+    body_part: str
+
+
+SubjectEntity = Union[Individual, Diagnosis, Biosource, Biomaterial, Radiology]
 
 
 class CentralSubjectRegistry(BaseModel):

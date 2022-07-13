@@ -14,7 +14,7 @@ def test_valid_ontology_config():
     ontology_config = read_configuration('./test_data/input_data/config')
     tree_nodes = OntologyMapper('test').map(ontology_config.nodes)
     assert len(tree_nodes) == 1
-    assert len(tree_nodes[0].children) == 5
+    assert len(tree_nodes[0].children) == 6
     # Test if the birth date concept node is present and has Date value type.
     patient_information = [node for node in tree_nodes[0].children if node.name == '01. Patient information'][0]
     birth_date_node: ConceptNode = [node for node in patient_information.children
@@ -32,7 +32,7 @@ def test_non_root_top_node():
     assert tree_nodes[0].children[0].name == 'Second level'
     assert len(tree_nodes[0].children[0].children) == 1
     assert tree_nodes[0].children[0].children[0].name == 'Top node'
-    assert len(tree_nodes[0].children[0].children[0].children) == 5
+    assert len(tree_nodes[0].children[0].children[0].children) == 6
 
 
 def test_ontology_config_invalid_entity_field():

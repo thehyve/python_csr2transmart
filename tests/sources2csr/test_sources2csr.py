@@ -30,6 +30,7 @@ def test_transformation(tmp_path):
     assert path.exists(target_path + '/biomaterial.tsv')
     assert path.exists(target_path + '/study.tsv')
     assert path.exists(target_path + '/individual_study.tsv')
+    assert path.exists(target_path + '/radiology.tsv')
 
     # test if codebook mapping has been applied
     individual_data = TabularFileReader(path.join(target_path, 'individual.tsv')).read_data()
@@ -180,6 +181,15 @@ def test_biomaterial_semicolon_separator_splitting():
     assert subject_registry.entity_data['Biomaterial'][1].library_strategy == ['WGS', 'WXS']
     assert subject_registry.entity_data['Biomaterial'][1].analysis_type == ['WGS Germline SNV', 'WXS Germline SNV',
                                                                             'WGS Somatic SNV', 'WXS Somatic SNV']
+
+
+def test_radiology_missing_values():
+    reader = SourcesReader(
+        input_dir='./test_data/input_data/CLINICAL',
+        config_dir='./test_data/input_data/config/invalid_sources_config'
+                   '/radiology_missing_values')
+    with pytest.raises(ReaderException, match=r"Unexpected line length 5\. Expected 7.*"):
+        reader.read_subject_data()
 
 
 @pytest.mark.skip(reason="specific validation not yet implemented (TMT-1024)")

@@ -1,0 +1,4 @@
+radiology_id	examination_date	image_type	field_strength	individual_id	diagnosis_id	body_part
+R1	2016-05-01	type_2		P1	D1	torso
+R2	2016-07-02	type_2	50	P2	D2	torso
+R3	2016-11-03	type_1	20	P2		legs
