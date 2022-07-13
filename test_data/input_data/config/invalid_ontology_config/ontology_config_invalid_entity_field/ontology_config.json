@@ -4,7 +4,7 @@
       "name": "01. Patient information",
       "children": [
         {
-          "name": "02. Gender",
+          "name": "02. Sex",
           "concept_code": "Individual.gender"
         },
         {

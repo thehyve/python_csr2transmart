@@ -3,12 +3,17 @@ language: python
 
 matrix:
   include:
-    - python: "3.6"
     - python: "3.7"
       dist: xenial
       sudo: true
     - python: "3.8"
       dist: xenial
+      sudo: true
+    - python: "3.9"
+      dist: xenial
+      sudo: true
+    - python: "3.10.1"
+      dist: focal
       sudo: true
 
 # command to install dependencies
@@ -22,13 +27,14 @@ script: python setup.py test
 deploy:
   provider: pypi
   distributions: "sdist bdist_wheel"
+  skip_existing: true
   user: "__token__"
   password:
     secure: "baMitaZF38HaMoVSBZqkoZrH5dJTm4vOqyk89bCWuMDsm2HrnZfNehL2Kc+q5YMX7zOCzK/q9z1GQDt9inEOF89HHXx/U5kyyCT0DTrkVIWbERHaxSnIgFiED2iRu+ThK/bQ0esGlDOKBw+cP/i1trgH3fw/FBPEFig8qF9OoCFYY9rPGk/n6DFaa/HasE8nzKiLFFhwNJUa6giW4/WYvXIbnxevib7feq4+8F0vB5kNbebLdFJq5ljBwFBeVWpAUHzkyCp/cRNn1Uv03/oSrAfX4m6PKl2ZHxlgfuSED9RR9jks4fi2AOrBzz/nAJP/54DaCWhTcFfYdHnuN5L0/BlqJZ64QAMjAuZB2ybCvIqISWegB55mXQxbAfYyXecHrjcFiSWHcF5PJIATUjcuY3rxGsYi2MLXmMNzavy07shUZQcYcJJVVVhx2An/fht/xmxbQ4qKaLXihytcMNS2Y+KPp+61lF85FUo54It4rabim92nAKVGnWzZIXW26EwdEEVH/gg7+MoFVmJwwAdbWmT+twP1N/Fmm1BSH977GxcbyL2y9rl7T0poQQxdFEvc/6f9dDcGb0d926nbCQH5hvJZHz+bqdwRLWX9iSCx4OS71MFFL+tVSuFEVhEoB4Fjo3CLqfKIJYUKpg2zlNQCCOM1RZAFQNiqWvh28x9BCH8="
   on:
     tags: true
     branch: master
-    python: "3.8"
+    python: "3.9"
 
 after_success:
   - codecov

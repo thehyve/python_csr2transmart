@@ -293,7 +293,7 @@ Both derived variables are associated to the entity Biomaterial in TranSMART (se
 Python versions
 ---------------
 
-This package supports Python versions 3.6 and 3.7.
+This package supports Python versions 3.7 - 3.10.
 
 
 Package management and dependencies
