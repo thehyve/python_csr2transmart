@@ -100,6 +100,7 @@ def test_ontology_mapping(mapped_data_collection):
     assert ontology[0].children[1].children[0].concept.concept_code == 'Diagnosis.tumor_type'
     assert ontology[0].children[1].children[0].metadata.values['subject_dimension'] == 'Diagnosis'
     assert ontology[0].children[2].children[0].concept.concept_code == 'Biosource.biosource_dedicated'
+    assert ontology[0].children[2].children[0].concept.concept_code == 'Biosource.biosource_status'
     assert ontology[0].children[2].children[0].metadata.values['subject_dimension'] == 'Biosource'
     assert ontology[0].children[3].children[0].concept.concept_code == 'Biomaterial.src_biomaterial_id'
     assert ontology[0].children[3].children[0].metadata.values['subject_dimension'] == 'Biomaterial'

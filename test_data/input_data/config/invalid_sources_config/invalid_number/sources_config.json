@@ -244,6 +244,14 @@
               "file": "biosource_with_invalid_number.csv"
             }
           ]
+        },
+        {
+          "name": "biosource_status",
+          "sources": [
+            {
+              "file": "biosource.csv"
+            }
+          ]
         }
       ]
     },
