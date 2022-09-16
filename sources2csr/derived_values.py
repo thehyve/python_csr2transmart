@@ -12,29 +12,28 @@ def add_derived_values(subject_registry: CentralSubjectRegistry) -> CentralSubje
     """
 
     # Collect relevant diagnosis aggregates per individual
-    # Step 1: Create dictionary with individual id as key and list of diagnosis objects as value
     diagnoses_per_individual: Dict[str, List[Diagnosis]] = defaultdict(list)
     diagnosis_data: Sequence[Diagnosis] = subject_registry.entity_data['Diagnosis']
     for diagnosis in diagnosis_data:
         diagnoses_per_individual[diagnosis.individual_id].append(diagnosis)
-    # Step 2: Collect per individual the number of diagnosis and the age when they first received a diagnosis ID.
     diagnosis_count_per_individual = {}
-    first_diagnosis_age_per_individual = {}
+    first_diagnosis_date_per_individual = {}
     for individual_id, diagnoses in diagnoses_per_individual.items():
         diagnosis_count_per_individual[individual_id] = len(diagnoses)
-        diagnosis_ages = [d.age_at_diagnosis for d in diagnoses if d.age_at_diagnosis is not None]
-        if diagnosis_ages:
-            first_diagnosis_age = sorted(diagnosis_ages)[0]
-            first_diagnosis_age_per_individual[individual_id] = first_diagnosis_age
+        diagnosis_dates = [d.diagnosis_date for d in diagnoses if d.diagnosis_date is not None]
+        if diagnosis_dates:
+            first_diagnosis_date = sorted(diagnosis_dates)[0]
+            first_diagnosis_date_per_individual[individual_id] = first_diagnosis_date
 
-    # Step 3: Fill in the missing diagnosis count and first age at diagnosis values
     # Add diagnosis aggregates to individuals
     for individual in subject_registry.entity_data['Individual']:
         # Add diagnosis count
         if individual.diagnosis_count is None:
             individual.diagnosis_count = diagnosis_count_per_individual.get(individual.individual_id, None)
         # Add age at first diagnosis
-        if individual.age_first_diagnosis is None:
-            individual.age_first_diagnosis = first_diagnosis_age_per_individual.get(individual.individual_id, None)
+        if individual.birth_date is not None and individual.age_first_diagnosis is None:
+            first_diagnosis_date = first_diagnosis_date_per_individual.get(individual.individual_id, None)
+            if first_diagnosis_date is not None:
+                individual.age_first_diagnosis = relativedelta(first_diagnosis_date, individual.birth_date).years
 
     return subject_registry
