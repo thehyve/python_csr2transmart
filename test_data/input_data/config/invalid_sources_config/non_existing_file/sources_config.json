@@ -241,7 +241,7 @@
           "name": "biosource_status",
           "sources": [
             {
-              "file": "biosource.csv"
+              "file": "non-existing-biosource.tsv"
             }
           ]
         }

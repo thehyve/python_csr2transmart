@@ -176,7 +176,7 @@
           "name": "biosource_status",
           "sources": [
             {
-              "file": "biosource.csv"
+              "file": "biosource_self_reference.csv"
             }
           ]
         }

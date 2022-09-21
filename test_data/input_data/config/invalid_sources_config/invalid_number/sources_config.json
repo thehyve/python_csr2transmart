@@ -249,7 +249,7 @@
           "name": "biosource_status",
           "sources": [
             {
-              "file": "biosource.csv"
+              "file": "biosource_with_invalid_number.csv"
             }
           ]
         }
