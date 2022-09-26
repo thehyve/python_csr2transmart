@@ -38,8 +38,8 @@ def test_sample_clinical_data(sample_clinical_data):
                                                            'PMCBS000AAB_PMCBM000AAC', 'PMCBS000AAD_PMCBM000AAD']
     assert Counter(list(sample_clinical_data)) == Counter(['BIOMATERIAL_DATE', 'BIOMATERIAL_ID',
                                                            'BIOSOURCE_DATE', 'BIOSOURCE_DEDICATED', 'BIOSOURCE_ID',
-                                                           'DIAGNOSIS_CENTER', 'DIAGNOSIS_DATE', 'DIAGNOSIS_ID',
-                                                           'DISEASE_STATUS', 'PATIENT_ID',
+                                                           'BIOSOURCE_STATUS', 'DIAGNOSIS_CENTER', 'DIAGNOSIS_DATE',
+                                                           'DIAGNOSIS_ID', 'DISEASE_STATUS', 'PATIENT_ID',
                                                            'SAMPLE_ID', 'SRC_BIOMATERIAL_ID', 'TISSUE', 'TOPOGRAPHY',
                                                            'TREATMENT_PROTOCOL', 'TUMOR_PERCENTAGE', 'TUMOR_STAGE',
                                                            'TUMOR_TYPE', 'TYPE', 'SRC_BIOSOURCE_ID'])

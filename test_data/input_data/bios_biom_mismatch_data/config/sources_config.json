@@ -242,6 +242,22 @@
           "sources": [
             {
               "file": "biosource.tsv"
+            },
+        {
+          "name": "biosource_status",
+          "sources": [
+            {
+              "file": "biosource.csv"
+            }
+          ]
+        }
+          ]
+        },
+        {
+          "name": "biosource_status",
+          "sources": [
+            {
+              "file": "biosource.tsv"
             }
           ]
         }

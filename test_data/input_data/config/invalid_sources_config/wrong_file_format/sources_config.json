@@ -244,6 +244,14 @@
               "file": "biosource.csv"
             }
           ]
+        },
+        {
+          "name": "biosource_status",
+          "sources": [
+            {
+              "file": "biosource.csv"
+            }
+          ]
         }
       ]
     },

@@ -89,7 +89,9 @@ def get_source_files(entity_sources_config: Entity, id_property: str):
     logger.debug(f'Source file id mapping: {source_file_id_mapping}')
     source_files_without_id_column = source_files - set(source_file_id_mapping.keys())
     if source_files_without_id_column:
-        raise DataException(f'Id column missing in source files: {source_files_without_id_column}')
+        raise DataException(f'Id column missing in source files: {source_files_without_id_column}\n'
+                            f'{[attribute for attribute in entity_sources_config.attributes]}\n'
+                            f'{id_property}')
     return source_files, source_file_id_mapping
 
 

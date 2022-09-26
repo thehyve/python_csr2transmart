@@ -101,6 +101,10 @@
         {
           "name": "05. Tumor percentage",
           "concept_code": "Biosource.tumor_percentage"
+        },
+        {
+          "name": "07. Biosource availability status",
+          "concept_code": "Biosource.biosource_status"
         }
       ]
     },

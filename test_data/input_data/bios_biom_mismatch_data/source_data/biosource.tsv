@@ -1,3 +1,3 @@
-biosource_id	biosource_dedicated	individual_id	diagnosis_id	src_biosource_id	tissue	biosource_date	disease_status	tumor_percentage
-BS1	Yes	P2	D1		medula	12-03-2017	ST1	5
-BS2	Yes	P2	D1		medula	12-03-2018	ST1	3
+biosource_id	biosource_dedicated	individual_id	diagnosis_id	src_biosource_id	tissue	biosource_date	disease_status	tumor_percentage	biosource_status
+BS1	Yes	P2	D1		medula	12-03-2017	ST1	5	Available
+BS2	Yes	P2	D1		medula	12-03-2018	ST1	3	Discontinued

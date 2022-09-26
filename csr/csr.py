@@ -53,6 +53,7 @@ class Biosource(BaseModel):
     biosource_date: Optional[date]
     disease_status: Optional[str]
     tumor_percentage: Optional[int]
+    biosource_status: Optional[str]
 
     @validator('src_biosource_id')
     def check_self_reference(cls, src_biosource_id, values):

@@ -171,7 +171,15 @@
                 "file": "biosource_self_reference.csv"
               }
             ]
-          }
+          },
+        {
+          "name": "biosource_status",
+          "sources": [
+            {
+              "file": "biosource_self_reference.csv"
+            }
+          ]
+        }
         ]
       },
       "Study": {

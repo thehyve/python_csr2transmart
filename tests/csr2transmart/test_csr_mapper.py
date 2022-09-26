@@ -45,10 +45,10 @@ def test_patients_mapping(mapped_data_collection):
 
 def test_concepts_mapping(mapped_data_collection):
     concepts = mapped_data_collection.concepts
-    assert len(concepts) == 38
+    assert len(concepts) == 39
     assert len([c for c in concepts if c.concept_code.startswith('Individual.')]) == 9
     assert len([c for c in concepts if c.concept_code.startswith('Diagnosis.')]) == 6
-    assert len([c for c in concepts if c.concept_code.startswith('Biosource.')]) == 6
+    assert len([c for c in concepts if c.concept_code.startswith('Biosource.')]) == 7
     assert len([c for c in concepts if c.concept_code.startswith('Biomaterial.')]) == 5
     assert len([c for c in concepts if c.concept_code.startswith('Study.')]) == 4
     assert len([c for c in concepts if c.concept_code.startswith('Radiology.')]) == 7
@@ -90,7 +90,7 @@ def test_ontology_mapping(mapped_data_collection):
     assert ontology[0].children[0].children[4].name == 'Informed_consent'
     assert len(ontology[0].children[0].children[4].children) == 5  # individual.Informed_consent node
     assert len(ontology[0].children[1].children) == 6  # diagnosis node
-    assert len(ontology[0].children[2].children) == 6  # biosource node
+    assert len(ontology[0].children[2].children) == 7  # biosource node
     assert len(ontology[0].children[3].children) == 5  # biomaterial node
     assert len(ontology[0].children[4].children) == 5  # study node
     assert len(ontology[0].children[5].children) == 7  # radiology node
@@ -155,25 +155,27 @@ def test_observations_mapping(mapped_data_collection):
         'nephroblastoma', 'kidney', 'surgery', 'III', datetime.date(2016, 7, 2), 'Center 2',            # D2
         'hepatoblastoma', 'bone marrow', 'Protocol 1', 'IV', datetime.date(2016, 11, 3), 'Center 3'])   # D3
     assert Counter([do.metadata.values[diagnosis_modifier].value for do in diagnosis_observations]) == Counter(
-        ['D1'] * 6 + ['D2'] * 6 + ['D3'] * 6)
+        ['D1'] * 6 +
+        ['D2'] * 6 +
+        ['D3'] * 6)
 
-    assert len(biosource_observations) == 19
+    assert len(biosource_observations) == 23
     assert Counter([bso.value.value for bso in biosource_observations]) == Counter([
-        'Yes', 'medula', datetime.date(2017, 3, 12), 'ST1', 5,  # BS1
-        'cortex', datetime.date(2017, 4, 1), 'ST2', 3,   # BS2
-        'BS2', 'cortex', datetime.date(2017, 5, 14), 'ST1', 2,  # BS3
-        'No', 'medula', datetime.date(2017, 6, 21), 'ST2', 1])  # BS4
-    assert Counter([bso.metadata.values[biosource_modifier].value for bso in biosource_observations]) == Counter([
-        'BS1', 'BS1', 'BS1', 'BS1', 'BS1',
-        'BS2', 'BS2', 'BS2', 'BS2',
-        'BS3', 'BS3', 'BS3', 'BS3', 'BS3',
-        'BS4', 'BS4', 'BS4', 'BS4', 'BS4'])
+        'Yes', 'medula', datetime.date(2017, 3, 12), 'ST1', 5, 'Available',  # BS1
+        'cortex', datetime.date(2017, 4, 1), 'ST2', 3, 'Available',   # BS2
+        'BS2', 'cortex', datetime.date(2017, 5, 14), 'ST1', 2, 'Available',  # BS3
+        'No', 'medula', datetime.date(2017, 6, 21), 'ST2', 1, 'Discontinued'])  # BS4
+    assert Counter([bso.metadata.values[biosource_modifier].value for bso in biosource_observations]) == Counter(
+        ['BS1'] * 6 +
+        ['BS2'] * 5 +
+        ['BS3'] * 6 +
+        ['BS4'] * 6)
     assert Counter([bso.metadata.values[diagnosis_modifier].value
                     for bso in biosource_observations
                     if diagnosis_modifier in bso.metadata.values]) == Counter(
-        ['D1', 'D1', 'D1', 'D1', 'D1',
-         'D2', 'D2', 'D2', 'D2',
-         'D3', 'D3', 'D3', 'D3', 'D3'])
+        ['D1'] * 6 +
+        ['D2'] * 5 +
+        ['D3'] * 6)
 
     assert len(biomaterial_observations) == 9
     assert Counter([bmo.value.value for bmo in biomaterial_observations]) == Counter([
@@ -189,10 +191,10 @@ def test_observations_mapping(mapped_data_collection):
     assert Counter([bmo.metadata.values[biosource_modifier].value
                     for bmo in biomaterial_observations
                     if biosource_modifier in bmo.metadata.values]) == Counter(
-        ['BS1', 'BS1',
-         'BS2', 'BS2',
-         'BS3', 'BS3', 'BS3',
-         'BS4', 'BS4'])
+        ['BS1'] * 2 +
+        ['BS2'] * 2 +
+        ['BS3'] * 3 +
+        ['BS4'] * 2)
     assert Counter([bmo.metadata.values[diagnosis_modifier].value
                     for bmo in biomaterial_observations
                     if diagnosis_modifier in bmo.metadata.values]) == Counter(

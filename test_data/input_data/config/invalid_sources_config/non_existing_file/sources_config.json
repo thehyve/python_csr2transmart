@@ -236,6 +236,14 @@
               "file": "non-existing-biosource.tsv"
             }
           ]
+        },
+        {
+          "name": "biosource_status",
+          "sources": [
+            {
+              "file": "non-existing-biosource.tsv"
+            }
+          ]
         }
       ]
     },
